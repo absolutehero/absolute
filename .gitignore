@@ -1,0 +1,10 @@
+# ignore all files in the dist directory
+dist/
+# ignore .svn files
+.svn
+# ignore node_modules
+node_modules/
+# ignore tmp files
+*~
+# ignore support libraries
+lib/

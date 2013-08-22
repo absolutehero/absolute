@@ -1,0 +1,19 @@
+    //Register in the values from the outer closure for common dependencies
+    //as local almond modules
+    define('pixi', function () {
+        return PIXI;
+    });
+
+    define('tween', function () {
+        return TWEEN;
+    });
+
+    define('absoluteaudio', function () {
+        return AbsoluteAudio;
+    });
+
+    //Use almond's special top-level, synchronous require to trigger factory
+    //functions, get the final module value, and export it as the public
+    //value.
+    return require('absolute');
+}));

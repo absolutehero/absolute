@@ -1,0 +1,13 @@
+//Copyright 2012, etc.
+
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD.
+        define(['pixi', 'tween', 'absoluteaudio'], factory);
+    } else {
+        // Browser globals
+        root.absolute = factory(root.PIXI, root.TWEEN, root.AbsoluteAudio);
+    }
+}(this, function (PIXI, TWEEN, AbsoluteAudio) {
+
+
