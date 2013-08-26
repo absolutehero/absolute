@@ -8,3 +8,5 @@ node_modules/
 *~
 # ignore support libraries
 lib/
+# ignore imported bower dependencies
+bower_components/
