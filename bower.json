@@ -1,0 +1,16 @@
+{
+  "name": "absolute",
+  "version": "1.0.0",
+  "main": "dist/absolute.js",
+  "ignore": [
+    ".jshintrc",
+    "**/*.txt"
+  ],
+  "dependencies": {
+    "pixi": "latest",
+    "tweenjs": "latest"
+  },
+  "devDependencies": {
+
+  }
+}
