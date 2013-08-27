@@ -17,12 +17,19 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
         this.container = document.getElementById(container);
 
         this.stage = new PIXI.Stage(0x0, true);
-        this.interactionManager = new PIXI.InteractionManager(this.stage);
-        this.interactionManager.mouseoverEnabled = false;
+
+        // pixi no longer prevents default - need to handle ourselves
+        this.stage.mousedown = this.stage.touchstart = function(data)
+        {
+            data.originalEvent.preventDefault();
+        };
+
         this.renderer = new PIXI.CanvasRenderer(width, height);
         //this.renderer = PIXI.autoDetectRenderer(width, height);
+        this.renderer.transparent = true;
 
         this.offScreenRenderer = new PIXI.CanvasRenderer(width, height);
+        this.offScreenRenderer.transparent = true;
 
         this.container.appendChild(this.renderer.view);
 
