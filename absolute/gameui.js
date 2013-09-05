@@ -29,6 +29,7 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
         this.renderer.transparent = true;
 
         this.offScreenRenderer = new PIXI.CanvasRenderer(width, height);
+
         this.offScreenRenderer.transparent = true;
 
         this.container.appendChild(this.renderer.view);

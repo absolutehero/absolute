@@ -28,6 +28,8 @@ define(function (require) {
         MusicManager: require('absolute/musicmanager'),
         ProgressBar: require('absolute/progressbar'),
         TweenUtils: require('absolute/tweenutils'),
-        Screen: require('absolute/screen')
+        Screen: require('absolute/screen'),
+        SimpleMessageBox: require('absolute/simplemessagebox'),
+        SpriteMessageBox: require('absolute/spritemessagebox')
     };
 });
