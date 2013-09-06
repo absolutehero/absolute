@@ -39,8 +39,8 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
     };
 
     GameUI.prototype.resize = function() {
-        ScreenMetrics.refresh();
-        Platform.resClass = '';
+        //ScreenMetrics.refresh();
+        //Platform.resClass = '';
 
         var windowWidth = document.documentElement.clientWidth,
             windowHeight = document.documentElement.clientHeight;
@@ -49,14 +49,14 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
             clientHeight = windowHeight;
 
         var aspectRatio = windowWidth / windowHeight;
-/*
+
         if (aspectRatio > 0.9) {
             clientWidth = 0.9 * windowHeight;
         }
         else if (aspectRatio < 0.7) {
             clientHeight = windowWidth / 0.7;
         }
-
+/*
         if (ScreenMetrics.isPortrait()) {
             if (aspectRatio > 0.9) {
                 clientWidth = 0.9 * windowHeight;
@@ -91,8 +91,6 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
         else {
             this.renderer.view.style.marginTop = '0';
         }
-
-        MBP.hideUrlBar();
     };
 
     GameUI.prototype.loadSound = function(assets, onProgress, onComplete) {
