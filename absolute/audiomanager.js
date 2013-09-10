@@ -228,7 +228,7 @@ var AudioManager = {
     },
 
     simulSoundSupport: function () {
-        return AbsoluteAudio.context.usingWebAudio();
+        return AbsoluteAudio.context.usingWebAudio() || !GameConfig.getVal("musicEnabled");
     },
 
     primeClips: function () {
