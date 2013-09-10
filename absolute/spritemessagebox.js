@@ -30,7 +30,7 @@ define(['pixi', 'absolute/button', 'absolute/coords'], function(PIXI, Button, Co
         this.addChild(this.button);
 
         this.textStyle = textStyle;
-        this.textStyle.wordWrapWidth = this.width - 60;
+        this.textStyle.wordWrapWidth = this.width - 40;
         this.textStyle.wordWrap = true;
 
         this.text = null;
