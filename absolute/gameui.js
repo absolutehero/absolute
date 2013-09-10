@@ -39,8 +39,6 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
     };
 
     GameUI.prototype.resize = function() {
-        //ScreenMetrics.refresh();
-        //Platform.resClass = '';
 
         var windowWidth = document.documentElement.clientWidth,
             windowHeight = document.documentElement.clientHeight;
