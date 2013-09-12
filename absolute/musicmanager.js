@@ -43,6 +43,7 @@ define(['absolute/gameconfig', 'absolute/audiomanager'], function(GameConfig, Au
                     AudioManager.muteSound(this.currentTrack);
                 } else {
                     AudioManager.unmuteSound(this.currentTrack);
+                    AudioManager.playSound(this.currentTrack);
                 }
             }
         }

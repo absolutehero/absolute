@@ -50,7 +50,66 @@ var AudioManager = {
         this.format = format;
     },
 
-    loadSounds: function(sounds, onProgress, onComplete) {
+    loadSounds: function(audioAssets, onProgress, onComplete) {
+        this.audioAssets = audioAssets;
+
+        if (this.usingWebAudio()) {
+            this.loadClips(audioAssets.clips, onProgress, onComplete);
+        }
+        else {
+            // utilize the audio sprites
+            this.createSound({
+                id: 'as',
+                url: 'as',
+                volume: 100,
+                onLoad: function () {
+                    for (var i = 0, l = this.audioAssets.clips.length; i < l; i += 1) {
+                        var sound = this.audioAssets.clips[i],
+                            soundInfo = this.getClipInfo(sound.id),
+                            baseSound = this.sounds['as'];
+                        this.sounds[sound.id] = AbsoluteAudio.context.createAudioSprite(baseSound, soundInfo.start, soundInfo.end);
+                        console.log(sound.id + ' start ' + soundInfo.start + ' end ' + soundInfo.end);
+                        onProgress(i / l);
+                    }
+                    onComplete();
+                }.bind(this),
+                buffer: false,
+                loop: false,
+                duration: 0
+            });
+        }
+    },
+
+    getClipInfo: function(clipId) {
+        // return an object describing the clip, including url, start, end and loop
+        var i, l, clip = null, spriteInfo;
+        for (i = 0, l = this.audioAssets.clips.length; i < l; i += 1) {
+
+            if (this.audioAssets.clips[i].id === clipId) {
+                clip = this.audioAssets.clips[i];
+                break;
+            }
+        }
+
+        if (clip) {
+            spriteInfo = this.audioAssets.sprites[clip.url];
+
+            if (spriteInfo) {
+                return {
+                    url: clip.url,
+                    start: spriteInfo.start,
+                    end: spriteInfo.end,
+                    volume: clip.volume,
+                    loop: clip.music
+                }
+            }
+        }
+
+        return {};
+
+    },
+
+    loadClips: function(sounds, onProgress, onComplete) {
         var self = this;
         var total = sounds.length;
         var count = 0;
@@ -66,79 +125,27 @@ var AudioManager = {
                 onProgress(count / total);
             }
         };
-        while (sounds.length > 0) {
-            var sound = sounds.pop();
+        for (var i = 0; i < sounds.length; i += 1) {
+            var sound = sounds[i],
+                soundInfo = this.getClipInfo(sound.id);
 
-            var music = !!sound.music;
-
-            // don't load non-music tracks if we're not using web audio
-
-                if (music) {
-
-                    var sm = null;
-                    if (typeof sound.duration !== 'undefined') {
-                        sm = {};
-                        sm[sound.id] =  { start: 0, end: sound.duration, loop: true};
-                    }
-
-
-                    if (this.musicSupported()) {
-                        this.createSound({
-                            id: sound.id,
-                            url: sound.url,
-                            volume: sound.volume,
-                            autoLoad: sound.autoLoad,
-                            onLoad: onLoad,
-                            buffer: false,
-                            loop: true,
-                            spritemap: sm,
-                            duration: sound.duration
-                        });
-                    }
-                    else {
-                        onLoad();
-                    }
-                } else {
-                    if (this.sfxSupported()) {
-                        this.createSound({
-                            id: sound.id,
-                            url: sound.url,
-                            volume: sound.volume,
-                            autoLoad: sound.autoLoad,
-                            onLoad: onLoad,
-                            spritemap: sound.spritemap,
-                            duration: sound.duration
-                        });
-                    }
-                    else {
-                        onLoad();
-                    }
-                }
-
+                this.createSound({
+                    id: sound.id,
+                    url: soundInfo.url,
+                    volume: soundInfo.volume,
+                    onLoad: onLoad,
+                    buffer: false,
+                    loop: soundInfo.loop,
+                    duration: soundInfo.end - soundInfo.start
+                });
         }
     },
 
     createSound: function (config) {
-        var i, l, sprite = {}, sound;
+        var sound, url;
 
-        if (config.spritemap) {
-            for (i in config.spritemap) {
-                sprite[i] = [
-                    Math.round(config.spritemap[i].start * 1000),
-                    Math.round(config.spritemap[i].end * 1000)
-                ];
-            }
-        }
-
-
-        var url = Platform.soundPathPrefix + '/' + this.format + '/' + config.url + '.' + this.format;
+        url = Platform.soundPathPrefix + '/' + this.format + '/' + config.url + '.' + this.format;
         sound = AbsoluteAudio.context.createAudioClip(url, config.onLoad, false, config.duration);
-
-        if (sprite) {
-            for (i in sprite) {
-                this.sounds[i] = sound;
-            }
-        }
 
         this.sounds[config.id] = sound;
     },
