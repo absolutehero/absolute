@@ -36,14 +36,21 @@ define(['absolute/gameconfig', 'absolute/audiomanager'], function(GameConfig, Au
             this.currentTrack = null;
         },
 
-        setMuted: function (muted) {
-            GameConfig.setVal("musicEnabled", !muted);
+        setMuted: function (muted, temp) {
+            var _temp = !!temp;
+
+            if (!_temp) {
+                if (muted === this.isMuted()) {
+                    return;
+                }
+                GameConfig.setVal("musicEnabled", !muted);
+            }
+
             if (this.currentTrack) {
-                if (this.isMuted()) {
+                if (muted) {
                     AudioManager.muteSound(this.currentTrack);
                 } else {
                     AudioManager.unmuteSound(this.currentTrack);
-                    AudioManager.playSound(this.currentTrack);
                 }
             }
         }

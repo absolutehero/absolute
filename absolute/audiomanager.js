@@ -68,10 +68,10 @@ var AudioManager = {
                             soundInfo = this.getClipInfo(sound.id),
                             baseSound = this.sounds['as'];
                         this.sounds[sound.id] = AbsoluteAudio.context.createAudioSprite(baseSound, soundInfo.start, soundInfo.end);
-                        console.log(sound.id + ' start ' + soundInfo.start + ' end ' + soundInfo.end);
                         onProgress(i / l);
                     }
-                    onComplete();
+                    onProgress(i / l);
+                    setTimeout(function () { onComplete() }, 500);
                 }.bind(this),
                 buffer: false,
                 loop: false,
@@ -188,14 +188,14 @@ var AudioManager = {
         var s;
         if (enabled) {
             for (s in this.sounds) {
-                if (!this.isMusic(s)) {
+                if (!this.isMusic(s) && s !== 'as') {
                     this.unmuteSound(s);
                 }
             }
         }
         else {
             for (s in this.sounds) {
-                if (!this.isMusic(s)) {
+                if (!this.isMusic(s) && s !== 'as') {
                     this.muteSound(s);
                 }
             }

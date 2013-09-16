@@ -39,9 +39,12 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
         this.setInteractive(true);
 
         var self = this;
-        this.mouseover = function(evt) {
-            self.setTexture(self.hoverImage);
-        };
+
+        if (!Platform.supportsTouch()) {
+            this.mouseover = function(evt) {
+                self.setTexture(self.hoverImage);
+            };
+        }
 
         this.mouseout = function(evt) {
             self.setTexture(self.defaultImage);

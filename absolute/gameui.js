@@ -11,7 +11,8 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
     };
 
     GameUI.prototype._initGameUI = function(container, width, height) {
-
+        this.lastRender = 0;
+        this.frameRequest = 0;
         this.width = width;
         this.height = height;
         this.container = document.getElementById(container);
@@ -130,15 +131,31 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
 
     GameUI.prototype.animate = function() {
 
+        var watchdog = function() {
+            // watchdog
+            if (new Date().getTime() - this.lastRender > 200) {
+                cancelAnimationFrame(this.frameRequest);
+                this.frameRequest = requestAnimFrame(_animate); // restart
+            }
+            setTimeout(watchdog, 100);
+        }.bind(this);
+
+        if (this.frameRequest) {
+            cancelAnimationFrame(this.frameRequest);
+        }
+
         var self = this,
             _animate = function () {
                 self.beforeRender();
                 TWEEN.update();
                 self.renderer.render(self.stage);
                 self.afterRender();
-                requestAnimFrame(_animate);
+                self.lastRender = new Date().getTime();
+                self.frameRequest = requestAnimFrame(_animate);
             };
-        requestAnimFrame(_animate);
+        this.frameRequest = requestAnimFrame(_animate);
+        setTimeout(watchdog, 100);
+
     };
 
     GameUI.prototype.beforeRender = function() {
