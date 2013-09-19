@@ -114,30 +114,43 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
                 twidth = this.kDefaultHeight - 10;
             }
 
+            var resClass = "";
+
             if (width === 1080) {
-                return "r1080";
+                resClass = "r1080";
             }
             if (width === 640) {
-                return "r640";
+                resClass = "r640";
             }
             if (width >= twidth) {
-                return "r4_5";
+                resClass = "r4_5";
             }
             else if (width >= (twidth * 0.75)) {
-                return "r4";
+                resClass = "r4";
             }
             else if (width >= (twidth * 0.5)) {
-                return "r3";
+                resClass = "r3";
             }
             else if (width >= (twidth * 0.4)) {
-                return "r2_5";
+                resClass = "r2_5";
             }
             else if (width >= (twidth * 0.3)) {
-                return "r2";
+                resClass = "r2";
             }
             else {
-                return "r1";
+                resClass = "r1";
             }
+
+            // force lower res class on Android 4.0.4 to get around canvas rendering
+            // bug described here:
+            // http://www.photonstorm.com/html5/solving-black-screens-and-corrupted-graphics-in-samsung-s3-html5-games
+            if (navigator.userAgent.indexOf("Android 4.0.4") >= 0) {
+                if (resClass != "r1" && resClass != "r2") {
+                    resClass = "r2_5";
+                }
+            }
+
+            return resClass;
         },
 
         getResScale: function() {
