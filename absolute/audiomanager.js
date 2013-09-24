@@ -39,6 +39,11 @@ var AudioManager = {
             this.format = 'mp3';
         }
 
+        // force mp3 for IE
+        if (navigator.userAgent.match(/MSIE/i)) {
+            this.format = 'mp3';
+        }
+
         Debug.log('Audio format ' + this.format);
 
         if (onReady && typeof onReady === "function") {
