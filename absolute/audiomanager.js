@@ -149,7 +149,7 @@ var AudioManager = {
     createSound: function (config) {
         var sound, url;
 
-        url = Platform.soundPathPrefix + '/' + this.format + '/' + config.url + '.' + this.format;
+        url = Platform.getDocumentRoot() + Platform.soundPathPrefix + '/' + this.format + '/' + config.url + '.' + this.format;
         sound = AbsoluteAudio.context.createAudioClip(url, config.onLoad, false, config.duration);
 
         this.sounds[config.id] = sound;
@@ -224,7 +224,7 @@ var AudioManager = {
      },
 
     usingWebAudio: function () {
-        return AbsoluteAudio.context.usingWebAudio();
+        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio();
     },
 
     isMusic: function (id) {
@@ -240,7 +240,7 @@ var AudioManager = {
     },
 
     simulSoundSupport: function () {
-        return AbsoluteAudio.context.usingWebAudio() || !GameConfig.getVal("musicEnabled");
+        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || !GameConfig.getVal("musicEnabled");
     },
 
     primeClips: function () {

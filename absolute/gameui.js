@@ -49,8 +49,8 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
 
         var aspectRatio = windowWidth / windowHeight;
 
-        if (aspectRatio > 0.9) {
-            clientWidth = 0.9 * windowHeight;
+        if (aspectRatio > 0.83) {
+            clientWidth = 0.83 * windowHeight;
         }
         else if (aspectRatio < 0.7) {
             clientHeight = windowWidth / 0.7;

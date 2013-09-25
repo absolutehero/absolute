@@ -27,8 +27,13 @@ define (['absolute/screenmetrics'], function (ScreenMetrics) {
 
         getDocumentRoot: function () {
             if (this.documentRoot === null) {
-                var i = window.location.href.indexOf('/index.html');
-                this.documentRoot = window.location.href.substring(0, i);
+                if (this.isCordova()) {
+                    var i = window.location.href.indexOf('/index.html');
+                    this.documentRoot = window.location.href.substring(0, i) + "/";
+                }
+                else {
+                    this.documentRoot = ""
+                }
             }
             return this.documentRoot;
         },
@@ -98,6 +103,10 @@ define (['absolute/screenmetrics'], function (ScreenMetrics) {
 
         supportsTouch: function () {
            return (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+        },
+
+        isCordova: function () {
+            return typeof cordova !== "undefined";
         }
 
     };
