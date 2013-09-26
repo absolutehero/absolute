@@ -4,19 +4,30 @@
  * Time: 10:42 PM
  * Copyright (c) 2013 Absolute Hero Games LLC
  */
-define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolute/audiomanager'], function (PIXI, TWEEN, ScreenMetrics, Platform, AudioManager) {
+define(
+[
+    'pixi',
+    'tween'
+],
+function (
+    PIXI,
+    TWEEN
+    )
+{
 
     var GameUI = function(container, width, height) {
         this._initGameUI(container, width, height);
     };
 
     GameUI.prototype._initGameUI = function(container, width, height) {
+        this.currentScreen = null;
+        this.modal = null;
         this.lastRender = 0;
         this.frameRequest = 0;
         this.width = width;
         this.height = height;
+        this.portrait = width < height;
         this.container = document.getElementById(container);
-
         this.stage = new PIXI.Stage(0x0, true);
 
         // pixi no longer prevents default - need to handle ourselves
@@ -49,16 +60,9 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
 
         var aspectRatio = windowWidth / windowHeight;
 
-        if (aspectRatio > 0.83) {
-            clientWidth = 0.83 * windowHeight;
-        }
-        else if (aspectRatio < 0.7) {
-            clientHeight = windowWidth / 0.7;
-        }
-/*
-        if (ScreenMetrics.isPortrait()) {
-            if (aspectRatio > 0.9) {
-                clientWidth = 0.9 * windowHeight;
+        if (this.portrait) {
+            if (aspectRatio > 0.83) {
+                clientWidth = 0.83 * windowHeight;
             }
             else if (aspectRatio < 0.7) {
                 clientHeight = windowWidth / 0.7;
@@ -73,7 +77,7 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
                  clientHeight = windowWidth / 0.7;
              }
         }
-*/
+
         this.renderer.view.style.width = clientWidth  + "px";
         this.renderer.view.style.height = clientHeight + "px";
 
@@ -90,35 +94,6 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
         else {
             this.renderer.view.style.marginTop = '0';
         }
-    };
-
-    GameUI.prototype.loadSound = function(assets, onProgress, onComplete) {
-
-        AudioManager.init(function() {
-            AudioManager.loadSounds(assets, onProgress, onComplete);
-        });
-
-    };
-
-    GameUI.prototype.loadArt = function(assets, version, onProgress, onComplete) {
-        var total = assets.length;
-
-        var paths = new Array();
-        for (var i = 0; i < total; ++i) {
-            paths.push(Platform.artPathPrefix + '/' + Platform.getResClass() + '/' + assets[i] /* + '?v=' + version */);
-        }
-
-
-        this.assetLoader = new PIXI.AssetLoader(paths);
-        this.assetLoader.addEventListener('onComplete', function() {
-            onComplete();
-        });
-        this.assetLoader.addEventListener('onProgress', function(loader) {
-            onProgress(1 - (loader.content.loadCount / total));
-        });
-
-        this.assetLoader.load();
-
     };
 
     GameUI.prototype.render = function() {
@@ -164,6 +139,73 @@ define(['pixi', 'tween', 'absolute/screenmetrics', 'absolute/platform', 'absolut
 
     GameUI.prototype.afterRender = function() {
 
+    };
+
+    GameUI.prototype.showScreen = function (screen) {
+        if (this.currentScreen) {
+            this.currentScreen.onHide();
+            this.hideCurrent();
+        }
+        this.currentScreen = screen;
+
+        if (this.currentScreen) {
+            this.showCurrent();
+            this.currentScreen.onShow();
+        }
+    };
+
+    GameUI.prototype.showModal = function (screen, alpha) {
+        this.modal = screen;
+
+        var graphics = new PIXI.Graphics();
+        graphics.beginFill(0x010101, 0.5); // PIXI has a bug - won't render pure black
+        graphics.drawRect(0, 0, this.width, this.height);
+        graphics.endFill();
+        this.stage.addChild(graphics);
+        this.renderOffScreen();
+        this.stage.removeChild(graphics);
+
+        this.modalBG = new PIXI.Sprite(PIXI.Texture.fromCanvas(this.offScreenRenderer.view));
+        //this.modalBG.alpha = alpha || 0.5;
+
+        this.hideCurrent();
+        this.stage.addChild(this.modalBG);
+        this.stage.addChild(this.modal);
+        this.modal.onShow();
+    };
+
+    GameUI.prototype.hideModal = function () {
+        if (this.modal) {
+            this.modal.onHide();
+            this.stage.removeChild(this.modal);
+            this.stage.removeChild(this.modalBG);
+            this.showCurrent();
+        }
+
+        this.modal = null;
+    };
+
+
+    GameUI.prototype.hideCurrent = function () {
+        if (this.currentScreen) {
+            try {
+                this.stage.removeChild(this.currentScreen);
+            }
+            catch (e) {
+                // may not have been added
+            }
+        }
+    };
+
+    GameUI.prototype.showCurrent = function () {
+        if (this.currentScreen) {
+            try {
+                this.stage.addChild(this.currentScreen);
+            }
+            catch (e) {
+
+            }
+        }
     };
 
     return GameUI;

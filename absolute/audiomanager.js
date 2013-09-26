@@ -56,6 +56,11 @@ var AudioManager = {
     },
 
     loadSounds: function(audioAssets, onProgress, onComplete) {
+        if (!audioAssets) {
+            onComplete();
+            return;
+        }
+
         this.audioAssets = audioAssets;
 
         if (this.usingWebAudio()) {

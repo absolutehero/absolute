@@ -30,6 +30,7 @@ define(function (require) {
         TweenUtils: require('absolute/tweenutils'),
         Screen: require('absolute/screen'),
         SimpleMessageBox: require('absolute/simplemessagebox'),
-        SpriteMessageBox: require('absolute/spritemessagebox')
+        SpriteMessageBox: require('absolute/spritemessagebox'),
+        Loader: require('absolute/loader')
     };
 });
