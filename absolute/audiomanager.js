@@ -64,20 +64,19 @@ var AudioManager = {
         this.audioAssets = audioAssets;
 
         if (this.usingWebAudio()) {
-            this.loadClips(audioAssets.clips, onProgress, onComplete);
+            this.loadClips(audioAssets, onProgress, onComplete);
         }
         else {
             // utilize the audio sprites
             this.createSound({
                 id: 'as',
-                url: 'as',
+                url: 'as/as',
                 volume: 100,
                 onLoad: function () {
-                    for (var i = 0, l = this.audioAssets.clips.length; i < l; i += 1) {
-                        var sound = this.audioAssets.clips[i],
-                            soundInfo = this.getClipInfo(sound.id),
+                    for (var i = 0, l = this.audioAssets.length; i < l; i += 1) {
+                        var sound = this.audioAssets[i],
                             baseSound = this.sounds['as'];
-                        this.sounds[sound.id] = AbsoluteAudio.context.createAudioSprite(baseSound, soundInfo.start, soundInfo.end);
+                        this.sounds[sound.id] = AbsoluteAudio.context.createAudioSprite(baseSound, sound.start, sound.end);
                         onProgress(i / l);
                     }
                     onProgress(i / l);
@@ -88,35 +87,6 @@ var AudioManager = {
                 duration: 0
             });
         }
-    },
-
-    getClipInfo: function(clipId) {
-        // return an object describing the clip, including url, start, end and loop
-        var i, l, clip = null, spriteInfo;
-        for (i = 0, l = this.audioAssets.clips.length; i < l; i += 1) {
-
-            if (this.audioAssets.clips[i].id === clipId) {
-                clip = this.audioAssets.clips[i];
-                break;
-            }
-        }
-
-        if (clip) {
-            spriteInfo = this.audioAssets.sprites[clip.url];
-
-            if (spriteInfo) {
-                return {
-                    url: clip.url,
-                    start: spriteInfo.start,
-                    end: spriteInfo.end,
-                    volume: clip.volume,
-                    loop: clip.music
-                }
-            }
-        }
-
-        return {};
-
     },
 
     loadClips: function(sounds, onProgress, onComplete) {
@@ -136,17 +106,17 @@ var AudioManager = {
             }
         };
         for (var i = 0; i < sounds.length; i += 1) {
-            var sound = sounds[i],
-                soundInfo = this.getClipInfo(sound.id);
+            var sound = sounds[i];
+
 
                 this.createSound({
                     id: sound.id,
-                    url: soundInfo.url,
-                    volume: soundInfo.volume,
+                    url: sound.url,
+                    volume: sound.volume,
                     onLoad: onLoad,
                     buffer: false,
-                    loop: soundInfo.loop,
-                    duration: soundInfo.end - soundInfo.start
+                    loop: sound.loop,
+                    duration: sound.end - sound.start
                 });
         }
     },
