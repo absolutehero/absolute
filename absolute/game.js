@@ -22,6 +22,7 @@ function (
         GameConfig.load(defaultConfig);
 
         this.ui = null;
+        this.initVisibilityChangeHandlers();
     };
 
     Game.prototype.start = function() {
