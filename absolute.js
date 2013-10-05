@@ -31,6 +31,7 @@ define(function (require) {
         Screen: require('absolute/screen'),
         SimpleMessageBox: require('absolute/simplemessagebox'),
         SpriteMessageBox: require('absolute/spritemessagebox'),
-        Loader: require('absolute/loader')
+        Loader: require('absolute/loader'),
+        LayoutHelper: require('absolute/layouthelper')
     };
 });

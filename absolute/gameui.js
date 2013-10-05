@@ -70,11 +70,11 @@ function (
         }
         else {
              aspectRatio = 1 / aspectRatio;
-             if (aspectRatio > 0.9) {
-                 clientWidth = 0.9 * windowHeight;
+             if (aspectRatio > 0.83) {
+                 clientHeight = 0.83 * windowWidth;
              }
-             else if (aspectRatio < 0.7) {
-                 clientHeight = windowWidth / 0.7;
+             else if (aspectRatio < 0.65) {
+                 clientWidth = windowHeight / 0.65;
              }
         }
 

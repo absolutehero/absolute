@@ -37,7 +37,11 @@ function (
 
         var paths = [];
         for (var i = 0; i < total; ++i) {
-            paths.push(Platform.artPathPrefix + '/' + Platform.getResClass() + '/' + assets[i]);
+            var asset = assets[i];
+            if (asset.indexOf('.json') === -1) {
+                asset += ".json";
+            }
+            paths.push(Platform.artPathPrefix + '/' + Platform.getResClass() + '/' + asset);
         }
 
         this.assetLoader = new PIXI.AssetLoader(paths);
