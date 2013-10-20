@@ -32,6 +32,7 @@ define(function (require) {
         SimpleMessageBox: require('absolute/simplemessagebox'),
         SpriteMessageBox: require('absolute/spritemessagebox'),
         Loader: require('absolute/loader'),
-        LayoutHelper: require('absolute/layouthelper')
+        LayoutHelper: require('absolute/layouthelper'),
+        Draggable: require('absolute/draggable')
     };
 });

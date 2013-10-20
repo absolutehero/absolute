@@ -157,15 +157,17 @@ function (
     GameUI.prototype.showModal = function (screen, alpha) {
         this.modal = screen;
 
+        var osr = new PIXI.CanvasRenderer(this.width, this.height);
+
         var graphics = new PIXI.Graphics();
         graphics.beginFill(0x010101, 0.5); // PIXI has a bug - won't render pure black
         graphics.drawRect(0, 0, this.width, this.height);
         graphics.endFill();
         this.stage.addChild(graphics);
-        this.renderOffScreen();
+        osr.render(this.stage);
         this.stage.removeChild(graphics);
 
-        this.modalBG = new PIXI.Sprite(PIXI.Texture.fromCanvas(this.offScreenRenderer.view));
+        this.modalBG = new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
         //this.modalBG.alpha = alpha || 0.5;
 
         this.hideCurrent();
