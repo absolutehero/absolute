@@ -122,23 +122,20 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
             if (width === 640) {
                 resClass = "r640";
             }
-            if (width >= twidth) {
+            if (width >= (twidth * 0.75)) {
                 resClass = "r4_5";
             }
-            else if (width >= (twidth * 0.75)) {
+            else if (width >= (twidth * 0.5)) {
                 resClass = "r4";
             }
-            else if (width >= (twidth * 0.5)) {
+            else if (width >= (twidth * 0.4)) {
                 resClass = "r3";
             }
-            else if (width >= (twidth * 0.4)) {
+            else if (width >= (twidth * 0.3)) {
                 resClass = "r2_5";
             }
-            else if (width >= (twidth * 0.3)) {
-                resClass = "r2";
-            }
             else {
-                resClass = "r1";
+                resClass = "r2";
             }
 
             // force lower res class on Android 4.0.4 to get around canvas rendering
