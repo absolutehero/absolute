@@ -107,43 +107,51 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
 
         getResClass: function() {
             var width = this.getWidth() * this.devicePixelRatio;
-            var twidth = this.kDefaultWidth - 10;
 
             if (!this.isPortrait()) {
                 width = this.getHeight() * this.devicePixelRatio;
-                twidth = this.kDefaultHeight - 10;
             }
 
             var resClass = "";
 
-            if (width === 1080) {
-                resClass = "r1080";
+            if (width > 1280) {
+                resClass = "r1536";
             }
-            if (width === 640) {
+            else if (width > 768) {
+                resClass = "r1280";
+            }
+            else if (width > 640) {
+                resClass = "r768";
+            }
+            else if (width > 320) {
                 resClass = "r640";
             }
-            if (width >= (twidth * 0.75)) {
-                resClass = "r4_5";
-            }
-            else if (width >= (twidth * 0.5)) {
-                resClass = "r4";
-            }
-            else if (width >= (twidth * 0.4)) {
-                resClass = "r3";
-            }
-            else if (width >= (twidth * 0.3)) {
-                resClass = "r2_5";
-            }
             else {
-                resClass = "r2";
+                resClass = "r320";
+            }
+
+            // lower the res for Android cordova because performance sucks
+            if (typeof cordova !== "undefined") {
+                if (resClass === "r1536") {
+                    resClass = "r1280";
+                }
+                else if (resClass === "r1280") {
+                    resClass = "r768";
+                }
+                else if (resClass === "r768") {
+                    resClass = "r640";
+                }
+                else if (resClass === "r640") {
+                    resClass = "r320";
+                }
             }
 
             // force lower res class on Android 4.0.4 to get around canvas rendering
             // bug described here:
             // http://www.photonstorm.com/html5/solving-black-screens-and-corrupted-graphics-in-samsung-s3-html5-games
             if (navigator.userAgent.indexOf("Android 4.0.4") >= 0) {
-                if (resClass != "r1" && resClass != "r2") {
-                    resClass = "r2_5";
+                if (resClass != "r320") {
+                    resClass = "r640";
                 }
             }
 
@@ -152,14 +160,11 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
 
         getResScale: function() {
             switch (this.getResClass()) {
-                case 'r1': return 0.2;
-                case 'r2': return 0.3;
-                case 'r2_5': return 0.4;
-                case 'r3': return 0.5;
-                case 'r4': return 0.75;
-                case 'r4_5': return 1;
-                case 'r1080': return 0.703125;
-                case 'r640': return 0.416667;
+                case 'r320': return 0.21;
+                case 'r640': return 0.42;
+                case 'r768': return 0.5;
+                case 'r1280': return 0.83;
+                case 'r1536': return 1;
                 default: return 1;
             }
         },

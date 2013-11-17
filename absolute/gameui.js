@@ -7,11 +7,15 @@
 define(
 [
     'pixi',
-    'tween'
+    'tween',
+    'absolute/debug',
+    'fpsmeter'
 ],
 function (
     PIXI,
-    TWEEN
+    TWEEN,
+    Debug,
+    FPSMeter
     )
 {
 
@@ -29,6 +33,10 @@ function (
         this.portrait = width < height;
         this.container = document.getElementById(container);
         this.stage = new PIXI.Stage(0x0, true);
+
+        if (Debug.enabled) {
+            this.meter = new FPSMeter();
+        }
 
         // pixi no longer prevents default - need to handle ourselves
         this.stage.mousedown = this.stage.touchstart = function(data)
@@ -121,6 +129,9 @@ function (
 
         var self = this,
             _animate = function () {
+                if (Debug.enabled) {
+                    self.meter.tick();
+                }
                 self.beforeRender();
                 TWEEN.update();
                 self.renderer.render(self.stage);
