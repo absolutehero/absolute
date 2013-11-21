@@ -7,17 +7,19 @@
  */
 define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
 
-    var DigitLabel = function(maxDigits, large) {
-        this.initDigitLabel(maxDigits, large);
+    var DigitLabel = function(maxDigits, large, spriteBase) {
+        this.initDigitLabel(maxDigits, large, spriteBase);
     };
 
     DigitLabel.constructor = DigitLabel;
     DigitLabel.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
 
-    DigitLabel.prototype.initDigitLabel = function(maxDigits, scale) {
+    DigitLabel.prototype.initDigitLabel = function(maxDigits, scale, spriteBase) {
 
         PIXI.DisplayObjectContainer.call(this);
+
+        spriteBase = spriteBase || "number_large";
 
         scale = scale || 1.0;
 
@@ -30,7 +32,7 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         this.sprites = [];
 
         for (var i = 0; i < this.numSprites; ++i) {
-            var s =  new DigitSprite('number_large');
+            var s =  new DigitSprite(spriteBase);
             s.scale.x = s.scale.y = scale;
             this.sprites.push(s);
             this.addChild(s);
