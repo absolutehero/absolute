@@ -39,9 +39,9 @@ function (
         }
 
         // pixi no longer prevents default - need to handle ourselves
-        this.stage.mousedown = this.stage.touchstart = function(data)
+        this.container.onmousedown = this.container.ontouchstart = function(event)
         {
-            data.originalEvent.preventDefault();
+            event.preventDefault();
         };
 
         this.renderer = new PIXI.CanvasRenderer(width, height);
