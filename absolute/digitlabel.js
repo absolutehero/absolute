@@ -24,7 +24,7 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         scale = scale || 1.0;
 
         this.text = '';
-        this.renderSprite = null;
+        //this.renderSprite = null;
 
         this.numDigits = maxDigits || 8;
         this.numCommas = Math.ceil((this.numDigits / 3) - 1);
@@ -32,13 +32,13 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
 
         this.sprites = [];
 
-        this.spriteContainer = new PIXI.DisplayObjectContainer();
+        //this.spriteContainer = new PIXI.DisplayObjectContainer();
 
         for (var i = 0; i < this.numSprites; ++i) {
             var s =  new DigitSprite(spriteBase);
             s.scale.x = s.scale.y = scale;
             this.sprites.push(s);
-            this.spriteContainer.addChild(s);
+            this.addChild(s);
         }
 
         this.layout();
@@ -71,6 +71,7 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         this.width = xOffset;
         this.height = this.sprites[0].height;
 
+        /*
         if (this.renderSprite) {
             this.removeChild(this.renderSprite);
         }
@@ -82,6 +83,7 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         this.renderSprite = new PIXI.Sprite(renderTexture);
 
         this.addChild(this.renderSprite);
+        */
 
     };
 
