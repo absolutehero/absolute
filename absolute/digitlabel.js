@@ -24,6 +24,7 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         scale = scale || 1.0;
 
         this.text = '';
+        this.renderSprite = null;
 
         this.numDigits = maxDigits || 8;
         this.numCommas = Math.ceil((this.numDigits / 3) - 1);
@@ -31,11 +32,13 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
 
         this.sprites = [];
 
+        this.spriteContainer = new PIXI.DisplayObjectContainer();
+
         for (var i = 0; i < this.numSprites; ++i) {
             var s =  new DigitSprite(spriteBase);
             s.scale.x = s.scale.y = scale;
             this.sprites.push(s);
-            this.addChild(s);
+            this.spriteContainer.addChild(s);
         }
 
         this.layout();
@@ -58,8 +61,6 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         }
 
         if (this.text.length > 0) {
-
-
             for (var i = 0, l = this.text.length; i < l; ++i) {
                 this.sprites[i].visible = true;
                 this.sprites[i].setDigit(this.text[i]);
@@ -69,6 +70,19 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         }
         this.width = xOffset;
         this.height = this.sprites[0].height;
+
+        if (this.renderSprite) {
+            this.removeChild(this.renderSprite);
+        }
+        var renderTexture = new PIXI.RenderTexture(xOffset, this.sprites[0].height);
+        for (var s = 0; s < this.text.length; s += 1) {
+            renderTexture.render(this.spriteContainer);
+        }
+
+        this.renderSprite = new PIXI.Sprite(renderTexture);
+
+        this.addChild(this.renderSprite);
+
     };
 
     return DigitLabel;
