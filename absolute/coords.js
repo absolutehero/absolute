@@ -10,11 +10,11 @@ define (['absolute/platform'], function(Platform) {
     var Coords = {
 
         x: function (c) {
-            return c * Platform.getResScale();
+            return Math.round(c * Platform.getResScale());
         },
 
         y: function (c) {
-            return c * Platform.getResScale();
+            return Math.round(c * Platform.getResScale());
         },
 
         offsetX: function (x, p) {
