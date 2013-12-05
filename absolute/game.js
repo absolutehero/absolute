@@ -8,11 +8,13 @@ define(
 [
     'absolute/storagemanager',
     'absolute/gameconfig',
+    'absolute/analytics',
     'absolute/debug'
 ],
 function (
     StorageManager,
     GameConfig,
+    Analytics,
     Debug)
 {
     var Game = function(name, defaultConfig) {
@@ -22,7 +24,8 @@ function (
     Game.prototype._initGame =  function(name, defaultConfig) {
         StorageManager.prefix = name + "_";
         GameConfig.load(defaultConfig);
-
+        Analytics.init(defaultConfig.config.analytics);
+        Analytics.setGameVersion(defaultConfig.versionString);
         this.ui = null;
         this.initVisibilityChangeHandlers();
     };
