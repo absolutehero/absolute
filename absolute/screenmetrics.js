@@ -131,7 +131,7 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
             }
 
             // lower the res for Android cordova because performance sucks
-            if (typeof cordova !== "undefined") {
+           /* if (typeof cordova !== "undefined") {
                 if (resClass === "r1536") {
                     resClass = "r1280";
                 }
@@ -144,7 +144,7 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
                 else if (resClass === "r640") {
                     resClass = "r320";
                 }
-            }
+            }*/
 
             // force lower res class on Android 4.0.4 to get around canvas rendering
             // bug described here:
