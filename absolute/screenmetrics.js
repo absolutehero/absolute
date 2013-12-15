@@ -5,12 +5,13 @@
  * Time: 2:00 PM
  * To change this template use File | Settings | File Templates.
  */
-define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
+define(['absolute/debug'], function (Debug) {
 
     var ScreenMetrics = {
 
         kDefaultWidth: 1536,
         kDefaultHeight: 2008,
+        resClass: "",
 
         refresh: function() {
             this.devicePixelRatio = window.devicePixelRatio || 1;
@@ -106,6 +107,10 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
         },
 
         getResClass: function() {
+            if (this.resClass !== "") {
+                return this.resClass;
+            }
+
             var width = this.getWidth() * this.devicePixelRatio;
 
             if (!this.isPortrait()) {
@@ -131,15 +136,17 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
             }
 
             // lower the res for Android cordova because performance sucks
-           /* if (typeof cordova !== "undefined") {
+           /*if (this.isCrapGraphics()) {
+               alert('Crap Graphics!');
+
                 if (resClass === "r1536") {
-                    resClass = "r1280";
-                }
-                else if (resClass === "r1280") {
                     resClass = "r768";
                 }
-                else if (resClass === "r768") {
+                else if (resClass === "r1280") {
                     resClass = "r640";
+                }
+                else if (resClass === "r768") {
+                    resClass = "r320";
                 }
                 else if (resClass === "r640") {
                     resClass = "r320";
@@ -155,7 +162,9 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
                 }
             }
 
-            return resClass;
+            this.resClass = resClass;
+
+            return this.resClass;
         },
 
         getResScale: function() {
@@ -215,6 +224,14 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
 
         _isAndroid: function () {
             return navigator.userAgent.indexOf("Android") >= 0 || navigator.userAgent.indexOf("Silk") >= 0;
+        },
+
+        isCrapGraphics: function() {
+            if (navigator.userAgent.indexOf("Android") >= 0 || navigator.userAgent.indexOf("Silk") >= 0)
+            {
+                return true;
+            }
+            return false;
         }
     };
 

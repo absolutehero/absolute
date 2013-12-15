@@ -78,13 +78,6 @@ define (['absolute/screenmetrics'], function (ScreenMetrics) {
 
         },
 
-        isCrapGraphics: function() {
-            if( navigator.userAgent.indexOf("Android") >= 0 || navigator.userAgent.indexOf("Silk") >= 0)
-            {
-                return true;
-            }
-            return false;
-        },
 
         // only use these internally
         _isiPhone: navigator.userAgent.match(/iPhone/i),
