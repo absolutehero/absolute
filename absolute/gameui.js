@@ -32,7 +32,10 @@ function (
         this.height = height;
         this.portrait = width < height;
         this.container = document.getElementById(container);
-        this.stage = new PIXI.Stage(0x0, true);
+        this.stage = [];
+
+        this.stage.push(new PIXI.Stage(0x0, true));
+        this.stage.push(new PIXI.Stage(0x0, true));
 
         if (Debug.enabled) {
             this.meter = new FPSMeter();
@@ -44,15 +47,19 @@ function (
             event.preventDefault();
         };
 
-        this.renderer = new PIXI.CanvasRenderer(width, height);
+        this.renderer = [];
+        this.renderer.push(new PIXI.CanvasRenderer(width, height));
+        this.renderer.push(new PIXI.CanvasRenderer(width, height));
         //this.renderer = PIXI.autoDetectRenderer(width, height);
-        this.renderer.transparent = true;
+        this.renderer[0].transparent = true;
+        this.renderer[1].transparent = true;
 
         this.offScreenRenderer = new PIXI.CanvasRenderer(width, height);
 
         this.offScreenRenderer.transparent = true;
 
-        this.container.appendChild(this.renderer.view);
+        this.container.appendChild(this.renderer[1].view);
+        this.container.appendChild(this.renderer[0].view);
 
         window.addEventListener('resize', this.resize.bind(this));
         this.resize();
@@ -86,30 +93,31 @@ function (
              }
         }
 
-        this.renderer.view.style.width = clientWidth  + "px";
-        this.renderer.view.style.height = clientHeight + "px";
+        this.renderer[1].view.style.width = this.renderer[0].view.style.width = clientWidth  + "px";
+        this.renderer[1].view.style.height = this.renderer[0].view.style.height = clientHeight + "px";
+        this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
 
         if (clientWidth < windowWidth) {
-            this.renderer.view.style.marginLeft = ((windowWidth - clientWidth) / 2) + 'px';
+            this.renderer[1].view.style.left = this.renderer[0].view.style.left = ((windowWidth - clientWidth) / 2) + 'px';
         }
         else {
-            this.renderer.view.style.marginLeft = '0';
+            this.renderer[1].view.style.left = this.renderer[0].view.style.left = '0';
         }
 
         if (clientHeight < windowHeight) {
-            this.renderer.view.style.marginTop = ((windowHeight - clientHeight) / 2) + 'px';
+            this.renderer[1].view.style.top = this.renderer[0].view.style.top = ((windowHeight - clientHeight) / 2) + 'px';
         }
         else {
-            this.renderer.view.style.marginTop = '0';
+            this.renderer[1].view.style.top =this.renderer[0].view.style.top = '0';
         }
     };
 
     GameUI.prototype.render = function() {
-        this.renderer.render(this.stage);
+        this.renderer[0].render(this.stage[0]);
     };
 
     GameUI.prototype.renderOffScreen = function() {
-        this.offScreenRenderer.render(this.stage);
+        this.offScreenRenderer.render(this.stage[0]);
     };
 
     GameUI.prototype.animate = function() {
@@ -134,7 +142,7 @@ function (
                 }
                 self.beforeRender();
                 TWEEN.update();
-                self.renderer.render(self.stage);
+                self.renderer[0].render(self.stage[0]);
                 self.afterRender();
                 self.lastRender = new Date().getTime();
                 self.frameRequest = requestAnimFrame(_animate);
@@ -153,16 +161,21 @@ function (
     };
 
     GameUI.prototype.showScreen = function (screen) {
-        if (this.currentScreen) {
-            this.currentScreen.onHide();
-            this.hideCurrent();
-        }
+        var tmpCurrent = this.currentScreen;
+
         this.currentScreen = screen;
 
         if (this.currentScreen) {
             this.showCurrent();
             this.currentScreen.onShow();
         }
+
+        if (tmpCurrent) {
+            tmpCurrent.onHide();
+            this.stage[0].removeChild(tmpCurrent);
+            this.stage[1].removeChild(tmpCurrent.background);
+        }
+
     };
 
     GameUI.prototype.showModal = function (screen, alpha) {
@@ -174,24 +187,25 @@ function (
         graphics.beginFill(0x010101, 0.5); // PIXI has a bug - won't render pure black
         graphics.drawRect(0, 0, this.width, this.height);
         graphics.endFill();
-        this.stage.addChild(graphics);
-        osr.render(this.stage);
-        this.stage.removeChild(graphics);
+        this.stage[0].addChild(graphics);
+        osr.render(this.stage[0]);
+        this.stage[0].removeChild(graphics);
 
         this.modalBG = new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
         //this.modalBG.alpha = alpha || 0.5;
 
-        this.hideCurrent();
-        this.stage.addChild(this.modalBG);
-        this.stage.addChild(this.modal);
+
+        this.stage[0].addChild(this.modalBG);
+        this.stage[0].addChild(this.modal);
         this.modal.onShow();
+        this.hideCurrent();
     };
 
     GameUI.prototype.hideModal = function () {
         if (this.modal) {
             this.modal.onHide();
-            this.stage.removeChild(this.modal);
-            this.stage.removeChild(this.modalBG);
+            this.stage[0].removeChild(this.modal);
+            this.stage[0].removeChild(this.modalBG);
             this.showCurrent();
         }
 
@@ -202,7 +216,8 @@ function (
     GameUI.prototype.hideCurrent = function () {
         if (this.currentScreen) {
             try {
-                this.stage.removeChild(this.currentScreen);
+                this.stage[0].removeChild(this.currentScreen);
+                this.stage[1].removeChild(this.currentScreen.background);
             }
             catch (e) {
                 // may not have been added
@@ -213,7 +228,9 @@ function (
     GameUI.prototype.showCurrent = function () {
         if (this.currentScreen) {
             try {
-                this.stage.addChild(this.currentScreen);
+                this.stage[0].addChild(this.currentScreen);
+                this.stage[1].addChild(this.currentScreen.background);
+                this.renderer[1].render(this.stage[1]);
             }
             catch (e) {
 

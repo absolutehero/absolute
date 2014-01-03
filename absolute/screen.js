@@ -16,6 +16,8 @@ define(['pixi', 'absolute/button', 'absolute/togglebutton', 'absolute/debug'], f
     Screen.prototype._initScreen = function() {
         PIXI.DisplayObjectContainer.call(this);
 
+        this.background = new PIXI.DisplayObjectContainer();
+
         /*
          if (Absolute.Platform._isiPad || Absolute.Platform._isiPod || Absolute.Platform._isiPhone) {
          if (Absolute.ScreenMetrics.isPortrait()) {
