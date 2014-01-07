@@ -33,10 +33,8 @@ define(['pixi', 'absolute/coords'], function(PIXI, Coords) {
             this.end = this.fillSprite.texture.frame.width;
         }
 
-        var frame = this.fillSprite.texture.frame;
-        frame.width = 1;
-        this.fillSprite.texture.setFrame(frame);
         this.addChild(this.fillSprite);
+
     };
 
     ProgressBar.prototype.setProgress = function (percent) {
@@ -46,13 +44,19 @@ define(['pixi', 'absolute/coords'], function(PIXI, Coords) {
             percent = 1;
         }
 
-        var frame = this.fillSprite.texture.frame;
         var width = this.end - this.start;
-        frame.width = this.start + width * percent;
-        if (frame.width <= 1) {
-            frame.width = 1;
+
+        if (this.fillMask) {
+            this.removeChild(this.fillMask);
         }
-        this.fillSprite.texture.setFrame(frame);
+        this.fillMask = new PIXI.Graphics();
+        this.fillMask.beginFill();
+        this.fillMask.drawRect(this.start, 0, this.start + width * percent, this.height);
+        this.fillMask.endFill();
+        this.addChild(this.fillMask);
+        this.fillSprite.mask = null;
+        this.fillSprite.mask = this.fillMask;
+
         if (this.waitContainer) {
             this.waitContainer.mask = null;
             this.removeChild(this.waitContainer);
