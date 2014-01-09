@@ -50,7 +50,9 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
         }
 
         Dialog.prototype.close = function() {
-            while(this.children[0]) { this.removeChild(this.children[0]); }
+            while(this.children[0]) {
+                this.removeChild(this.children[0]);
+            }
             this.ui.hideModal(this);
         }
 
@@ -61,13 +63,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                 return canvasWidth * convertedPercentage;
             }
 
-            if(this.options.width.indexOf('%') > -1) {
+            if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
                 this.width = getPercentageSize(this.ui.width, this.options.width);
             } else {
                 this.width = Coords.x(this.options.width)
             }
 
-            if(this.options.height.indexOf('%') > -1) {
+            if(typeof this.options.width === 'string' && this.options.height.indexOf('%') > -1) {
                 this.height = getPercentageSize(this.ui.height, this.options.height);
             } else {
                 this.height = Coords.y(this.options.height);
@@ -151,11 +153,24 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
 
         }
 
-        Dialog.prototype._setContent = function() {
+        Dialog.prototype._setContent = function(content) {
 
-            if(!_.isEmpty(this.options.content)) {
-                this.addChild(this.options.content);
+            var content = content || this.options.content;
+
+            if(typeof content === 'undefined' || _.isEmpty(content)) {
+                return;
             }
+
+            this.contentIndex = this.children.length;
+            this.addChildAt(content, this.contentIndex);
+
+        }
+
+        Dialog.prototype.updateContent = function(content) {
+
+            this.removeChild(this.getChildAt(this.contentIndex));
+            this._setContent(content);
+
         }
 
         Dialog.prototype._drawRect = function (x, y, width, height, color, opacity) {
