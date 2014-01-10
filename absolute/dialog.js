@@ -1,14 +1,14 @@
-define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'],
+define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords', 'absolute/button'],
 
-    function(PIXI, Screen, Debug, _, Coords) {
+    function(PIXI, Screen, Debug, _, Coords, Button) {
 
         var Dialog = function(ui, options) {
 
             var defaultOptions = {
-                width: '80%',
-                height:'70%',
-                name: 'default',
-                images: {
+                'width': '80%',
+                'height':'70%',
+                'name': 'default',
+                'images': {
                     'topLeft':'MDS_9slice_modal_01.png',
                     'topCenter':'MDS_9slice_modal_02.png',
                     'topRight':'MDS_9slice_modal_03.png',
@@ -16,12 +16,17 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                     'middleRight':'MDS_9slice_modal_06.png',
                     'bottomLeft':'MDS_9slice_modal_07.png',
                     'bottomCenter':'MDS_9slice_modal_08.png',
-                    'bottomRight':'MDS_9slice_modal_09.png'
+                    'bottomRight':'MDS_9slice_modal_09.png',
+                    'close': 'btn_level_exit.png'
                 },
-                fillColor: 0x012040,
-                fillOpacity: 0.95,
-                content: '',
-                buttons: []
+                'fillColor': 0x012040,
+                'fillOpacity': 0.95,
+                'content': '',
+                'buttons': [],
+                'displayCloseButton': true,
+                'callbacks': {
+                    'onClose': null
+                }
             };
 
             this._initDialog(ui, _.extend(defaultOptions, options));
@@ -40,8 +45,9 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             this._setPosition();
             this._createBackground();
             this._setContent();
-
-            console.log('dialog options = ', this.options);
+            if (this.options.displayCloseButton) {
+                this._createCloseButton();
+            }
 
         };
 
@@ -83,6 +89,24 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                 'x': (this.ui.width - this.width ) / 2,
                 'y': (this.ui.height - this.height ) / 2
             }
+        }
+
+        Dialog.prototype._onClose = function() {
+            if(typeof this.options.callbacks.onClose === 'function') {
+                this.options.callbacks.onClose(this);
+            } else {
+                this.close();
+            }
+        }
+
+        Dialog.prototype._createCloseButton = function () {
+
+            var button = new Button(PIXI.Texture.fromFrame(this.options.images.close),
+                PIXI.Texture.fromFrame(this.options.images.close), _.bind(this._onClose,this));
+            button.position.x = this.width - ( button.width / 1.5 );
+            button.position.y = - ( button.height / 3 );
+            this.addChild(button);
+
         }
 
         Dialog.prototype._createBackground = function() {
@@ -133,7 +157,6 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                 this.height - bottomRight.texture.height - topRight.texture.height,
                 this.options.fillColor, this.options.fillOpacity);
 
-
             this.addChild(topLeft);
             this.addChild(topCenterTile);
             this.addChild(topRight);
@@ -166,13 +189,6 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
 
         }
 
-        Dialog.prototype.updateContent = function(content) {
-
-            this.removeChild(this.getChildAt(this.contentIndex));
-            this._setContent(content);
-
-        }
-
         Dialog.prototype._drawRect = function (x, y, width, height, color, opacity) {
 
             var graphics = new PIXI.Graphics();
@@ -182,13 +198,6 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             return graphics;
 
         }
-
-        Dialog.prototype._addButtons = function() {
-
-        }
-
-
-
 
         return Dialog;
     }
