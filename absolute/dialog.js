@@ -7,6 +7,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             var defaultOptions = {
                 'width': '80%',
                 'height':'70%',
+                'x': null,
+                'y': null,
                 'name': 'default',
                 'images': {
                     'topLeft':'MDS_9slice_modal_01.png',
@@ -85,10 +87,18 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
 
         Dialog.prototype._setPosition = function() {
 
-            this.position = {
-                'x': (this.ui.width - this.width ) / 2,
-                'y': (this.ui.height - this.height ) / 2
+            if(this.options.x === null) {
+                this.position.x = (this.ui.width - this.width ) / 2
+            } else {
+                this.position.x = Coords.x(this.options.x);
             }
+
+            if(this.options.y === null) {
+                this.position.y = (this.ui.height - this.height ) / 2
+            } else {
+                this.position.y = Coords.y(this.options.y);
+            }
+
         }
 
         Dialog.prototype._onClose = function() {
