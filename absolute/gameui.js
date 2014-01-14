@@ -140,6 +140,7 @@ function (
                 if (Debug.enabled) {
                     self.meter.tick();
                 }
+
                 self.beforeRender();
                 TWEEN.update();
                 self.renderer[0].render(self.stage[0]);

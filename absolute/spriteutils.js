@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-define(['absolute/snapshot'], function (Snapshot) {
+define(['absolute/snapshot','pixi'], function (Snapshot, PIXI) {
 
     var SpriteUtils = {
 
