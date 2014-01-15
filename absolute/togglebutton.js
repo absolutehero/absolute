@@ -7,28 +7,33 @@
  */
 define(['pixi', 'absolute/button'], function(PIXI, Button) {
 
-    var ToggleButton = function(baseName, action, enabled) {
-        this.initToggleButton(baseName, action, enabled);
+    var ToggleButton = function(baseName, action, enabled, useOverlay) {
+        this.initToggleButton(baseName, action, enabled, useOverlay);
     };
 
     ToggleButton.constructor = ToggleButton;
     ToggleButton.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-    ToggleButton.prototype.initToggleButton = function (baseName, action, enabled) {
+    ToggleButton.prototype.initToggleButton = function (baseName, action, enabled, useOverlay) {
+
         this.enabled = !!enabled;
         this.action = action;
+        useOverlay = typeof useOverlay !== 'undefined' ? useOverlay : true;
+
+        var enabledOverlayImage = useOverlay ? 'button_overlay.png' : baseName + '_1.png',
+            disabledOverlayImage = useOverlay ? 'button_overlay.png' : baseName + 'OFF_1.png';;
 
         PIXI.DisplayObjectContainer.call(this);
 
         this.enabledButton = new Button(
             PIXI.Texture.fromFrame(baseName + '_1.png'),
-            PIXI.Texture.fromFrame('button_overlay.png'),
+            PIXI.Texture.fromFrame(enabledOverlayImage),
             this.onAction.bind(this)
         );
 
         this.disabledButton = new Button(
             PIXI.Texture.fromFrame(baseName + 'OFF_1.png'),
-            PIXI.Texture.fromFrame('button_overlay.png'),
+            PIXI.Texture.fromFrame(disabledOverlayImage),
             this.onAction.bind(this)
         );
 
@@ -57,7 +62,7 @@ define(['pixi', 'absolute/button'], function(PIXI, Button) {
                 this.removeChild(this.disabledButton);
                 this.addChild(this.enabledButton);
             } else {
-                this.addChild(this.enabledButton);
+                this.removeChild(this.enabledButton);
                 this.addChild(this.disabledButton);
             }
         }

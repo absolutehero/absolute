@@ -24,7 +24,6 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                 'fillColor': 0x012040,
                 'fillOpacity': 0.95,
                 'content': '',
-                'buttons': [],
                 'displayCloseButton': true,
                 'callbacks': {
                     'onClose': null
@@ -53,16 +52,16 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
 
         };
 
-        Dialog.prototype.open = function() {
+        Dialog.prototype.open = function(closeCallback) {
+            if(typeof closeCallback === 'function') {
+                this.options.callbacks.onClose = closeCallback;
+            }
             this.ui.showModal(this);
-        }
+        };
 
         Dialog.prototype.close = function() {
-            while(this.children[0]) {
-                this.removeChild(this.children[0]);
-            }
             this.ui.hideModal(this);
-        }
+        };
 
         Dialog.prototype._setSize = function() {
 
@@ -77,13 +76,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                 this.width = Coords.x(this.options.width)
             }
 
-            if(typeof this.options.width === 'string' && this.options.height.indexOf('%') > -1) {
+            if(typeof this.options.height === 'string' && this.options.height.indexOf('%') > -1) {
                 this.height = getPercentageSize(this.ui.height, this.options.height);
             } else {
                 this.height = Coords.y(this.options.height);
             }
 
-        }
+        };
 
         Dialog.prototype._setPosition = function() {
 
@@ -99,15 +98,16 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                 this.position.y = Coords.y(this.options.y);
             }
 
-        }
+        };
 
         Dialog.prototype._onClose = function() {
             if(typeof this.options.callbacks.onClose === 'function') {
                 this.options.callbacks.onClose(this);
-            } else {
-                this.close();
             }
-        }
+
+            this.close();
+
+        };
 
         Dialog.prototype._createCloseButton = function () {
 
@@ -117,7 +117,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             button.position.y = - ( button.height / 3 );
             this.addChild(button);
 
-        }
+        };
 
         Dialog.prototype._createBackground = function() {
 
@@ -184,7 +184,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
 
             return new PIXI.Sprite(bgRenderer);
 
-        }
+        };
 
         Dialog.prototype._setContent = function(content) {
 
@@ -197,7 +197,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             this.contentIndex = this.children.length;
             this.addChildAt(content, this.contentIndex);
 
-        }
+        };
 
         Dialog.prototype._drawRect = function (x, y, width, height, color, opacity) {
 
@@ -207,7 +207,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             graphics.endFill();
             return graphics;
 
-        }
+        };
 
         return Dialog;
     }
