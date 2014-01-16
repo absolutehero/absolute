@@ -143,6 +143,7 @@ function (
 
                 self.beforeRender();
                 TWEEN.update();
+
                 self.renderer[0].render(self.stage[0]);
                 self.afterRender();
                 self.lastRender = new Date().getTime();
@@ -179,34 +180,45 @@ function (
 
     };
 
-    GameUI.prototype.showModal = function (screen, alpha) {
+    GameUI.prototype.showModal = function (screen, alpha, hideCurrentScreen) {
+
         this.modal = screen;
+        alpha = typeof alpha === 'number' ? alpha : 0.5;
+        hideCurrentScreen = typeof hideCurrentScreen === 'boolean' ? hideCurrentScreen : true;
 
-        var osr = new PIXI.CanvasRenderer(this.width, this.height);
+        if(hideCurrentScreen) {
+            var osr = new PIXI.CanvasRenderer(this.width, this.height);
 
-        var graphics = new PIXI.Graphics();
-        graphics.beginFill(0x010101, 0.5); // PIXI has a bug - won't render pure black
-        graphics.drawRect(0, 0, this.width, this.height);
-        graphics.endFill();
-        this.stage[0].addChild(graphics);
-        osr.render(this.stage[0]);
-        this.stage[0].removeChild(graphics);
+            var graphics = new PIXI.Graphics();
+            graphics.beginFill(0x010101, alpha); // PIXI has a bug - won't render pure black
+            graphics.drawRect(0, 0, this.width, this.height);
+            graphics.endFill();
+            this.stage[0].addChild(graphics);
+            osr.render(this.stage[0]);
+            this.stage[0].removeChild(graphics);
 
-        this.modalBG = new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
-        //this.modalBG.alpha = alpha || 0.5;
+            this.modalBG = new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
+            this.stage[0].addChild(this.modalBG);
+        } else {
+            this.modalBG = null;
+        }
 
-
-        this.stage[0].addChild(this.modalBG);
         this.stage[0].addChild(this.modal);
         this.modal.onShow();
-        this.hideCurrent();
+
+        if(hideCurrentScreen) {
+            this.hideCurrent();
+        }
+
     };
 
     GameUI.prototype.hideModal = function () {
         if (this.modal) {
             this.modal.onHide();
             this.stage[0].removeChild(this.modal);
-            this.stage[0].removeChild(this.modalBG);
+            if(typeof this.modalBG !== 'undefined' && this.modalBG !== null) {
+                this.stage[0].removeChild(this.modalBG);
+            }
             this.showCurrent();
         }
 
