@@ -163,6 +163,7 @@ function (
     };
 
     GameUI.prototype.showScreen = function (screen) {
+
         var tmpCurrent = this.currentScreen;
 
         this.currentScreen = screen;
@@ -172,7 +173,7 @@ function (
             this.currentScreen.onShow();
         }
 
-        if (tmpCurrent) {
+        if (tmpCurrent && tmpCurrent !== screen) {
             tmpCurrent.onHide();
             this.stage[0].removeChild(tmpCurrent);
             this.stage[1].removeChild(tmpCurrent.background);
