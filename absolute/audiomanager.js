@@ -136,6 +136,12 @@ var AudioManager = {
         }
     },
 
+    loopSound: function(soundId, onComplete, delay) {
+        if (this.sounds[soundId]) {
+            this.sounds[soundId].play(delay/1000, true, onComplete);
+        }
+    },
+
     stopSound: function (soundId) {
         if (this.sounds[soundId]) {
             this.sounds[soundId].stopping = true;

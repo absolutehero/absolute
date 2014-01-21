@@ -1,6 +1,6 @@
-define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords', 'absolute/button'],
+define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords', 'absolute/button', 'absolute/audiomanager'],
 
-    function(PIXI, Screen, Debug, _, Coords, Button) {
+    function(PIXI, Screen, Debug, _, Coords, Button, AudioManager) {
 
         var Dialog = function(ui, options) {
 
@@ -27,6 +27,10 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                 'displayCloseButton': true,
                 'callbacks': {
                     'onClose': null
+                },
+                'audio' : {
+                    'close': '',
+                    'open': 'show_details_window'
                 }
             };
 
@@ -56,10 +60,17 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             if(typeof closeCallback === 'function') {
                 this.options.callbacks.onClose = closeCallback;
             }
+            if(this.options.audio.open && this.options.audio.open !== '') {
+                AudioManager.playSound(this.options.audio.open);
+            }
+
             this.ui.showModal(this);
         };
 
         Dialog.prototype.close = function() {
+            if(this.options.audio.close && this.options.audio.close !== '') {
+                AudioManager.playSound(this.options.audio.close);
+            }
             this.ui.hideModal(this);
         };
 
