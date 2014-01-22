@@ -28,8 +28,8 @@ function (
         this.modal = null;
         this.lastRender = 0;
         this.frameRequest = 0;
-        this.width = width;
-        this.height = height;
+        this.width = Math.round(width);
+        this.height = Math.round(height);
         this.portrait = width < height;
         this.container = document.getElementById(container);
         this.stage = [];
