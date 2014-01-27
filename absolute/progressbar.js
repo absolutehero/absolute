@@ -5,10 +5,10 @@
  * Time: 6:26 PM
  * To change this template use File | Settings | File Templates.
  */
-define(['pixi', 'absolute/coords'], function(PIXI, Coords) {
+define(['pixi', 'absolute/coords', 'absolute/tweenutils'], function(PIXI, Coords, TweenUtils) {
 
-    var ProgressBar = function(frameImage, fillImage, start, end) {
-        this._initProgressBar(frameImage, fillImage, start, end);
+    var ProgressBar = function(frameImage, fillImage, start, end, doTween) {
+        this._initProgressBar(frameImage, fillImage, start, end, doTween);
     };
 
     ProgressBar.constructor = ProgressBar;
@@ -19,6 +19,7 @@ define(['pixi', 'absolute/coords'], function(PIXI, Coords) {
         PIXI.Sprite.call(this, frameImage);
 
         this.fillSprite = new PIXI.Sprite(fillImage);
+        this.previousWidth = 0;
 
         if (start) {
             this.start = start;
@@ -33,29 +34,53 @@ define(['pixi', 'absolute/coords'], function(PIXI, Coords) {
             this.end = this.fillSprite.texture.frame.width;
         }
 
+        this.fillMask = new PIXI.Graphics();
+        this.fillMask.beginFill();
+        this.fillMask.drawRect(this.start, 0, this.end - this.start, this.height);
+        this.fillMask.endFill();
+        this.addChild(this.fillMask);
+
+        this.fillSprite.mask = this.fillMask;
         this.addChild(this.fillSprite);
 
     };
 
-    ProgressBar.prototype.setProgress = function (percent) {
+    ProgressBar.prototype.setProgress = function (percent, tween, tweenCallback) {
+
         if (percent < 0) {
             percent = 0;
         } else if (percent > 1) {
             percent = 1;
         }
 
-        var width = this.end - this.start;
+        var targetWidth =(this.end - this.start) * percent;
 
-        if (this.fillMask) {
-            this.removeChild(this.fillMask);
+        if(tween) {
+
+            var self = this,
+                maskTween = new TWEEN.Tween({ width: this.previousWidth })
+                .to({ width: targetWidth }, 500)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .onUpdate(function () {
+
+                    self.fillMask.clear();
+                    self.fillMask.drawRect(self.start, 0, this.width, self.height);
+                    self.previousWidth = this.width;
+
+                    })
+                .onComplete(function () {
+                    if(typeof tweenCallback === 'function') {
+                        tweenCallback();
+                    }
+                })
+                .start();
+
+        } else  {
+
+            this.fillMask.clear();
+            this.fillMask.drawRect(this.start, 0, targetWidth, this.height);
+
         }
-        this.fillMask = new PIXI.Graphics();
-        this.fillMask.beginFill();
-        this.fillMask.drawRect(this.start, 0, this.start + width * percent, this.height);
-        this.fillMask.endFill();
-        this.addChild(this.fillMask);
-        this.fillSprite.mask = null;
-        this.fillSprite.mask = this.fillMask;
 
         if (this.waitContainer) {
             this.waitContainer.mask = null;
