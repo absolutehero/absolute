@@ -35,6 +35,7 @@ define(function (require) {
         LayoutHelper: require('absolute/layouthelper'),
         Draggable: require('absolute/draggable'),
         Analytics: require('absolute/analytics'),
-        Dialog: require('absolute/dialog')
+        Dialog: require('absolute/dialog'),
+        Shims: require('absolute/shims')
     };
 });
