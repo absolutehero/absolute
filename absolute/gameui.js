@@ -265,7 +265,7 @@ function (
         this.hideCurrent();
 
         var cover = new PIXI.Graphics();
-        cover.beginFill(0x010101, 1.0);
+        cover.beginFill(0xFFFFFF, 1.0);
         cover.drawRect(0, 0, this.width, this.height);
         cover.endFill();
 
