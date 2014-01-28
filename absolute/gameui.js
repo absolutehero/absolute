@@ -24,6 +24,7 @@ function (
     };
 
     GameUI.prototype._initGameUI = function(container, width, height) {
+
         this.currentScreen = null;
         this.modal = null;
         this.lastRender = 0;
@@ -63,6 +64,7 @@ function (
 
         window.addEventListener('resize', this.resize.bind(this));
         this.resize();
+
     };
 
     GameUI.prototype.resize = function() {
@@ -110,6 +112,9 @@ function (
         else {
             this.renderer[1].view.style.top =this.renderer[0].view.style.top = '0';
         }
+
+        this.resetStage();
+
     };
 
     GameUI.prototype.render = function() {
@@ -178,6 +183,7 @@ function (
         hideCurrentScreen = typeof hideCurrentScreen === 'boolean' ? hideCurrentScreen : true;
 
         if(hideCurrentScreen) {
+
             var osr = new PIXI.CanvasRenderer(this.width, this.height);
 
             var graphics = new PIXI.Graphics();
@@ -188,18 +194,19 @@ function (
             osr.render(this.stage[0]);
             this.stage[0].removeChild(graphics);
 
+            this.hideCurrent();
+
             this.modalBG = new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
             this.stage[0].addChild(this.modalBG);
+
         } else {
+
             this.modalBG = null;
+
         }
 
         this.stage[0].addChild(this.modal);
         this.modal.onShow();
-
-        if(hideCurrentScreen) {
-            this.hideCurrent();
-        }
 
     };
 
@@ -209,6 +216,9 @@ function (
             this.stage[0].removeChild(this.modal);
             if(typeof this.modalBG !== 'undefined' && this.modalBG !== null) {
                 this.stage[0].removeChild(this.modalBG);
+            } else if (this.stage[1].children.length > 0) {
+                var oldBackground = this.stage[1].getChildAt(0);
+                this.stage[1].removeChild(oldBackground);
             }
             this.showCurrent();
         }
@@ -221,7 +231,9 @@ function (
 
         if(this.stage[0].children.length > 0) {
             var oldScreen = this.stage[0].getChildAt(0);
-            oldScreen.onHide();
+            if(typeof oldScreen.onHide === 'function') {
+                oldScreen.onHide();
+            }
             this.stage[0].removeChild(oldScreen);
         }
 
@@ -243,6 +255,30 @@ function (
 
             }
         }
+    };
+
+    /**
+     * This method resolves canvas artifacts on orientation change on some android devices.
+     */
+    GameUI.prototype.resetStage = function() {
+
+        this.hideCurrent();
+
+        var cover = new PIXI.Graphics();
+        cover.beginFill(0x010101, 1.0);
+        cover.drawRect(0, 0, this.width, this.height);
+        cover.endFill();
+
+        this.stage[1].addChildAt(cover, 0);
+        this.renderer[1].render(this.stage[1]);
+
+        window.setTimeout(function() {
+            var tempBackground = this.stage[1].getChildAt(0);
+            this.stage[1].removeChild(tempBackground);
+            this.showCurrent();
+
+        }.bind(this), 500);
+
     };
 
     return GameUI;
