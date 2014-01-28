@@ -164,20 +164,10 @@ function (
 
     GameUI.prototype.showScreen = function (screen) {
 
-        var tmpCurrent = this.currentScreen;
-
         this.currentScreen = screen;
-
-        if (this.currentScreen) {
-            this.showCurrent();
-            this.currentScreen.onShow();
-        }
-
-        if (tmpCurrent && tmpCurrent !== screen) {
-            tmpCurrent.onHide();
-            this.stage[0].removeChild(tmpCurrent);
-            this.stage[1].removeChild(tmpCurrent.background);
-        }
+        this.hideCurrent();
+        this.showCurrent();
+        this.currentScreen.onShow();
 
     };
 
@@ -228,22 +218,25 @@ function (
 
 
     GameUI.prototype.hideCurrent = function () {
-        if (this.currentScreen) {
-            try {
-                this.stage[0].removeChild(this.currentScreen);
-                this.stage[1].removeChild(this.currentScreen.background);
-            }
-            catch (e) {
-                // may not have been added
-            }
+
+        if(this.stage[0].children.length > 0) {
+            var oldScreen = this.stage[0].getChildAt(0);
+            oldScreen.onHide();
+            this.stage[0].removeChild(oldScreen);
         }
+
+        if(this.stage[1].children.length > 0) {
+            var oldBackground = this.stage[1].getChildAt(0);
+            this.stage[1].removeChild(oldBackground);
+        }
+
     };
 
     GameUI.prototype.showCurrent = function () {
         if (this.currentScreen) {
             try {
-                this.stage[0].addChild(this.currentScreen);
-                this.stage[1].addChild(this.currentScreen.background);
+                this.stage[0].addChildAt(this.currentScreen, 0);
+                this.stage[1].addChildAt(this.currentScreen.background, 0);
                 this.renderer[1].render(this.stage[1]);
             }
             catch (e) {
