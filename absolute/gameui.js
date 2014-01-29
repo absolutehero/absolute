@@ -262,7 +262,18 @@ function (
      */
     GameUI.prototype.resetStage = function() {
 
-        this.hideCurrent();
+        if(this.stage[1].children.length > 0) {
+            var oldScreen = this.stage[1].getChildAt(0);
+            this.stage[1].removeChild(oldScreen);
+        }
+
+        if(this.stage[0].children.length > 0) {
+            var oldScreen = this.stage[0].getChildAt(0);
+            oldScreen.visible = false;
+        }
+        if(this.modal) {
+            this.modal.visible = false;
+        }
 
         var cover = new PIXI.Graphics();
         cover.beginFill(0xFFFFFF, 1.0);
@@ -273,9 +284,23 @@ function (
         this.renderer[1].render(this.stage[1]);
 
         window.setTimeout(function() {
-            var tempBackground = this.stage[1].getChildAt(0);
-            this.stage[1].removeChild(tempBackground);
-            this.showCurrent();
+
+            if(this.stage[1].children.length > 0) {
+                var tempBackground = this.stage[1].getChildAt(0);
+                this.stage[1].removeChild(tempBackground);
+            }
+
+            if(this.stage[0].children.length > 0) {
+                var oldScreen = this.stage[0].getChildAt(0);
+                oldScreen.visible = true;
+            }
+
+            if(this.modal) {
+                this.modal.visible = true;
+            }
+
+            this.stage[1].addChildAt(this.currentScreen.background, 0);
+            this.renderer[1].render(this.stage[1]);
 
         }.bind(this), 500);
 
