@@ -95,19 +95,22 @@ function (
              }
         }
 
+        clientWidth = clientWidth.toFixed(0);
+        clientHeight = clientHeight.toFixed(0);
+
         this.renderer[1].view.style.width = this.renderer[0].view.style.width = clientWidth  + "px";
         this.renderer[1].view.style.height = this.renderer[0].view.style.height = clientHeight + "px";
         this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
 
         if (clientWidth < windowWidth) {
-            this.renderer[1].view.style.left = this.renderer[0].view.style.left = ((windowWidth - clientWidth) / 2) + 'px';
+            this.renderer[1].view.style.left = this.renderer[0].view.style.left = ((windowWidth - clientWidth) / 2).toFixed(0) + 'px';
         }
         else {
             this.renderer[1].view.style.left = this.renderer[0].view.style.left = '0';
         }
 
         if (clientHeight < windowHeight) {
-            this.renderer[1].view.style.top = this.renderer[0].view.style.top = ((windowHeight - clientHeight) / 2) + 'px';
+            this.renderer[1].view.style.top = this.renderer[0].view.style.top = ((windowHeight - clientHeight) / 2).toFixed(0) + 'px';
         }
         else {
             this.renderer[1].view.style.top =this.renderer[0].view.style.top = '0';
@@ -169,6 +172,9 @@ function (
 
     GameUI.prototype.showScreen = function (screen) {
 
+        if (this.currentScreen) {
+            this.currentScreen.onHide();
+        }
         this.currentScreen = screen;
         this.hideCurrent();
         this.showCurrent();
@@ -231,9 +237,6 @@ function (
 
         if(this.stage[0].children.length > 0) {
             var oldScreen = this.stage[0].getChildAt(0);
-            if(typeof oldScreen.onHide === 'function') {
-                oldScreen.onHide();
-            }
             this.stage[0].removeChild(oldScreen);
         }
 
