@@ -132,7 +132,7 @@ function (
 
         var watchdog = function() {
             // watchdog
-            if (new Date().getTime() - this.lastRender > 200) {
+            if (Date.now() - this.lastRender > 200) {
                 cancelAnimationFrame(this.frameRequest);
                 this.frameRequest = requestAnimFrame(_animate); // restart
             }
@@ -154,7 +154,7 @@ function (
 
                 self.renderer[0].render(self.stage[0]);
                 self.afterRender();
-                self.lastRender = new Date().getTime();
+                self.lastRender = Date.now();
                 self.frameRequest = requestAnimFrame(_animate);
             };
         this.frameRequest = requestAnimFrame(_animate);

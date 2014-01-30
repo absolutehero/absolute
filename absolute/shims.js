@@ -20,5 +20,12 @@ define(function() {
         }
     }
 
+    // patch for Date.now() on older browsers
+    if (!Date.now) {
+        Date.now = function now() {
+            return +(new Date);
+        };
+    }
+
 
 });
