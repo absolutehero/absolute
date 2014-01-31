@@ -14,7 +14,13 @@ define(['tween'], function(TWEEN) {
         },
 
         _fadeIn: function (sprite, params, onComplete) {
+
+            if(typeof params.delay === 'undefined') {
+                params.delay  = 0;
+            }
+
             new TWEEN.Tween({ alpha: sprite.alpha })
+                .delay(params.delay)
                 .to({ alpha: 1 }, params.duration)
                 .easing(TWEEN.Easing.Cubic.In)
                 .onUpdate(function () {
@@ -31,7 +37,13 @@ define(['tween'], function(TWEEN) {
         },
 
         _fadeOut: function (sprite, params, onComplete) {
+
+            if(typeof params.delay === 'undefined') {
+                params.delay  = 0;
+            }
+
             new TWEEN.Tween({ alpha: sprite.alpha })
+                .delay(params.delay)
                 .to({ alpha: 0 }, params.duration)
                 .easing(TWEEN.Easing.Cubic.In)
                 .onUpdate(function () {
