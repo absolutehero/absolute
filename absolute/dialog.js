@@ -15,13 +15,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
                     'topCenter':'MDS_9slice_modal_02.png',
                     'topRight':'MDS_9slice_modal_03.png',
                     'middleLeft':'MDS_9slice_modal_04.png',
+                    'middleCenter':'MDS_9slice_modal_05.png',
                     'middleRight':'MDS_9slice_modal_06.png',
                     'bottomLeft':'MDS_9slice_modal_07.png',
                     'bottomCenter':'MDS_9slice_modal_08.png',
                     'bottomRight':'MDS_9slice_modal_09.png',
                     'close': 'btn_level_exit.png'
                 },
-                'fillColor': 0x012040,
                 'fillOpacity': 0.95,
                 'content': '',
                 'displayCloseButton': true,
@@ -78,7 +78,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
 
             function getPercentageSize(canvasWidth, percentage) {
                 var convertedPercentage = parseInt(percentage.slice( 0, percentage.length - 1)) / 100;
-                return canvasWidth * convertedPercentage;
+                return Math.round(canvasWidth * convertedPercentage);
             }
 
             if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
@@ -98,13 +98,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
         Dialog.prototype._setPosition = function() {
 
             if(this.options.x === null) {
-                this.position.x = (this.ui.width - this.width ) / 2
+                this.position.x = Math.round((this.ui.width - this.width ) / 2);
             } else {
                 this.position.x = Coords.x(this.options.x);
             }
 
             if(this.options.y === null) {
-                this.position.y = (this.ui.height - this.height ) / 2
+                this.position.y = Math.round((this.ui.height - this.height ) / 2);
             } else {
                 this.position.y = Coords.y(this.options.y);
             }
@@ -137,63 +137,86 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             topLeft.position.y = 0;
 
             var topRight = PIXI.Sprite.fromFrame(this.options.images.topRight);
-            topRight.position.x = this.width - topRight.texture.width;
+            topRight.position.x = this.width - topRight.width;
             topRight.position.y = 0;
 
             var bottomLeft = PIXI.Sprite.fromFrame(this.options.images.bottomLeft);
             bottomLeft.position.x = 0;
-            bottomLeft.position.y = this.height - bottomLeft.texture.height;
+            bottomLeft.position.y = this.height - bottomLeft.height;
 
             var bottomRight = PIXI.Sprite.fromFrame(this.options.images.bottomRight);
-            bottomRight.position.x = this.width - bottomRight.texture.width;
-            bottomRight.position.y = this.height - bottomLeft.texture.height;
+            bottomRight.position.x = this.width - bottomRight.width;
+            bottomRight.position.y = this.height - bottomLeft.height;
 
-            // fill in the middle left and right side
-            var middleLeftTile = PIXI.Sprite.fromFrame(this.options.images.middleLeft),
-                middleRightTile = PIXI.Sprite.fromFrame(this.options.images.middleRight),
-                middleLeftRightMask = this._drawRect(0, topLeft.texture.height,
-                    this.width,
-                    this.height - topLeft.texture.height - bottomLeft.texture.height,
-                    0xFFFFFF, 1.0);
-            middleLeftTile.scale.y = middleRightTile.scale.y = this.height / middleLeftTile.height;
-            middleRightTile.position.x = this.width - middleRightTile.texture.width;
-            this.addChild(middleLeftRightMask);
-            middleLeftTile.mask = middleRightTile.mask = middleLeftRightMask;
+            // Tile middle left
+            var middleLeftSprite = PIXI.Sprite.fromFrame(this.options.images.middleLeft),
+                middleLeftTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleLeftSprite),
+                    middleLeftSprite.width,
+                    this.height - topLeft.height - bottomLeft.height
+                );
+            middleLeftTile.position.x = 0;
+            middleLeftTile.position.y = topLeft.height;
 
-            // fill in the top center and bottom center
-            var topCenterTile = PIXI.Sprite.fromFrame(this.options.images.topCenter),
-                bottomCenterTile = PIXI.Sprite.fromFrame(this.options.images.bottomCenter),
-                topBottomMask = this._drawRect(topLeft.texture.width, 0,
-                    this.width - topLeft.texture.width - topRight.texture.width,
-                    this.height,
-                    0xFFFFFF, 1.0);
-            topCenterTile.scale.x = bottomCenterTile.scale.x = this.width / topCenterTile.texture.width;
-            bottomCenterTile.position.y = this.height - bottomCenterTile.texture.height;
-            this.addChild(topBottomMask);
-            topCenterTile.mask = bottomCenterTile.mask = topBottomMask;
+            // Tile middle right
+            var middleRightSprite = PIXI.Sprite.fromFrame(this.options.images.middleRight),
+                middleRightTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleRightSprite),
+                    middleRightSprite.width,
+                    this.height - topLeft.height - bottomLeft.height
+                );
+            middleRightTile.position.x = this.width - middleRightSprite.width;
+            middleRightTile.position.y = topRight.height;
 
-            // fill in the middle center background area
-            var middleCenterRect = this._drawRect(topLeft.texture.width, topLeft.texture.height,
-                this.width - topLeft.texture.width - topRight.texture.width,
-                this.height - bottomRight.texture.height - topRight.texture.height,
-                this.options.fillColor, this.options.fillOpacity);
+            // Tile top center
+            var topCenterSprite = PIXI.Sprite.fromFrame(this.options.images.topCenter),
+                topCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(topCenterSprite),
+                    this.width - topLeft.width - topRight.width,
+                    topCenterSprite.height
+                );
+            topCenterTile.position.x = topLeft.width;
+            topCenterTile.position.y = 0;
+
+            // Tile bottom center
+            var bottomCenterSprite = PIXI.Sprite.fromFrame(this.options.images.bottomCenter),
+                bottomCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(bottomCenterSprite),
+                    this.width - bottomLeft.width - bottomRight.width,
+                    bottomCenterSprite.height
+                );
+            bottomCenterTile.position.x = bottomLeft.width;
+            bottomCenterTile.position.y = this.height - bottomCenterSprite.height;
+
+
+            // Tile middle center
+            var middleCenterSprite = PIXI.Sprite.fromFrame(this.options.images.middleCenter),
+                middleCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleCenterSprite),
+                this.width - topLeft.width - topRight.width,
+                this.height - bottomRight.height - topRight.height
+            );
+            middleCenterTile.position.x = topLeft.width;
+            middleCenterTile.position.y = topLeft.height;
 
             this.addChild(topLeft);
             this.addChild(topCenterTile);
             this.addChild(topRight);
 
             this.addChild(middleLeftTile);
-            this.addChild(middleCenterRect);
+            this.addChild(middleCenterTile);
             this.addChild(middleRightTile);
 
             this.addChild(bottomLeft);
             this.addChild(bottomCenterTile);
             this.addChild(bottomRight);
 
-            var bgRenderer = new PIXI.RenderTexture(this.ui.width, this.ui.height);
-            bgRenderer.render(this);
+        };
 
-            return new PIXI.Sprite(bgRenderer);
+        Dialog.prototype.getTextureFromSpriteSheet = function(tempSprite) {
+
+            var canvasRenderer = new PIXI.CanvasRenderer(tempSprite.width, tempSprite.height);
+
+            this.addChild(tempSprite);
+            canvasRenderer.render(tempSprite);
+            this.removeChild(tempSprite);
+
+            return PIXI.Texture.fromCanvas(canvasRenderer.view);
 
         };
 
@@ -207,16 +230,6 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
 
             this.contentIndex = this.children.length;
             this.addChildAt(content, this.contentIndex);
-
-        };
-
-        Dialog.prototype._drawRect = function (x, y, width, height, color, opacity) {
-
-            var graphics = new PIXI.Graphics();
-            graphics.beginFill(color, opacity);
-            graphics.drawRect(x, y, width, height);
-            graphics.endFill();
-            return graphics;
 
         };
 
