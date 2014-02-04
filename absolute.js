@@ -36,6 +36,8 @@ define(function (require) {
         Draggable: require('absolute/draggable'),
         Analytics: require('absolute/analytics'),
         Dialog: require('absolute/dialog'),
-        Shims: require('absolute/shims')
+        Shims: require('absolute/shims'),
+        Sprite: require('absolute/sprite'),
+        Texture: require('absolute/texture')
     };
 });
