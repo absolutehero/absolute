@@ -34,6 +34,7 @@ function (
         this.portrait = width < height;
         this.container = document.getElementById(container);
         this.stage = [];
+        this.refreshBackground = false;
 
         this.stage.push(new PIXI.Stage(0x0, true));
         this.stage.push(new PIXI.Stage(0x0, true));
@@ -153,6 +154,10 @@ function (
                 TWEEN.update();
 
                 self.renderer[0].render(self.stage[0]);
+                if (self.refreshBackground) {
+                    self.refreshBackground = false;
+                    self.renderer[1].render(self.stage[1]);
+                }
                 self.afterRender();
                 self.lastRender = Date.now();
                 self.frameRequest = requestAnimFrame(_animate);
@@ -176,6 +181,7 @@ function (
             this.currentScreen.onHide();
         }
         this.currentScreen = screen;
+        this.refreshBackground = true;
         this.hideCurrent();
         this.showCurrent();
         this.currentScreen.onShow();
@@ -252,7 +258,6 @@ function (
             try {
                 this.stage[0].addChildAt(this.currentScreen, 0);
                 this.stage[1].addChildAt(this.currentScreen.background, 0);
-                this.renderer[1].render(this.stage[1]);
             }
             catch (e) {
 
