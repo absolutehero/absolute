@@ -80,6 +80,7 @@ var AudioManager = {
                         onProgress(i / l);
                     }
                     onProgress(i / l);
+                    this.setSfxEnabled(GameConfig.getVal("sfxEnabled"));
                     setTimeout(function () { onComplete() }, 500);
                 }.bind(this),
                 buffer: false,
@@ -97,7 +98,6 @@ var AudioManager = {
         var onLoad = function() {
             if (++count === total) {
                 self.setSfxEnabled(GameConfig.getVal("sfxEnabled"));
-
                 onProgress(count / total);
                 onComplete();
             }

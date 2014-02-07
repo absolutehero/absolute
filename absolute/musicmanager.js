@@ -27,7 +27,10 @@ define(['absolute/gameconfig', 'absolute/audiomanager'], function(GameConfig, Au
                 else {
                     AudioManager.unmuteSound(this.currentTrack);
                 }
-                AudioManager.playSound(this.currentTrack);
+
+                if (AudioManager.simulSoundSupport() || !AudioManager.isSfxEnabled()) {
+                    AudioManager.playSound(this.currentTrack);
+                }
             }
         },
 
