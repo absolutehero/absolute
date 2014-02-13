@@ -1,6 +1,6 @@
-define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords', 'absolute/button', 'absolute/audiomanager'],
+define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button', 'absolute/audiomanager'],
 
-    function(PIXI, Screen, Debug, _, Coords, Button, AudioManager) {
+    function(PIXI, Screen, Debug, _, Button, AudioManager) {
 
         var Dialog = function(ui, options) {
 
@@ -84,13 +84,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
                 this.width = getPercentageSize(this.ui.width, this.options.width);
             } else {
-                this.width = Coords.x(this.options.width)
+                this.width = this.options.width;
             }
 
             if(typeof this.options.height === 'string' && this.options.height.indexOf('%') > -1) {
                 this.height = getPercentageSize(this.ui.height, this.options.height);
             } else {
-                this.height = Coords.y(this.options.height);
+                this.height = this.options.height;
             }
 
         };
@@ -100,13 +100,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/coords'
             if(this.options.x === null) {
                 this.position.x = Math.round((this.ui.width - this.width ) / 2);
             } else {
-                this.position.x = Coords.x(this.options.x);
+                this.position.x = this.options.x;
             }
 
             if(this.options.y === null) {
                 this.position.y = Math.round((this.ui.height - this.height ) / 2);
             } else {
-                this.position.y = Coords.y(this.options.y);
+                this.position.y = this.options.y;
             }
 
         };
