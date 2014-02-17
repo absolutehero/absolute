@@ -57,6 +57,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
         };
 
         Dialog.prototype.open = function(closeCallback) {
+            this.visible = true;
             if(typeof closeCallback === 'function') {
                 this.options.callbacks.onClose = closeCallback;
             }
@@ -68,6 +69,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
         };
 
         Dialog.prototype.close = function() {
+            this.visible = false;
             if(this.options.audio.close && this.options.audio.close !== '') {
                 AudioManager.playSound(this.options.audio.close);
             }

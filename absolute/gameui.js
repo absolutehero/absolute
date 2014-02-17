@@ -307,8 +307,10 @@ function (
                 this.modal.visible = true;
             }
 
-            this.stage[1].addChildAt(this.currentScreen.background, 0);
-            this.renderer[1].render(this.stage[1]);
+            if(this.currentScreen.background) {
+                this.stage[1].addChildAt(this.currentScreen.background, 0);
+                this.renderer[1].render(this.stage[1]);
+            }
 
         }.bind(this), 500);
 
