@@ -38,6 +38,9 @@ function (
         var paths = [];
         for (var i = 0; i < total; ++i) {
             var asset = assets[i];
+            if (typeof asset !== "string") {
+                asset = asset.name;
+            }
             if (asset.indexOf('.json') === -1) {
                 asset += ".json";
             }
