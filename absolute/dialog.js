@@ -57,7 +57,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
         };
 
         Dialog.prototype.open = function(closeCallback) {
-            this.visible = true;
+            //this.visible = true;
             if(typeof closeCallback === 'function') {
                 this.options.callbacks.onClose = closeCallback;
             }
@@ -69,7 +69,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
         };
 
         Dialog.prototype.close = function() {
-            this.visible = false;
+            //this.visible = false;
             if(this.options.audio.close && this.options.audio.close !== '') {
                 AudioManager.playSound(this.options.audio.close);
             }
@@ -102,13 +102,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             if(this.options.x === null) {
                 this.position.x = Math.round((this.ui.width - this.width ) / 2);
             } else {
-                this.position.x = this.options.x;
+                this.position.x = Math.round(this.options.x);
             }
 
             if(this.options.y === null) {
                 this.position.y = Math.round((this.ui.height - this.height ) / 2);
             } else {
-                this.position.y = this.options.y;
+                this.position.y = Math.round(this.options.y);
             }
 
         };
@@ -191,7 +191,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             var middleCenterSprite = PIXI.Sprite.fromFrame(this.options.images.middleCenter),
                 middleCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleCenterSprite),
                 this.width - topLeft.width - topRight.width,
-                this.height - bottomRight.height - topRight.height
+                Math.ceil(this.height - bottomRight.height - topRight.height)
             );
             middleCenterTile.position.x = topLeft.width;
             middleCenterTile.position.y = topLeft.height;

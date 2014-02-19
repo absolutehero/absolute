@@ -5,7 +5,7 @@
  * Time: 2:00 PM
  * To change this template use File | Settings | File Templates.
  */
-define(['absolute/debug'], function (Debug) {
+define(['absolute/debug','pixi'], function (Debug,PIXI) {
 
     var ScreenMetrics = {
 
@@ -106,19 +106,37 @@ define(['absolute/debug'], function (Debug) {
             return Math.min(sx, sy);
         },
 
+        // presorted resolution classes
+        resClasses: [
+            { id:'r320', resfloor: 0 },
+            { id:'r640', resfloor: 320 },
+            { id:'r768', resfloor: 640 },
+            { id:'r1280', resfloor: 768 },
+            { id:'r1536', resfloor: 1280 }
+        ],
+
         getResClass: function() {
+
             if (this.resClass !== "") {
                 return this.resClass;
             }
 
-            var width = this.getWidth() * this.devicePixelRatio;
+            var width = this.getWidth() * this.devicePixelRatio,
+                resClassIndex = "";
 
             if (!this.isPortrait()) {
                 width = this.getHeight() * this.devicePixelRatio;
             }
 
-            var resClass = "";
+            for( var i = this.resClasses.length - 1 ; i > 0 ; i-- ) {
+                if(width > this.resClasses[i].resfloor) {
+                    resClassIndex = i;
+                    break;
+                }
+            }
+//            alert('original index ' + resClassIndex);
 
+/*
             if (width > 1280) {
                 resClass = "r1536";
             }
@@ -133,11 +151,21 @@ define(['absolute/debug'], function (Debug) {
             }
             else {
                 resClass = "r320";
-            }
+            }*/
 
-            // lower the res for Android cordova because performance sucks
-           /*if (this.isCrapGraphics()) {
-               alert('Crap Graphics!');
+            // lower the res for older/low performing devices
+            if (this.isCrapGraphics()) {
+
+                Debug.log('Lowering resClass for performance reasons.');
+
+
+                if(resClassIndex > 0) {
+                    resClassIndex = resClassIndex - 1;
+                }
+          //      alert('lowering: ' + resClassIndex);
+                //resClassIndex = 0;
+
+/*
 
                 if (resClass === "r1536") {
                     resClass = "r768";
@@ -151,18 +179,22 @@ define(['absolute/debug'], function (Debug) {
                 else if (resClass === "r640") {
                     resClass = "r320";
                 }
-            }*/
+*/
+            }
+
 
             // force lower res class on Android 4.0.4 to get around canvas rendering
             // bug described here:
             // http://www.photonstorm.com/html5/solving-black-screens-and-corrupted-graphics-in-samsung-s3-html5-games
-            if (navigator.userAgent.indexOf("Android 4.0.4") >= 0) {
+          /*  if (navigator.userAgent.indexOf("Android 4.0.4") >= 0) {
                 if (resClass != "r320") {
                     resClass = "r640";
                 }
-            }
+            }*/
 
-            this.resClass = resClass;
+
+
+            this.resClass = this.resClasses[resClassIndex].id;
 
             return this.resClass;
         },
@@ -227,11 +259,8 @@ define(['absolute/debug'], function (Debug) {
         },
 
         isCrapGraphics: function() {
-            if (navigator.userAgent.indexOf("Android") >= 0 || navigator.userAgent.indexOf("Silk") >= 0)
-            {
-                return true;
-            }
-            return false;
+         //   alert('low? ' + !PIXI.canUseNewCanvasBlendModes());
+            return !PIXI.canUseNewCanvasBlendModes();
         }
     };
 
