@@ -1,7 +1,7 @@
 /**
  * Created by craig on 2/3/14.
  */
-define (['pixi', 'absolute/platform', 'absolute/debug'], function (PIXI, Platform, Debug) {
+define (['pixi', 'absolute/screenmetrics', 'absolute/debug'], function (PIXI, ScreenMetrics, Debug) {
 
     return {
         fromFrame: function (asset) {
@@ -12,7 +12,7 @@ define (['pixi', 'absolute/platform', 'absolute/debug'], function (PIXI, Platfor
 
                 if (Debug.enabled) {
                     var atlasName = sprite.texture.baseTexture.imageUrl.substr(sprite.texture.baseTexture.imageUrl.lastIndexOf('/') + 1);
-                    var atlasText = new PIXI.Text(atlasName, {font: Math.floor(30 * Platform.getResScale()) + "px Arial, Helvetica, sans-serif", fill: "white", align: "center"});
+                    var atlasText = new PIXI.Text(atlasName, {font: Math.floor(30 * ScreenMetrics.getResScale()) + "px Arial, Helvetica, sans-serif", fill: "white", align: "center"});
                     atlasText.position.y = 0;
                     atlasText.position.x = 0;
                     sprite.addChild(atlasText);
@@ -22,7 +22,7 @@ define (['pixi', 'absolute/platform', 'absolute/debug'], function (PIXI, Platfor
                 if (Debug.enabled) {
                     sprite = PIXI.Sprite.fromFrame('missing.png');
 
-                    var text = new PIXI.Text(asset, {font: Math.floor(40 * Platform.getResScale()) + "px Arial, Helvetica, sans-serif", fill: "black", align: "center"});
+                    var text = new PIXI.Text(asset, {font: Math.floor(40 * ScreenMetrics.getResScale()) + "px Arial, Helvetica, sans-serif", fill: "black", align: "center"});
                     text.position.y = sprite.height;
                     text.position.x = (sprite.width - text.width) / 2;
                     sprite.addChild(text);

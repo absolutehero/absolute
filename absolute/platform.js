@@ -5,7 +5,7 @@
  * Time: 5:10 PM
  * To change this template use File | Settings | File Templates.
  */
-define (['absolute/screenmetrics'], function (ScreenMetrics) {
+define (['pixi','absolute/debug'], function (PIXI, Debug) {
 
     var Platform = {
 
@@ -18,10 +18,6 @@ define (['absolute/screenmetrics'], function (ScreenMetrics) {
         maxHeight: window.innerHeight,
 
         devicePixelRatio: window.devicePixelRatio || 1,
-
-        resClass: "",
-
-        resScale: 0,
 
         documentRoot: null,
 
@@ -36,20 +32,6 @@ define (['absolute/screenmetrics'], function (ScreenMetrics) {
                 }
             }
             return this.documentRoot;
-        },
-
-        getResScale: function() {
-            return ScreenMetrics.getResScale();
-        },
-
-        getResClass: function() {
-
-            if (this.resClass !== '')
-                return this.resClass;
-
-            this.resClass = ScreenMetrics.getResClass();
-
-            return this.resClass;
         },
 
         getClickAction: function() {
@@ -87,7 +69,7 @@ define (['absolute/screenmetrics'], function (ScreenMetrics) {
         _isiPad: navigator.userAgent.match(/iPad/i),
 
         _isAndroid: function () {
-            return navigator.userAgent.indexOf("Android") >= 0 || navigator.userAgent.indexOf("Silk") >= 0;
+            return  this.getMobileUserAgentData().os.toLowerCase() === 'android';
         },
 
         _isChrome: function () {
@@ -95,11 +77,166 @@ define (['absolute/screenmetrics'], function (ScreenMetrics) {
         },
 
         supportsTouch: function () {
-           return (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+
+            try {
+                return (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
+            } catch(e) {
+                return false;
+            }
+
         },
 
         isCordova: function () {
             return typeof cordova !== "undefined";
+        },
+
+
+        isPhone: function() {
+            var uaString = navigator.userAgent;
+            var mobilePhoneDetect = /iPhone|BlackBerry|IEMobile|Opera Mini/i ;
+            var matches = uaString.match(mobilePhoneDetect);
+            if (typeof matches !== 'undefined' && matches !== null) {
+                return matches.length > 0;
+            } else {
+                return false;
+            }
+        },
+
+        supportsLayeredDivs: function() {
+            //
+            // Older android browsers have a problem with input controls and layered divs
+            //
+            var uaObject = this.getMobileUserAgentData();
+            return !(uaObject.os === 'Android' && !/^[3-9](\.[0-9])*$/.test(uaObject.osVersion));
+        },
+
+        supportsFixedPosition: function() {
+            // according to modernizer and other sources fixedPositioning
+            // is not a feature that can be detected. see:
+            // https://github.com/Modernizr/Modernizr/wiki/Undetectables
+            // Using browser detection for now. If browser is android and
+            // >=3 or ios version is >= 5 we are assuming fixedPosition is
+            // supported.
+            var uaObject = this.getMobileUserAgentData();
+            return ((uaObject.os === 'Android' && /^[3-9](\.[0-9])*$/.test(uaObject.osVersion)) ||
+                (uaObject.os === 'iPhone' && /^[5-9]/.test(uaObject.osVersion)) ||
+                (uaObject.os !== 'iPhone' && uaObject.os !== 'Android')
+                );
+        },
+
+        getMobileUserAgentData: function() {
+            //
+            // only supporting ios and android at the moment. and only sniffing default browser version
+            //
+            var uaString = navigator.userAgent;
+            var uaObject = {
+                os: '',
+                osVersion: '',
+                browser: '',
+                browserVersion: ''
+            };
+            var agents = [{
+                    os: 'iPhone',
+                    osVersionRegex: /(?:iPhone OS )([0-9,_]*)(?: like)/,
+                    browser: 'WebKit',
+                    browserVersionRegex: /(?:AppleWebKit\/)([0-9,.]*)/
+                },
+                {
+                    os: 'Android',
+                    osVersionRegex: /(?:Android )([0-9,.]*)/,
+                    browser: 'WebKit',
+                    browserVersionRegex: /(?:AppleWebKit\/)([0-9,.]*)/
+                },
+                {
+                    os: 'Linux',
+                    osVersionRegex: /(?:Android )([0-9,.]*)/,
+                    browser: 'Silk',
+                    browserVersionRegex: /(?:Silk\/)([0-9._-]+)/
+                }
+            ];
+
+            for (var i = 0, length = agents.length; i < length; i++) {
+                var browser = agents[i];
+                if (uaString.indexOf(browser.os) !== -1) {
+                    uaObject.os = browser.os;
+                    if (typeof browser.osVersionRegex !== 'undefined') {
+                        uaObject.osVersion = uaString.match(browser.osVersionRegex) || '0.0';
+                        uaObject.osVersion = uaObject.osVersion[1].replace('_', '.');
+                    }
+                    if (uaString.indexOf(browser.browser) !== -1) {
+                        uaObject.browser = browser.browser;
+                        if (typeof browser.browserVersionRegex !== 'undefined') {
+                            uaObject.browserVersion = uaString.match(browser.browserVersionRegex)[1].replace('_', '.');
+                        }
+                    }
+                    break;
+                }
+            }
+
+            return uaObject;
+        },
+
+        _isOldAndroid: function() {
+
+            var minMajorVersion = 4,
+                minMinorVersion = 2,
+                uaObject = this.getMobileUserAgentData(),
+                version = uaObject.osVersion.split('.'),
+                majorVersion = 0,
+                minorVersion = 0,
+                isOld = false;
+            if ((uaObject.os.toLowerCase() === 'android' || uaObject.os.toLowerCase() === 'linux') &&
+                version.length > 1) {
+
+                majorVersion = version[0];
+                minorVersion = version[1];
+                if((majorVersion < minMajorVersion) ||
+                    (majorVersion == minMajorVersion && minorVersion <= minMinorVersion)) {
+                    isOld = true;
+                }
+            }
+
+            return isOld;
+
+        },
+
+        getResStepsDown: function(resClassIndex) {
+
+
+            var steps = 0;
+
+            /**
+             * Detect devices which may have some problems with large textures.
+             */
+            if(!PIXI.canUseNewCanvasBlendModes()) {
+                Debug.log('Lowering resClass because this device does not support canvas blends.');
+                steps ++;
+            } else if(this.isPhone()) {
+                Debug.log('Lowering resClass because this is a phone.');
+                steps ++;
+            } else if(this._isiPad && resClassIndex >= 3) {
+                Debug.log('Lowering resClass because this is an ipad that can\'t handle big textures.');
+                steps ++;
+            }
+
+            /**
+             * Detect devices that really need help and lower res class again.
+             */
+            if(this._isOldAndroid()) {
+                Debug.log('Lowering resClass because this is an older android device.');
+                steps ++;
+            }
+
+            /**
+             * Detect devices that really need tons and tons of help and lower res class again.
+             */
+            if(this._isOldAndroid() && resClassIndex >= 3) {
+                Debug.log('Lowering resClass because this is an older android device and it is enormous.');
+                steps ++;
+            }
+
+
+            return steps;
         }
 
     };

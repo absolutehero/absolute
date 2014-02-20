@@ -5,7 +5,7 @@
  * Time: 2:00 PM
  * To change this template use File | Settings | File Templates.
  */
-define(['absolute/debug','pixi'], function (Debug,PIXI) {
+define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
 
     var ScreenMetrics = {
 
@@ -47,7 +47,7 @@ define(['absolute/debug','pixi'], function (Debug,PIXI) {
                     if (w === 1280) {
                         return 800; // this is a hack to fix Chrome on Galaxy Tab 2, returns 752!?!
                     }
-                    if (this._isAndroid()) {
+                    if (Platform._isAndroid()) {
                         return Math.max(screen.height, h);
                     }
                     else {
@@ -134,65 +134,12 @@ define(['absolute/debug','pixi'], function (Debug,PIXI) {
                     break;
                 }
             }
-//            alert('original index ' + resClassIndex);
-
-/*
-            if (width > 1280) {
-                resClass = "r1536";
-            }
-            else if (width > 768) {
-                resClass = "r1280";
-            }
-            else if (width > 640) {
-                resClass = "r768";
-            }
-            else if (width > 320) {
-                resClass = "r640";
-            }
-            else {
-                resClass = "r320";
-            }*/
 
             // lower the res for older/low performing devices
-            if (this.isCrapGraphics()) {
-
-                Debug.log('Lowering resClass for performance reasons.');
-
-
-                if(resClassIndex > 0) {
-                    resClassIndex = resClassIndex - 1;
-                }
-          //      alert('lowering: ' + resClassIndex);
-                //resClassIndex = 0;
-
-/*
-
-                if (resClass === "r1536") {
-                    resClass = "r768";
-                }
-                else if (resClass === "r1280") {
-                    resClass = "r640";
-                }
-                else if (resClass === "r768") {
-                    resClass = "r320";
-                }
-                else if (resClass === "r640") {
-                    resClass = "r320";
-                }
-*/
+            resClassIndex = resClassIndex - Platform.getResStepsDown(resClassIndex);
+            if(resClassIndex < 0) {
+                resClassIndex = 0;
             }
-
-
-            // force lower res class on Android 4.0.4 to get around canvas rendering
-            // bug described here:
-            // http://www.photonstorm.com/html5/solving-black-screens-and-corrupted-graphics-in-samsung-s3-html5-games
-          /*  if (navigator.userAgent.indexOf("Android 4.0.4") >= 0) {
-                if (resClass != "r320") {
-                    resClass = "r640";
-                }
-            }*/
-
-
 
             this.resClass = this.resClasses[resClassIndex].id;
 
@@ -252,16 +199,9 @@ define(['absolute/debug','pixi'], function (Debug,PIXI) {
                 'document.documentElement.clientHeight=' + document.documentElement.clientHeight + '&' +
                 'resClass=' + this.getResClass() + '&' +
                 'resScale=' + this.getResScale();
-        },
-
-        _isAndroid: function () {
-            return navigator.userAgent.indexOf("Android") >= 0 || navigator.userAgent.indexOf("Silk") >= 0;
-        },
-
-        isCrapGraphics: function() {
-         //   alert('low? ' + !PIXI.canUseNewCanvasBlendModes());
-            return !PIXI.canUseNewCanvasBlendModes();
         }
+
+
     };
 
     return ScreenMetrics;

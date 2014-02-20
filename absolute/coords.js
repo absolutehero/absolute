@@ -6,15 +6,15 @@
  * To change this template use File | Settings | File Templates.
  */
 
-define (['absolute/platform'], function(Platform) {
+define (['absolute/screenmetrics'], function(ScreenMetrics) {
     var Coords = {
 
         x: function (c) {
-            return Math.round(c * Platform.getResScale());
+            return Math.round(c * ScreenMetrics.getResScale());
         },
 
         y: function (c) {
-            return Math.round(c * Platform.getResScale());
+            return Math.round(c * ScreenMetrics.getResScale());
         },
 
         offsetX: function (x, p) {

@@ -6,13 +6,15 @@ define(
     'pixi',
     'absolute/platform',
     'absolute/audiomanager',
-    'absolute/asyncqueue'
+    'absolute/asyncqueue',
+    'absolute/screenmetrics'
 ],
 function (
     PIXI,
     Platform,
     AudioManager,
-    AsyncQueue
+    AsyncQueue,
+    ScreenMetrics
     )
 {
     "use strict";
@@ -44,7 +46,7 @@ function (
             if (asset.indexOf('.json') === -1) {
                 asset += ".json";
             }
-            paths.push(Platform.artPathPrefix + '/' + Platform.getResClass() + '/' + asset);
+            paths.push(Platform.artPathPrefix + '/' + ScreenMetrics.getResClass() + '/' + asset);
         }
 
         this.assetLoader = new PIXI.AssetLoader(paths);
