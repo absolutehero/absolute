@@ -19,11 +19,12 @@ function (
     )
 {
 
-    var GameUI = function(container, width, height) {
-        this._initGameUI(container, width, height);
+    var GameUI = function(container, width, height, backgroundColor) {
+        backgroundColor = backgroundColor || 0xFFFFFF;
+        this._initGameUI(container, width, height, backgroundColor);
     };
 
-    GameUI.prototype._initGameUI = function(container, width, height) {
+    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor) {
 
         this.currentScreen = null;
         this.modal = null;
@@ -35,6 +36,7 @@ function (
         this.container = document.getElementById(container);
         this.stage = [];
         this.refreshBackground = false;
+        this.backGroundColor = backgroundColor;
 
         this.stage.push(new PIXI.Stage(0x0, true));
         this.stage.push(new PIXI.Stage(0x0, true));
@@ -284,7 +286,7 @@ function (
         }
 
         var cover = new PIXI.Graphics();
-        cover.beginFill(0xFFFFFF, 1.0);
+        cover.beginFill(this.backGroundColor, 1.0);
         cover.drawRect(0, 0, this.width, this.height);
         cover.endFill();
 

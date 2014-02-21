@@ -235,6 +235,18 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
         };
 
+        Dialog.prototype.resize = function(options) {
+
+            _.extend(this.options, options)
+
+            for(var i = 0; i < this.children.length; i++) {
+                this.removeChild(this.children[i]);
+            }
+
+            this._initDialog(this.ui, this.options);
+
+        };
+
         return Dialog;
     }
 );
