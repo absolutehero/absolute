@@ -38,6 +38,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
     };
 
     Draggable.prototype._onGrab = function (data) {
+
         data.originalEvent.preventDefault();
 
         this.data = data;
@@ -51,6 +52,8 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     Draggable.prototype._onDrop = function(data)
     {
+        data.originalEvent.preventDefault();
+
         this.alpha = 1;
         this.dragging = false;
         this.data = null;
@@ -63,6 +66,8 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     Draggable.prototype._onMove = function(data)
     {
+        data.originalEvent.preventDefault();
+
         if(this.dragging)
         {
             var newPosition = this.data.getLocalPosition(this.parent);
