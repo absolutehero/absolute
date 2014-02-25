@@ -17,6 +17,14 @@ define (['absolute/screenmetrics'], function(ScreenMetrics) {
             return Math.round(c * ScreenMetrics.getResScale());
         },
 
+        worldX: function(c) {
+            return Math.round(c / ScreenMetrics.getResScale());
+        },
+
+        worldY: function(c) {
+            return Math.round(c / ScreenMetrics.getResScale());
+        },
+
         offsetX: function (x, p) {
             return p.position.x + x;
         },
