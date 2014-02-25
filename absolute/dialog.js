@@ -49,10 +49,10 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             this._setSize();
             this._setPosition();
             this._createBackground();
-            this._setContent();
             if (this.options.displayCloseButton) {
                 this._createCloseButton();
             }
+            this._setContent();
 
         };
 
@@ -126,6 +126,10 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
             var button = new Button(PIXI.Texture.fromFrame(this.options.images.close),
                 PIXI.Texture.fromFrame(this.options.images.close), _.bind(this._onClose,this));
+
+            button.hitArea = new PIXI.Rectangle( -button.width/3, -button.height/3, button.width * 1.6,
+                button.height * 1.6);
+
             button.position.x = this.width - ( button.width / 1.5 );
             button.position.y = - ( button.height / 3 );
             this.addChild(button);
@@ -230,8 +234,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                 return;
             }
 
-            this.contentIndex = this.children.length;
-            this.addChildAt(content, this.contentIndex);
+            this.addChild(content);
 
         };
 
