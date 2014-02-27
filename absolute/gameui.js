@@ -223,11 +223,9 @@ function (
             this.currentScreen.onHide();
         }
         this.currentScreen = screen;
-        this.refreshBackground = true;
         this.hideCurrent();
         this.showCurrent();
         this.currentScreen.onShow(this.portrait);
-
     };
 
     GameUI.prototype.showModal = function (screen, alpha, hideCurrentScreen) {
@@ -300,6 +298,7 @@ function (
             try {
                 this.stage[0].addChildAt(this.currentScreen, 0);
                 this.stage[1].addChildAt(this.currentScreen.background, 0);
+                this.refreshBackground = true;
             }
             catch (e) {
 
