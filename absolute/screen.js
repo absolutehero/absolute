@@ -97,7 +97,11 @@ define(['pixi', 'absolute/button', 'absolute/togglebutton', 'absolute/debug'], f
 
     Screen.prototype.handleVisibilityChange = function() {
 
-    }
+    };
+
+    Screen.prototype.handleOrientationChange = function(isPortrait) {
+
+    };
 
 
     return Screen;

@@ -9,22 +9,24 @@ define(
     'pixi',
     'tween',
     'absolute/debug',
+    'absolute/screenmetrics',
     'fpsmeter'
 ],
 function (
     PIXI,
     TWEEN,
     Debug,
+    ScreenMetrics,
     FPSMeter
     )
 {
 
-    var GameUI = function(container, width, height, backgroundColor) {
+    var GameUI = function(container, width, height, backgroundColor, supportsOrientationChange) {
         backgroundColor = backgroundColor || 0xFFFFFF;
-        this._initGameUI(container, width, height, backgroundColor);
+        this._initGameUI(container, width, height, backgroundColor, supportsOrientationChange);
     };
 
-    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor) {
+    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor, supportsOrientationChange) {
 
         this.currentScreen = null;
         this.modal = null;
@@ -32,11 +34,13 @@ function (
         this.frameRequest = 0;
         this.width = Math.round(width);
         this.height = Math.round(height);
-        this.portrait = width < height;
+        this.origWidth = this.width;
+        this.origHeight = this.height;
         this.container = document.getElementById(container);
         this.stage = [];
         this.refreshBackground = false;
         this.backGroundColor = backgroundColor;
+        this.supportsOrientationChange = !!supportsOrientationChange;
 
         this.stage.push(new PIXI.Stage(0x0, true));
         this.stage.push(new PIXI.Stage(0x0, true));
@@ -51,23 +55,35 @@ function (
             event.preventDefault();
         };
 
+
         this.renderer = [];
-        this.renderer.push(new PIXI.CanvasRenderer(width, height));
-        this.renderer.push(new PIXI.CanvasRenderer(width, height));
-        //this.renderer = PIXI.autoDetectRenderer(width, height);
-        this.renderer[0].transparent = true;
-        this.renderer[1].transparent = true;
-
-        this.offScreenRenderer = new PIXI.CanvasRenderer(width, height);
-
-        this.offScreenRenderer.transparent = true;
-
-        this.container.appendChild(this.renderer[1].view);
-        this.container.appendChild(this.renderer[0].view);
 
         window.addEventListener('resize', this.resize.bind(this));
         this.resize();
 
+    };
+
+    GameUI.prototype.buildRenderers = function (width, height) {
+        if (this.renderer.length === 0) {
+            this.renderer.push(new PIXI.CanvasRenderer(width, height));
+            this.renderer.push(new PIXI.CanvasRenderer(width, height));
+            //this.renderer = PIXI.autoDetectRenderer(width, height);
+            this.renderer[0].transparent = true;
+            this.renderer[1].transparent = true;
+
+            this.offScreenRenderer = new PIXI.CanvasRenderer(width, height);
+            this.offScreenRenderer.transparent = true;
+
+            this.container.appendChild(this.renderer[1].view);
+            this.container.appendChild(this.renderer[0].view);
+        }
+        else {
+            this.renderer[0].width = this.renderer[0].view.width = width;
+            this.renderer[0].height = this.renderer[0].view.height = height;
+            this.renderer[1].width = this.renderer[1].view.width = width;
+            this.renderer[1].height = this.renderer[1].view.height = height;
+            this.refreshBackground = true;
+        }
     };
 
     GameUI.prototype.resize = function() {
@@ -78,28 +94,49 @@ function (
         var clientWidth = windowWidth,
             clientHeight = windowHeight;
 
+        if (this.supportsOrientationChange) {
+            this.portrait = clientWidth < clientHeight;
+        }
+        else {
+            this.portrait = this.width < this.height;
+        }
+
         var aspectRatio = windowWidth / windowHeight;
 
         if (this.portrait) {
-            if (aspectRatio > 0.83) {
-                clientWidth = 0.83 * windowHeight;
+
+            if (this.supportsOrientationChange && this.width > this.height) {
+                this.width = this.origHeight;
+                this.height = this.origWidth;
             }
-            else if (aspectRatio < 0.7) {
-                clientHeight = windowWidth / 0.7;
+
+            if (aspectRatio > 0.70) {
+                clientWidth = 0.70 * windowHeight;
+            }
+            else if (aspectRatio < 0.56) {
+                clientHeight = windowWidth / 0.56;
             }
         }
         else {
+            if (this.supportsOrientationChange && this.height > this.width) {
+                this.width = this.origWidth;
+                this.height = this.origHeight;
+            }
+
              aspectRatio = 1 / aspectRatio;
-             if (aspectRatio > 0.83) {
-                 clientHeight = 0.83 * windowWidth;
+
+             if (aspectRatio > 0.70) {
+                 clientHeight = 0.70 * windowWidth;
              }
-             else if (aspectRatio < 0.65) {
-                 clientWidth = windowHeight / 0.65;
+             else if (aspectRatio < 0.56) {
+                 clientWidth = windowHeight / 0.56;
              }
         }
 
-        clientWidth = clientWidth.toFixed(0);
-        clientHeight = clientHeight.toFixed(0);
+        clientWidth = Math.floor(clientWidth);
+        clientHeight = Math.floor(clientHeight);
+
+        this.buildRenderers(this.width, this.height);
 
         this.renderer[1].view.style.width = this.renderer[0].view.style.width = clientWidth  + "px";
         this.renderer[1].view.style.height = this.renderer[0].view.style.height = clientHeight + "px";
@@ -120,6 +157,9 @@ function (
         }
 
         this.resetStage();
+        if (this.supportsOrientationChange && this.currentScreen) {
+            this.currentScreen.handleOrientationChange(this.portrait);
+        }
 
     };
 
@@ -186,7 +226,7 @@ function (
         this.refreshBackground = true;
         this.hideCurrent();
         this.showCurrent();
-        this.currentScreen.onShow();
+        this.currentScreen.onShow(this.portrait);
 
     };
 
