@@ -235,6 +235,9 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
                 steps ++;
             }
 
+            if(steps == 0) {
+                steps = 1;
+            }
 
             return steps;
         }
