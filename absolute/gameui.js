@@ -48,6 +48,10 @@ function (
         if (Debug.enabled) {
             this.meter = new FPSMeter();
         }
+        // this fixes a strange issue with kik that prevents rendering
+        if (typeof kik !== "undefined") {
+            document.getElementsByTagName('body')[0].appendChild(document.createElement('div'));
+        }
 
         // pixi no longer prevents default - need to handle ourselves
         this.container.onmousedown = this.container.ontouchstart = function(event)
