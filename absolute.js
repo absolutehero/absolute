@@ -38,6 +38,8 @@ define(function (require) {
         Dialog: require('absolute/dialog'),
         Shims: require('absolute/shims'),
         Sprite: require('absolute/sprite'),
-        Texture: require('absolute/texture')
+        Texture: require('absolute/texture'),
+        MathUtils: require('absolute/mathutils'),
+        RandomUtils:require('absolute/randomutils')
     };
 });
