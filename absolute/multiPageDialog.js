@@ -108,10 +108,14 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
     };
 
     MultiPageDialog.prototype.initPagePips = function() {
-        this.pips = new PageIndicator(this.pages.length, 0, {clickCallback: this.scrollToPage.bind(this)});
-        this.pips.position.x = (this.width - this.pips.width) / 2;
-        this.pips.position.y = this.height - this.pips.height - this.options.interfacePadding;
-        this.addChild(this.pips);
+
+        if(this.pages.length > 1) {
+            this.pips = new PageIndicator(this.pages.length, 0, {clickCallback: this.scrollToPage.bind(this)});
+            this.pips.position.x = (this.width - this.pips.width) / 2;
+            this.pips.position.y = this.height - this.pips.height - this.options.interfacePadding;
+            this.addChild(this.pips);
+        }
+
     };
 
     MultiPageDialog.prototype.enableButtons = function (enable) {
@@ -158,7 +162,9 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
 
     MultiPageDialog.prototype.scrollToPage = function(pageIndex) {
 
-        this.pips.setPageIndex(pageIndex);
+        if(this.pips) {
+            this.pips.setPageIndex(pageIndex);
+        }
 
         var destination = - (pageIndex * this.pages[pageIndex].width) + this.centerOffset,
             self = this;
