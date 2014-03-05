@@ -1,4 +1,4 @@
-define(['absolute/mathutils','absolute/coords','pixi'],function(MathUtils, Coords, PIXI) {
+define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUtils, Coords, PIXI, _) {
     var RandomUtils = {
 
         getRandomIntFromRange: function(min, max) {
@@ -7,7 +7,7 @@ define(['absolute/mathutils','absolute/coords','pixi'],function(MathUtils, Coord
 
         distributeItems: function(ui, items, areaRect, randomItems, options) {
 
-            options = options || {'minSpacing': 100, 'scaleWithY':true };
+            options = _.extend({'minSpacing': 100, 'scaleWithY':true }, options);
             this.ui = ui;
             areaRect.area = areaRect.width * areaRect.height;
 
@@ -43,7 +43,7 @@ define(['absolute/mathutils','absolute/coords','pixi'],function(MathUtils, Coord
                         randomItem.sprite.position.y = y;
                         if(options.scaleWithY) {
                             randomItem.sprite.scale.x = randomItem.sprite.scale.y = randomItem.sprite.position.y / Coords.y(1200);
-                            randomItem.sprite.opacity = randomItem.sprite.scale.y;
+                            randomItem.sprite.alpha = Math.max(randomItem.sprite.scale.y, 0.3);
                         }
                         randomItems.addChild(randomItem.sprite);
                     }

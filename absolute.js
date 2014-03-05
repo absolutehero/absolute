@@ -40,6 +40,8 @@ define(function (require) {
         Sprite: require('absolute/sprite'),
         Texture: require('absolute/texture'),
         MathUtils: require('absolute/mathutils'),
-        RandomUtils:require('absolute/randomutils')
+        RandomUtils:require('absolute/randomutils'),
+        PageIndicator:require('absolute/pageIndicator'),
+        MultiPageDialog:require('absolute/multiPageDialog')
     };
 });
