@@ -10,14 +10,16 @@ define(
     'tween',
     'absolute/debug',
     'absolute/screenmetrics',
-    'fpsmeter'
+    'fpsmeter',
+    'proton'
 ],
 function (
     PIXI,
     TWEEN,
     Debug,
     ScreenMetrics,
-    FPSMeter
+    FPSMeter,
+    Proton
     )
 {
 
@@ -61,6 +63,8 @@ function (
 
 
         this.renderer = [];
+
+        this.initParticleSystem();
 
         window.addEventListener('resize', this.resize.bind(this));
         this.resize();
@@ -199,6 +203,7 @@ function (
                 self.beforeRender();
                 TWEEN.update();
 
+                self.proton.update();
                 self.renderer[0].render(self.stage[0]);
                 if (self.refreshBackground) {
                     self.refreshBackground = false;
@@ -358,6 +363,14 @@ function (
             }
 
         }.bind(this), 500);
+
+    };
+
+    GameUI.prototype.initParticleSystem = function () {
+
+        this.proton = new Proton();
+        this.particleRenderer = new Proton.Renderer('other', this.proton);
+        this.particleRenderer.start();
 
     };
 
