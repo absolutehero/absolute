@@ -60,8 +60,11 @@ define(['tween'], function(TWEEN) {
         },
 
         _bounceIn: function (sprite, params, onComplete) {
+            if (params.endScale == 'undefined') {
+                params.endScale = 1;
+            }
             new TWEEN.Tween({ scale: sprite.scale.x })
-                .to({ scale: 1 }, params.duration)
+                .to({ scale: params.endScale }, params.duration)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onUpdate(function () {
                     sprite.scale.x = sprite.scale.y = this.scale;
