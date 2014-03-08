@@ -173,6 +173,10 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
 
     };
 
+    ParticleEmitter.prototype.emitOnce = function () {
+        this.emitter.emit('once');
+    };
+
     ParticleEmitter.prototype.start = function () {
         this.emitter.emit();
 
