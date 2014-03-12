@@ -7,7 +7,7 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
 
         distributeItems: function(ui, items, areaRect, randomItems, options) {
 
-            options = _.extend({'minSpacing': 100, 'scaleWithY':true }, options);
+            options = _.extend({'minSpacing': 100, 'scaleWithY':true, 'minScale': 0.3, 'minAlpha': 0.2 }, options);
             this.ui = ui;
             areaRect.area = areaRect.width * areaRect.height;
 
@@ -42,8 +42,17 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
                         randomItem.sprite.position.x = x;
                         randomItem.sprite.position.y = y;
                         if(options.scaleWithY) {
-                            randomItem.sprite.scale.x = randomItem.sprite.scale.y = randomItem.sprite.position.y / Coords.y(1200);
-                            randomItem.sprite.alpha = Math.max(randomItem.sprite.scale.y, 0.3);
+
+                            var scale = (y - areaRect.y) / areaRect.height;;
+
+                            scale += options.minScale;
+
+                            if(scale > 1) {
+                                scale = 1;
+                            }
+
+                            randomItem.sprite.scale.x = randomItem.sprite.scale.y = scale;
+                            randomItem.sprite.alpha = Math.max(randomItem.sprite.scale.y, options.minAlpha);
                         }
                         randomItems.addChild(randomItem.sprite);
                     }
