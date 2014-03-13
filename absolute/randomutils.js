@@ -43,7 +43,7 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
                         randomItem.sprite.position.y = y;
                         if(options.scaleWithY) {
 
-                            var scale = (y - areaRect.y) / areaRect.height;;
+                            var scale = (y - areaRect.y) / areaRect.height;
 
                             scale += options.minScale;
 
