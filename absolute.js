@@ -1,19 +1,6 @@
 /**
  * The main module that defines the public interface for absolute.
  */
-require.config({
-    waitSeconds: 0,
-    paths: {
-        'proton': 'dependencies/absolute/libs/proton/build/proton-1.0.0'
-    },
-
-    shim: {
-        'proton': {
-            exports: 'Proton'
-        }
-    }
-});
-
 define(function (require) {
     'use strict';
 
@@ -56,6 +43,6 @@ define(function (require) {
         RandomUtils:require('absolute/randomutils'),
         PageIndicator:require('absolute/pageIndicator'),
         MultiPageDialog:require('absolute/multiPageDialog'),
-        ParticleEmitter: require('absolute/particleemitter')
+        Absolute: require('absolute/particleemitter')
     };
 });
