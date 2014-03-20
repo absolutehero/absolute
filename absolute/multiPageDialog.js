@@ -44,7 +44,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
             this.pageTray.addChild(page);
         }
 
-        this.kPanThreshold = page.width / 4;
+        this.kPanThreshold = page.width / 5;
         this.centerOffset = (this.width - page.width)/2;
         this.pageTray.position.x = this.centerOffset;
 

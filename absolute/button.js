@@ -6,15 +6,17 @@
  */
 define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils'], function (PIXI, Snapshot, AudioManager, Platform, SpriteUtils) {
 
-    var Button = function(defaultImage, hoverImage, action, replaceOnHover) {
-        this._initButton(defaultImage, hoverImage, action, replaceOnHover);
+    var Button = function(defaultImage, hoverImage, action, replaceOnHover, useTap) {
+        this._initButton(defaultImage, hoverImage, action, replaceOnHover, useTap);
     };
 
     Button.constructor = Button;
     Button.prototype = Object.create(PIXI.Sprite.prototype);
 
-    Button.prototype._initButton = function(defaultImage, hoverImage, action, replaceOnHover) {
+    Button.prototype._initButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap) {
+
         this.replaceOnHover = !!replaceOnHover;
+        useTap = typeof useTap !== 'undefined' ? useTap : false;
 
         if (!this.replaceOnHover) {
             var s = new PIXI.Sprite(defaultImage);
@@ -51,20 +53,21 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
         };
 
         var triggerAction = function() {
-            console.log(self.parent);
             self.setTexture(self.defaultImage);
             self.doAction();
         };
 
         if (Platform.supportsTouch()) {
 
-            this.touchstart = function(evt) {
-
-            };
-
-            this.tap = function(evt) {
-                triggerAction();
-            };
+            if(useTap) {
+                this.tap = function(evt) {
+                    triggerAction();
+                };
+            } else {
+                this.touchstart = function(evt) {
+                    triggerAction();
+                };
+            }
 
         }
         else {
