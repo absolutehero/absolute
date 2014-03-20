@@ -154,6 +154,8 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
 
         if(pageIndex < 0) {
             pageIndex = 0;
+        } else if (pageIndex > this.pages.length - 1) {
+            pageIndex = this.pages.length - 1;
         }
 
         this.scrollToPage(pageIndex);

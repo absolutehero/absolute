@@ -149,6 +149,12 @@ var AudioManager = {
         }
     },
 
+    stopAllSounds: function() {
+        for (s in this.sounds) {
+            this.sounds[s].stop();
+        }
+    },
+
     pauseSound: function (soundId) {
         if (this.sounds[soundId]) {
             this.sounds[soundId].pause();

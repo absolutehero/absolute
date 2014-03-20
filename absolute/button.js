@@ -50,21 +50,29 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
             self.setTexture(self.defaultImage);
         };
 
+        var triggerAction = function() {
+            console.log(self.parent);
+            self.setTexture(self.defaultImage);
+            self.doAction();
+        };
+
         if (Platform.supportsTouch()) {
+
             this.touchstart = function(evt) {
-                self.setTexture(self.defaultImage);
-                self.doAction();
+
             };
 
             this.tap = function(evt) {
-
+                triggerAction();
             };
+
         }
         else {
+
             this.click = function(evt) {
-                self.setTexture(self.defaultImage);
-                self.doAction();
+                triggerAction();
             };
+
         }
     };
 
@@ -74,7 +82,6 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
         }
         if (this.action) {
             this.action();
-            //setTimeout(function () { this.action();}.bind(this), 0 );
         }
     };
 
