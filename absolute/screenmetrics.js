@@ -202,6 +202,40 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
                 'document.documentElement.clientHeight=' + document.documentElement.clientHeight + '&' +
                 'resClass=' + this.getResClass() + '&' +
                 'resScale=' + this.getResScale();
+        },
+
+        detectOrientationChange: function(callback) {
+
+            this.lastOrienation = this.getOrientation();
+
+            function handleOrientationChange () {
+
+                var currentOrientation = this.getOrientation();
+
+                if(this.lastOrienation !== currentOrientation) {
+
+                    callback(currentOrientation);
+                    this.lastOrienation = currentOrientation;
+
+                }
+
+            }
+
+            if(Platform.supportsDeviceOrientation) {
+
+                window.addEventListener('deviceorientation', handleOrientationChange.bind(this));
+
+            } else {
+
+                window.addEventListener('resize', handleOrientationChange.bind(this));
+
+            }
+
+        },
+
+        getOrientation:  function() {
+            this.refresh();
+            return this.isPortrait() ? 'portrait' : 'landscape';
         }
 
 

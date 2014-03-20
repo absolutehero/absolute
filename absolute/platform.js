@@ -124,6 +124,10 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
                 );
         },
 
+        supportsDeviceOrientation: function() {
+            return typeof window.DeviceOrientationEvent !== "undefined";
+        },
+
         getMobileUserAgentData: function() {
             //
             // only supporting ios and android at the moment. and only sniffing default browser version
