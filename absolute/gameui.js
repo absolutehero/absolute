@@ -11,6 +11,7 @@ define(
     'absolute/debug',
     'absolute/screenmetrics',
     'absolute/particlesystem',
+    'absolute/platform',
     'fpsmeter'
 ],
 function (
@@ -19,6 +20,7 @@ function (
     Debug,
     ScreenMetrics,
     ParticleSystem,
+    Platform,
     FPSMeter
     )
 {
@@ -36,8 +38,13 @@ function (
         this.frameRequest = 0;
         this.width = Math.round(width);
         this.height = Math.round(height);
+        this.baseWidth = width;
+        this.baseHeight = height;
+
         this.origWidth = this.width;
         this.origHeight = this.height;
+        this.origBaseWidth = this.baseWidth;
+        this.origBaseHeight = this.baseHeight;
         this.container = document.getElementById(container);
         this.stage = [];
         this.refreshBackground = false;
@@ -72,6 +79,16 @@ function (
     };
 
     GameUI.prototype.buildRenderers = function (width, height) {
+
+        if(Platform._isOldAndroid()) {
+            // fixes https://github.com/absolutehero/puppy/issues/56
+            // for reasons I don't comprehend rounding the canvas width/height on old anroid browsers causes complete
+            // rendering failure. All positioning data is off and the games become unplayable.
+            width = this.baseWidth;
+            height = this.baseHeight;
+
+        }
+
         if (this.renderer.length === 0) {
             this.renderer.push(new PIXI.CanvasRenderer(width, height));
             this.renderer.push(new PIXI.CanvasRenderer(width, height));
@@ -114,8 +131,12 @@ function (
         if (this.portrait) {
 
             if (this.supportsOrientationChange && this.width > this.height) {
+
+                this.baseWidth = this.origBaseHeight;
+                this.baseHeight = this.origBaseWidth;
                 this.width = this.origHeight;
                 this.height = this.origWidth;
+                
             }
 
             if (aspectRatio > 0.70) {
@@ -127,8 +148,12 @@ function (
         }
         else {
             if (this.supportsOrientationChange && this.height > this.width) {
+
+                this.baseWidth = this.origBaseWidth;
+                this.baseHeight = this.origBaseHeight;
                 this.width = this.origWidth;
                 this.height = this.origHeight;
+
             }
 
              aspectRatio = 1 / aspectRatio;
