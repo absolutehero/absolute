@@ -124,15 +124,15 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
         Dialog.prototype._createCloseButton = function () {
 
-            var button = new Button(PIXI.Texture.fromFrame(this.options.images.close),
+            this.closeButton = new Button(PIXI.Texture.fromFrame(this.options.images.close),
                 PIXI.Texture.fromFrame(this.options.images.close), _.bind(this._onClose,this));
 
-            button.hitArea = new PIXI.Rectangle( -button.width/3, -button.height/3, button.width * 1.6,
-                button.height * 1.6);
+            this.closeButton.hitArea = new PIXI.Rectangle( -this.closeButton.width/3, -this.closeButton.height/3, this.closeButton.width * 1.6,
+                this.closeButton.height * 1.6);
 
-            button.position.x = this.width - ( button.width / 1.5 );
-            button.position.y = - ( button.height / 3 );
-            this.addChild(button);
+            this.closeButton.position.x = this.width - ( this.closeButton.width / 1.5 );
+            this.closeButton.position.y = - ( this.closeButton.height / 3 );
+            this.addChild(this.closeButton);
 
         };
 
@@ -151,7 +151,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             bottomLeft.position.y = this.height - bottomLeft.height;
 
             var bottomRight = PIXI.Sprite.fromFrame(this.options.images.bottomRight);
-            bottomRight.position.x = this.width - bottomRight.width;
+            bottomRight.position.x = this.width - bottomLeft.width;
             bottomRight.position.y = this.height - bottomLeft.height;
 
             // Tile middle left
@@ -169,7 +169,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                     middleRightSprite.width,
                     this.height - topLeft.height - bottomLeft.height
                 );
-            middleRightTile.position.x = this.width - middleRightSprite.width;
+            middleRightTile.position.x = this.width - topRight.width;
             middleRightTile.position.y = topRight.height;
 
             // Tile top center
@@ -188,7 +188,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                     bottomCenterSprite.height
                 );
             bottomCenterTile.position.x = bottomLeft.width;
-            bottomCenterTile.position.y = this.height - bottomCenterSprite.height;
+            bottomCenterTile.position.y = this.height - bottomLeft.height;
 
 
             // Tile middle center
