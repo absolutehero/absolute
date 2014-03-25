@@ -90,14 +90,14 @@ function (
         }
 
         if (this.renderer.length === 0) {
-            this.renderer.push(new PIXI.CanvasRenderer(width, height));
-            this.renderer.push(new PIXI.CanvasRenderer(width, height));
+            this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
+            this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
             //this.renderer = PIXI.autoDetectRenderer(width, height);
-            this.renderer[0].transparent = true;
-            this.renderer[1].transparent = true;
+            //this.renderer[0].transparent = true;
+            //this.renderer[1].transparent = true;
 
-            this.offScreenRenderer = new PIXI.CanvasRenderer(width, height);
-            this.offScreenRenderer.transparent = true;
+            this.offScreenRenderer = new PIXI.CanvasRenderer(width, height, null, true);
+            //this.offScreenRenderer.transparent = true;
 
             this.container.appendChild(this.renderer[1].view);
             this.container.appendChild(this.renderer[0].view);
@@ -136,7 +136,7 @@ function (
                 this.baseHeight = this.origBaseWidth;
                 this.width = this.origHeight;
                 this.height = this.origWidth;
-                
+
             }
 
             if (aspectRatio > 0.70) {
@@ -270,7 +270,7 @@ function (
 
         if(hideCurrentScreen) {
 
-            var osr = new PIXI.CanvasRenderer(this.width, this.height);
+            var osr = new PIXI.CanvasRenderer(this.width, this.height, null, true);
 
             var graphics = new PIXI.Graphics();
             graphics.beginFill(0x010101, alpha); // PIXI has a bug - won't render pure black

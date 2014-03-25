@@ -16,7 +16,7 @@ define (['pixi'], function(PIXI) {
 
     Snapshot.prototype.initSnapshot = function (displayObject) {
         var stage = new PIXI.Stage();
-        this.renderer = new PIXI.CanvasRenderer(displayObject.width, displayObject.height);
+        this.renderer = new PIXI.CanvasRenderer(displayObject.width, displayObject.height, null, true);
 
         stage.addChild(displayObject);
         this.renderer.render(stage);

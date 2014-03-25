@@ -11,7 +11,9 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
             borderThickness: {left: Coords.x(18), right: Coords.x(35)},
             interfacePadding: Coords.x(50),
             buttonScale: 0.5,
-            pageButtonImage: 'btn_main_LAGOONRETURN.png'
+            pageButtonImage: 'btn_main_LAGOONRETURN.png',
+            pageChangedCallback: function(){},
+            startPage: 0
         };
 
         this.initOptionsScreen(ui, _.extend(defaultOptions, options));
@@ -28,8 +30,8 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         this.initContent();
         this.initTouchInterface();
         this.initNonTouchInterface();
-        this.setCurrentPage(0);
         this.initPagePips();
+        this.scrollToPage(this.options.startPage);
 
     };
 
@@ -188,6 +190,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         this.currentPage = page;
         this.nextpageButton.visible = (page !== this.pages.length - 1);
         this.prevpageButton.visible = (page !== 0);
+        this.options.pageChangedCallback(page);
     };
 
     MultiPageDialog.prototype.enableButtons = function (enable) {
