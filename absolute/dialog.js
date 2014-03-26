@@ -45,6 +45,9 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
             this.ui = ui;
             this.options = options;
+            this.cachedContent = this.options.content;
+
+            this.container = new PIXI.DisplayObjectContainer();
 
             this._setSize();
             this._setPosition();
@@ -52,7 +55,9 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             if (this.options.displayCloseButton) {
                 this._createCloseButton();
             }
-            this._setContent();
+            this._setContent(this.options.content);
+
+            this.addChild(this.container);
 
         };
 
@@ -124,15 +129,15 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
         Dialog.prototype._createCloseButton = function () {
 
-            this.closeButton = new Button(PIXI.Texture.fromFrame(this.options.images.close),
-                PIXI.Texture.fromFrame(this.options.images.close), _.bind(this._onClose,this));
+            var closeButton = new Button(PIXI.Texture.fromFrame(this.options.images.close),
+                PIXI.Texture.fromFrame(this.options.images.close), _.bind(this._onClose,this),true);
 
-            this.closeButton.hitArea = new PIXI.Rectangle( -this.closeButton.width/3, -this.closeButton.height/3, this.closeButton.width * 1.6,
-                this.closeButton.height * 1.6);
+            closeButton.hitArea = new PIXI.Rectangle( -closeButton.width/3, -closeButton.height/3, closeButton.width * 1.6,
+                closeButton.height * 1.6);
 
-            this.closeButton.position.x = this.width - ( this.closeButton.width / 1.5 );
-            this.closeButton.position.y = - ( this.closeButton.height / 3 );
-            this.addChild(this.closeButton);
+            closeButton.position.x = this.width - ( closeButton.width / 1.5 );
+            closeButton.position.y = - ( closeButton.height / 3 );
+            this.container.addChild(closeButton);
 
         };
 
@@ -155,7 +160,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             bottomRight.position.y = this.height - bottomLeft.height;
 
             // Tile middle left
-            var middleLeftSprite = PIXI.Sprite.fromFrame(this.options.images.middleLeft),
+            var middleLeftSprite = new PIXI.Sprite.fromFrame(this.options.images.middleLeft),
                 middleLeftTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleLeftSprite),
                     middleLeftSprite.width,
                     this.height - topLeft.height - bottomLeft.height
@@ -164,7 +169,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             middleLeftTile.position.y = topLeft.height;
 
             // Tile middle right
-            var middleRightSprite = PIXI.Sprite.fromFrame(this.options.images.middleRight),
+            var middleRightSprite = new PIXI.Sprite.fromFrame(this.options.images.middleRight),
                 middleRightTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleRightSprite),
                     middleRightSprite.width,
                     this.height - topLeft.height - bottomLeft.height
@@ -173,7 +178,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             middleRightTile.position.y = topRight.height;
 
             // Tile top center
-            var topCenterSprite = PIXI.Sprite.fromFrame(this.options.images.topCenter),
+            var topCenterSprite = new PIXI.Sprite.fromFrame(this.options.images.topCenter),
                 topCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(topCenterSprite),
                     this.width - topLeft.width - topRight.width,
                     topCenterSprite.height
@@ -182,7 +187,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             topCenterTile.position.y = 0;
 
             // Tile bottom center
-            var bottomCenterSprite = PIXI.Sprite.fromFrame(this.options.images.bottomCenter),
+            var bottomCenterSprite = new PIXI.Sprite.fromFrame(this.options.images.bottomCenter),
                 bottomCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(bottomCenterSprite),
                     this.width - bottomLeft.width - bottomRight.width,
                     bottomCenterSprite.height
@@ -192,7 +197,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
 
             // Tile middle center
-            var middleCenterSprite = PIXI.Sprite.fromFrame(this.options.images.middleCenter),
+            var middleCenterSprite = new PIXI.Sprite.fromFrame(this.options.images.middleCenter),
                 middleCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleCenterSprite),
                 this.width - topLeft.width - topRight.width,
                 Math.ceil(this.height - bottomRight.height - topRight.height)
@@ -200,27 +205,27 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             middleCenterTile.position.x = topLeft.width;
             middleCenterTile.position.y = topLeft.height;
 
-            this.addChild(topLeft);
-            this.addChild(topCenterTile);
-            this.addChild(topRight);
+            this.container.addChild(topLeft);
+            this.container.addChild(topCenterTile);
+            this.container.addChild(topRight);
 
-            this.addChild(middleLeftTile);
-            this.addChild(middleCenterTile);
-            this.addChild(middleRightTile);
+            this.container.addChild(middleLeftTile);
+            this.container.addChild(middleCenterTile);
+            this.container.addChild(middleRightTile);
 
-            this.addChild(bottomLeft);
-            this.addChild(bottomCenterTile);
-            this.addChild(bottomRight);
+            this.container.addChild(bottomLeft);
+            this.container.addChild(bottomCenterTile);
+            this.container.addChild(bottomRight);
 
         };
 
         Dialog.prototype.getTextureFromSpriteSheet = function(tempSprite) {
 
-            var canvasRenderer = new PIXI.CanvasRenderer(tempSprite.width, tempSprite.height);
+            var canvasRenderer = new PIXI.CanvasRenderer(tempSprite.width, tempSprite.height, null, true);
 
-            this.addChild(tempSprite);
+            this.container.addChild(tempSprite);
             canvasRenderer.render(tempSprite);
-            this.removeChild(tempSprite);
+            this.container.removeChild(tempSprite);
 
             return PIXI.Texture.fromCanvas(canvasRenderer.view);
 
@@ -228,25 +233,52 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
         Dialog.prototype._setContent = function(content) {
 
-            var content = content || this.options.content;
+            //var content = content || this.cachedContent;
 
-            if(typeof content === 'undefined' || _.isEmpty(content)) {
+            if(typeof content !== 'undefined') {
+                try{
+                    this.removeChild(this.cachedContent);
+                } catch(e) {}
+
+                this.cachedContent = content;
+            }
+
+            if(typeof this.cachedContent === 'undefined' || _.isEmpty(this.cachedContent)) {
                 return;
             }
 
-            this.addChild(content);
+            this.container.addChild(this.cachedContent);
 
         };
 
         Dialog.prototype.resize = function(options) {
 
-            _.extend(this.options, options)
+            this.updateDialog(options);
 
-            for(var i = 0; i < this.children.length; i++) {
-                this.removeChild(this.children[i]);
+        };
+
+        Dialog.prototype.updateDialog = function(options) {
+
+            _.extend(this.options, options);
+
+
+            try{
+                this.removeChild(this.container);
+            } catch(e) {
+
             }
 
-            this._initDialog(this.ui, this.options);
+            this.container = new PIXI.DisplayObjectContainer();
+
+            this._setSize();
+            this._setPosition();
+            this._createBackground();
+            if (this.options.displayCloseButton) {
+                this._createCloseButton();
+            }
+            this._setContent(this.options.content);
+
+            this.addChild(this.container);
 
         };
 

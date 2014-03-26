@@ -31,7 +31,10 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         this.initTouchInterface();
         this.initNonTouchInterface();
         this.initPagePips();
-        this.scrollToPage(this.options.startPage);
+
+        var startPage = this.options.startPage < this.pages.length ? this.options.startPage : 0;
+
+        this.scrollToPage(startPage);
 
     };
 
