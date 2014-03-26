@@ -43,6 +43,7 @@ define(function (require) {
         RandomUtils:require('absolute/randomutils'),
         PageIndicator:require('absolute/pageIndicator'),
         MultiPageDialog:require('absolute/multiPageDialog'),
-        Absolute: require('absolute/particleemitter')
+        Absolute: require('absolute/particleemitter'),
+        ScrollArea: require('absolute/scrollarea')
     };
 });
