@@ -7,24 +7,24 @@
 define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
 
-    var ScrollArea = function(width, height, constrain) {
-        this._initScrollArea(width, height, constrain);
+    var ScrollArea = function(width, height, constraints) {
+        this._initScrollArea(width, height, constraints);
     };
 
     ScrollArea.constructor = ScrollArea;
     ScrollArea.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-    ScrollArea.prototype._initScrollArea = function(width, height, constrain) {
+    ScrollArea.prototype._initScrollArea = function(width, height, constraints) {
         PIXI.DisplayObjectContainer.call(this);
 
-        this.width = width;
-        this.height = height;
-        if (constrain) {
-            if (constrain === "x") {
+        if (constraints) {
+            if (constraints.x) {
                 this.constrainX = true;
+                this.constrainXType = constraints.x;
             }
-            else if (constrain === "y") {
+            else if (constraints.y) {
                 this.constrainY = true;
+                this.constrainYType = constraints.y;
             }
             else {
                 this.constrainX = this.constrainY = false;
@@ -32,18 +32,9 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         }
 
         this.moving = false;
-        this.moveData = null;
-
-        var mask = new PIXI.Graphics();
-        mask.beginFill(0xFFFFFF, 1.0);
-        mask.drawRect(0, 0, this.width, this.height);
-        mask.endFill();
-        this.mask = mask;
 
         this.contents = new PIXI.DisplayObjectContainer();
-
         this.contents.setInteractive(true);
-
 
         if (Platform.supportsTouch()) {
             this.contents.touchstart = this.onMoveStart.bind(this);
@@ -55,9 +46,20 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.contents.mousemove = this.onMove.bind(this);
             this.contents.mouseup = this.onMoveEnd.bind(this);
         }
-
-
         this.addChild(this.contents);
+
+        this.resize(width, height);
+    };
+
+    ScrollArea.prototype.resize = function (width, height) {
+        this.width = width;
+        this.height = height;
+
+        var mask = new PIXI.Graphics();
+        mask.beginFill(0xFFFFFF, 1.0);
+        mask.drawRect(0, 0, this.width, this.height);
+        mask.endFill();
+        this.mask = mask;
 
         this.updateContentBounds();
     };
@@ -85,6 +87,30 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         }
     };
 
+    ScrollArea.prototype.scrollTop = function () {
+        if (!this.constrainY) {
+            this.contents.position.y = 0;
+        }
+    };
+
+    ScrollArea.prototype.scrollBottom = function () {
+        if (!this.constrainY) {
+            this.contents.position.y = this.height - this.contents.height;
+        }
+    };
+
+    ScrollArea.prototype.scrollLeft = function () {
+        if (!this.constrainY) {
+            this.contents.position.x = 0;
+        }
+    };
+
+    ScrollArea.prototype.scrollRight = function () {
+        if (!this.constrainY) {
+            this.contents.position.x = this.width - this.contents.width;
+        }
+    };
+
     ScrollArea.prototype.updateContentBounds = function () {
         var bb;
 
@@ -94,6 +120,34 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         this.contents.height = bb.height;
 
         this.contents.hitArea = new PIXI.Rectangle(0, 0, bb.width, bb.height);
+
+        if (this.constrainX) {
+            switch (this.constrainXType) {
+                case "left":
+                    this.contents.position.x = 0;
+                    break;
+                case "right":
+                    this.contents.position.x = this.width - this.contents.width;
+                    break;
+                case "center":
+                    this.contents.position.x = (this.width - this.contents.width) / 2;
+                    break;
+            }
+        }
+
+        if (this.constrainY) {
+            switch (this.constrainYType) {
+                case "top":
+                    this.contents.position.y = 0;
+                    break;
+                case "bottom":
+                    this.contents.position.y = this.height - this.contents.height;
+                    break;
+                case "center":
+                    this.contents.position.y = (this.height - this.contents.height) / 2;
+                    break;
+            }
+        }
     };
 
     ScrollArea.prototype.computeAABB = function (dob) {
@@ -128,6 +182,11 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
                         maxY = cAABB.y + cAABB.height;
                     }
                 }
+
+                minX *= dob.scale.x;
+                maxX *= dob.scale.x;
+                minY *= dob.scale.y;
+                maxY *= dob.scale.y;
 
                 return new PIXI.Rectangle(dob.position.x + minX, dob.position.y + minY, maxX - minX, maxY - minY);
             }
