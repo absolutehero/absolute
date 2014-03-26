@@ -45,6 +45,7 @@ define(function (require) {
         MultiPageDialog:require('absolute/multiPageDialog'),
         ParticleEmitter: require('absolute/particleemitter'),
         UserData: require('absolute/userdata'),
-        GraphSerializer: require('absolute/graphserializer')
+        GraphSerializer: require('absolute/graphserializer'),
+        ScrollArea: require('absolute/scrollarea')
     };
 });
