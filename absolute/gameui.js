@@ -315,6 +315,8 @@ function (
     };
 
     GameUI.prototype.pushModal = function (screen, alpha) {
+        var modalBackground = this.buildModalBackground(alpha || 0.5);
+
         if (this.modalBgStack.length > 0) {
             this.stage[0].removeChild(this.modalBgStack[this.modalBgStack.length - 1]);
         }
@@ -322,7 +324,6 @@ function (
             this.hideCurrent();
         }
 
-        var modalBackground = this.buildModalBackground(alpha || 0.5);
         this.modalBgStack.push(modalBackground);
         this.stage[0].addChild(modalBackground);
 
