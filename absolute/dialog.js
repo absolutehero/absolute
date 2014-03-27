@@ -70,7 +70,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                 AudioManager.playSound(this.options.audio.open);
             }
 
-            this.ui.showModal(this);
+            this.ui.pushModal(this);
         };
 
         Dialog.prototype.close = function() {
@@ -78,7 +78,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             if(this.options.audio.close && this.options.audio.close !== '') {
                 AudioManager.playSound(this.options.audio.close);
             }
-            this.ui.hideModal(this);
+            this.ui.popModal(this);
         };
 
         Dialog.prototype._setSize = function() {
@@ -129,15 +129,15 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
         Dialog.prototype._createCloseButton = function () {
 
-            var closeButton = new Button(PIXI.Texture.fromFrame(this.options.images.close),
+            this.closeButton = new Button(PIXI.Texture.fromFrame(this.options.images.close),
                 PIXI.Texture.fromFrame(this.options.images.close), _.bind(this._onClose,this),true);
 
-            closeButton.hitArea = new PIXI.Rectangle( -closeButton.width/3, -closeButton.height/3, closeButton.width * 1.6,
-                closeButton.height * 1.6);
+            this.closeButton.hitArea = new PIXI.Rectangle( -this.closeButton.width/3, -this.closeButton.height/3, this.closeButton.width * 1.6,
+                this.closeButton.height * 1.6);
 
-            closeButton.position.x = this.width - ( closeButton.width / 1.5 );
-            closeButton.position.y = - ( closeButton.height / 3 );
-            this.container.addChild(closeButton);
+            this.closeButton.position.x = this.width - ( this.closeButton.width / 1.5 );
+            this.closeButton.position.y = - ( this.closeButton.height / 3 );
+            this.container.addChild(this.closeButton);
 
         };
 
