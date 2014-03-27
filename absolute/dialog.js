@@ -70,7 +70,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                 AudioManager.playSound(this.options.audio.open);
             }
 
-            this.ui.showModal(this);
+            this.ui.pushModal(this);
         };
 
         Dialog.prototype.close = function() {
@@ -78,7 +78,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             if(this.options.audio.close && this.options.audio.close !== '') {
                 AudioManager.playSound(this.options.audio.close);
             }
-            this.ui.hideModal(this);
+            this.ui.popModal(this);
         };
 
         Dialog.prototype._setSize = function() {
