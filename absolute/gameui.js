@@ -264,6 +264,7 @@ function (
         this.currentScreen.onShow(this.portrait);
     };
 
+    /*
     GameUI.prototype.showModal = function (screen, alpha, hideCurrentScreen) {
 
         this.modal = screen;
@@ -313,8 +314,9 @@ function (
 
         this.modal = null;
     };
+    */
 
-    GameUI.prototype.pushModal = function (screen, alpha) {
+    GameUI.prototype.showModal = function (screen, alpha, hideCurrentScreen) {
         var modalBackground = this.buildModalBackground(alpha || 0.5);
 
         if (this.modalBgStack.length > 0) {
@@ -332,7 +334,7 @@ function (
         screen.onShow();
     };
 
-    GameUI.prototype.popModal = function () {
+    GameUI.prototype.hideModal = function () {
         if (this.modalStack.length > 0) {
             // hide the modal
             var modal = this.modalStack.pop();
