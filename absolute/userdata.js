@@ -69,6 +69,12 @@ define (['absolute/rest'], function (REST) {
 
         isGuest: 1,
 
+        userFirstName: "Guest",
+
+        userGender: "",
+
+        userImageUrl: "",
+
         currentLevel: 0,
 
         _restUrl: function (message, params) {
@@ -85,7 +91,42 @@ define (['absolute/rest'], function (REST) {
             return url;
         },
 
-        initFromServer: function (callback) {
+        init: function (gameId, callback) {
+            this.gameId = gameId;
+
+            // try to grab user data from Facebook
+            if (typeof FB !== "undefined") {
+                FB.getLoginStatus(function(response) {
+                    if (response.status === 'connected') {
+                        FB.api('/me', function(response) {
+                            console.log('Good to see you, ' + response.name + '.');
+                            this.userId = 'fb' + response.id;
+                            this.isGuest = 0;
+                            this.userFirstName = response.first_name;
+                            this.userGender = response.gender;
+
+                            FB.api('/me/picture?type=square&redirect=false', function (response) {
+                                if (response.data) {
+                                    this.userImageUrl = response.data.url;
+                                    this._initSpilApi(callback);
+                                }
+                            }.bind(this));
+                            //graph.facebook.com/craig.robinson/picture?type=squar
+                        }.bind(this));
+                    }
+                    else {
+                        // TODO grab user data from local storage?
+                        this._initSpilApi(callback);
+                    }
+                }.bind(this));
+            }
+            else {
+                // TODO grab user data from local storage?
+                this._initSpilApi(callback);
+            }
+        },
+
+        _initSpilApi: function (callback) {
 
             // 'http://social-dev.spilgames.com/api/init_user/user/test/game/1/guest/1/'
             REST.post(this._restUrl('init_user', { guest: this.isGuest }),
@@ -149,6 +190,8 @@ define (['absolute/rest'], function (REST) {
 
         endLevel: function (score, callback) {
             if (this.currentLevel > 0) {
+                // TODO temp until we get working keys
+                this._userData.state.last_won_level = this.currentLevel;
                 // 'http://social-dev.spilgames.com/api/end_level/user/test/game/1/score/' + score + '/',
                 REST.post(this._restUrl('end_level', { score: score }),
                     function (data) {
@@ -157,6 +200,8 @@ define (['absolute/rest'], function (REST) {
                         callback(true);
                     }.bind(this),
                     function (response) {
+
+
                         console.log('error on end_level: ' + response.message);
                         callback(false);
                     }.bind(this)
@@ -194,6 +239,10 @@ define (['absolute/rest'], function (REST) {
                 return this._userData.items[1].amount;
             }
             return 0;
+        },
+
+        getLastLevelWon: function () {
+            return this._userData.state.last_won_level || 0;
         },
 
         _updateLocalUserData: function (data) {
