@@ -46,6 +46,7 @@ define(function (require) {
         ParticleEmitter: require('absolute/particleemitter'),
         UserData: require('absolute/userdata'),
         GraphSerializer: require('absolute/graphserializer'),
-        ScrollArea: require('absolute/scrollarea')
+        ScrollArea: require('absolute/scrollarea'),
+        REST: require('absolute/rest')
     };
 });
