@@ -39,12 +39,24 @@ function (
 
         var paths = [];
         for (var i = 0; i < total; ++i) {
-            var asset = assets[i];
+            var asset = assets[i],
+                assetType = "image";
+
             if (typeof asset !== "string") {
+                if (asset.type) {
+                    assetType = asset.type;
+                }
                 asset = asset.name;
             }
-            if (asset.indexOf('.json') === -1) {
-                asset += ".json";
+            if (assetType === "image") {
+                if (asset.indexOf('.json') === -1) {
+                    asset += ".json";
+                }
+            }
+            else if (assetType === "font") {
+                if (asset.indexOf('.fnt') === -1) {
+                    asset += ".fnt";
+                }
             }
             paths.push(Platform.artPathPrefix + '/' + ScreenMetrics.getResClass() + '/' + asset);
         }

@@ -47,6 +47,7 @@ define(function (require) {
         UserData: require('absolute/userdata'),
         GraphSerializer: require('absolute/graphserializer'),
         ScrollArea: require('absolute/scrollarea'),
-        REST: require('absolute/rest')
+        REST: require('absolute/rest'),
+        MessageDialog: require('absolute/messagedialog')
     };
 });
