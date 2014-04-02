@@ -17,7 +17,44 @@ define (['absolute/rest'], function (REST) {
                 "amount": 0
             }
              */
-            items: {},
+            items: {
+                "1": {
+                    "item_id": 1,
+                    "item_name": "Key",
+                    "amount": 5
+                },
+                "2": {
+                    "item_id": 2,
+                    "item_name": "extramoves",
+                    "amount": 0
+                },
+                "3": {
+                    "item_id": 3,
+                    "item_name": "time",
+                    "amount": 0
+                },
+                "4": {
+                    "item_id": 4,
+                    "item_name": "hammer",
+                    "amount": 0
+                },
+                "5": {
+                    "item_id": 5,
+                    "item_name": "row",
+                    "amount": 0
+                },
+                "6": {
+                    "item_id": 6,
+                    "item_name": "shuffle",
+                    "amount": 0
+                },
+                "7": {
+                    "item_id": 7,
+                    "item_name": "color",
+                    "amount": 0
+                }
+            },
+
 
             /**
              * State
@@ -40,7 +77,11 @@ define (['absolute/rest'], function (REST) {
              }
              */
             currencies: {
-
+                "1": {
+                    "currency_id": 1,
+                    "amount": 99999,
+                    "name": "test coins"
+                }
             },
 
             /**
@@ -59,6 +100,112 @@ define (['absolute/rest'], function (REST) {
 
         _gameData: {
 
+            "currencies": {},
+
+            "grant_at_star_total": {},
+
+            "levels": {},
+
+            "items": {
+                "1": {
+                    buyable: true,
+                    gift_amount: 1,
+                    giftable: true,
+                    granted_randomly: false,
+                    initial_value: 5,
+                    item_id: 1,
+                    item_name: "Key",
+                    max_amount: 5,
+                    min_amount: 0,
+                    regeneration_time: 0,
+                    requestable: true,
+                    cost: 100
+                },
+                "2": {
+                    buyable: true,
+                    gift_amount: 1,
+                    giftable: true,
+                    granted_randomly: false,
+                    initial_value: 5,
+                    item_id: 1,
+                    item_name: "extramoves",
+                    max_amount: 5,
+                    min_amount: 0,
+                    regeneration_time: 0,
+                    requestable: true,
+                    cost: 100
+                },
+                "3": {
+                    buyable: true,
+                    gift_amount: 1,
+                    giftable: true,
+                    granted_randomly: false,
+                    initial_value: 0,
+                    item_id: 1,
+                    item_name: "time",
+                    max_amount: 5,
+                    min_amount: 0,
+                    regeneration_time: 0,
+                    requestable: true,
+                    cost: 100
+                },
+                "4": {
+                    buyable: true,
+                    gift_amount: 1,
+                    giftable: true,
+                    granted_randomly: false,
+                    initial_value: 0,
+                    item_id: 1,
+                    item_name: "hammer",
+                    max_amount: 5,
+                    min_amount: 0,
+                    regeneration_time: 0,
+                    requestable: true,
+                    cost: 100
+                },
+                "5": {
+                    buyable: true,
+                    gift_amount: 1,
+                    giftable: true,
+                    granted_randomly: false,
+                    initial_value: 0,
+                    item_id: 1,
+                    item_name: "row",
+                    max_amount: 5,
+                    min_amount: 0,
+                    regeneration_time: 0,
+                    requestable: true,
+                    cost: 100
+                },
+                "6": {
+                    buyable: true,
+                    gift_amount: 1,
+                    giftable: true,
+                    granted_randomly: false,
+                    initial_value: 0,
+                    item_id: 1,
+                    item_name: "shuffle",
+                    max_amount: 5,
+                    min_amount: 0,
+                    regeneration_time: 0,
+                    requestable: true,
+                    cost: 100
+                },
+                "7": {
+                    buyable: true,
+                    gift_amount: 1,
+                    giftable: true,
+                    granted_randomly: false,
+                    initial_value: 0,
+                    item_id: 1,
+                    item_name: "color",
+                    max_amount: 5,
+                    min_amount: 0,
+                    regeneration_time: 0,
+                    requestable: true,
+                    cost: 100
+                }
+            }
         },
 
         server: 'http://social-dev.spilgames.com',
@@ -76,6 +223,18 @@ define (['absolute/rest'], function (REST) {
         userImageUrl: "",
 
         currentLevel: 0,
+
+        currencyId: 1,
+
+        itemStringToIdMap: {
+            "key": 1,
+            "extramoves": 2,
+            "time": 3,
+            "hammer": 4,
+            "row": 5,
+            "shuffle": 6,
+            "color": 7
+        },
 
         _restUrl: function (message, params) {
             var url = this.server + '/api/' + message + '/user/' + this.userId + '/game/' + this.gameId;
@@ -133,32 +292,22 @@ define (['absolute/rest'], function (REST) {
                 function (data) {
                     console.log(data);
 
-                    if (data.scores) {
-                        this._userData.scores = data.scores;
-                    }
+                    this._updateLocalUserData(data);
 
-                    if (data.state) {
-                        this._userData.state = data.state;
-                    }
-
-                    if (data.items) {
-                        this._userData.items = data.items;
-                    }
-
-                    if (data.currencies) {
-                        this._userData.currencies = data.currencies;
-                    }
+                    // XXXCBR grant us some test currency
+                    this._userData.currencies[this.currencyId].amount = 1000;
 
                     // 'http://social-dev.spilgames.com/api/game_config/user/test/game/1/'
                     REST.get(this._restUrl('game_config', {}),
                         function (data) {
                             console.log(data);
+                            this._updateLocalGameData(data);
                             callback(true);
-                        },
+                        }.bind(this),
                         function (response) {
                             console.log('error on game_config:' + response.message);
                             callback(false);
-                        }
+                        }.bind(this)
                     );
 
                 }.bind(this),
@@ -201,7 +350,6 @@ define (['absolute/rest'], function (REST) {
                     }.bind(this),
                     function (response) {
 
-
                         console.log('error on end_level: ' + response.message);
                         callback(false);
                     }.bind(this)
@@ -209,10 +357,27 @@ define (['absolute/rest'], function (REST) {
             }
         },
 
-        buyItem: function (itemId, currencyId, callback) {
+        buyItem: function (itemId, callback) {
 
-            // 'http://social-dev.spilgames.com/api/buy_item/user/test/game/1/item/' + itemId + '/currency/' + currencyId + '/',
-            REST.post(this._restUrl('buy_item', { item: itemId, currency: currencyId }),
+            if (typeof itemId === "string") {
+                itemId = this._itemIdFromString(itemId);
+            }
+
+            // XXXCBR: temporarily fake purchases for items other than keys until
+            // Spil gives us access to the admin tool to config new items
+            if (itemId > 1) {
+                if (this.getCurrencyBalance() >= this._gameData.items[itemId].cost) {
+                    this._userData.currencies[this.currencyId].amount -= this._gameData.items[itemId].cost;
+                    this._userData.items[itemId].amount++;
+                    callback(true);
+                }
+                else {
+                    callback(false);
+                }
+                return;
+            }
+
+            REST.post(this._restUrl('buy_item', { item: itemId, currency: this.currencyId }),
                 function (data) {
                     console.log(data);
                     this._updateLocalUserData(data);
@@ -226,8 +391,53 @@ define (['absolute/rest'], function (REST) {
 
         },
 
-        useItem: function (itemId) {
+        useItem: function (itemId, callback) {
+            if (typeof itemId === "string") {
+                itemId = this._itemIdFromString(itemId);
+            }
 
+            // XXXCBR: temporarily fake usage for items other than keys until
+            // Spil gives us access to the admin tool to config new items
+            if (itemId > 1) {
+                if (this._userData.items[itemId].amount > 0) {
+                    this._userData.items[itemId].amount--;
+                    callback(true);
+                }
+                else {
+                    callback(false);
+                }
+                return;
+            }
+
+            REST.post(this._restUrl('use_item', { item: itemId, currency: this.currencyId }),
+                function (data) {
+                    console.log(data);
+                    this._updateLocalUserData(data);
+                    callback(true);
+                }.bind(this),
+                function (response) {
+                    console.log('error on use_item: ' + response.message);
+                    callback(false);
+                }.bind(this)
+            );
+
+        },
+
+        getItemBalance: function (itemId) {
+            if (typeof itemId === "string") {
+                itemId = this._itemIdFromString(itemId);
+            }
+
+            return this._userData.items[itemId].amount;
+        },
+
+        buyCurrency: function (amount) {
+            // XXXCBR temporarily fake currency purchase until we have API from Spil
+            this._userData.currencies[this.currencyId].amount += amount;
+        },
+
+        getCurrencyBalance: function () {
+            return this._userData.currencies[this.currencyId].amount
         },
 
         isLevelLocked: function (level) {
@@ -246,15 +456,83 @@ define (['absolute/rest'], function (REST) {
         },
 
         _updateLocalUserData: function (data) {
+            var i;
+
             if (data.items) {
-                for (var i in data.items) {
+                for (i in data.items) {
                     if (data.items.hasOwnProperty(i)) {
-                        if (data.items[i].item_id) {
-                            this._userData.items[data.items[i].item_id] = data.items[i];
-                        }
+                        this._userData.items[i] = data.items[i];
                     }
                 }
             }
+
+            if (data.scores) {
+                for (i in data.scores) {
+                    if (data.scores.hasOwnProperty(i)) {
+                        this._userData.scores[i] = data.scores[i];
+                    }
+                }
+            }
+
+            if (data.currencies) {
+                for (i in data.currencies) {
+                    if (data.currencies.hasOwnProperty(i)) {
+                        this._userData.currencies[i] = data.currencies[i];
+                    }
+                }
+            }
+
+            if (data.state) {
+                for (i in data.state) {
+                    if (data.state.hasOwnProperty(i)) {
+                        this._userData.state[i] = data.state[i];
+                    }
+                }
+            }
+        },
+
+        _updateLocalGameData: function (data) {
+            var i;
+
+            if (data.items) {
+                for (i in data.items) {
+                    if (data.items.hasOwnProperty(i)) {
+                        this._gameData.items[i] = data.items[i];
+                    }
+                }
+            }
+
+            if (data.grant_at_star_total) {
+                for (i in data.grant_at_star_total) {
+                    if (data.grant_at_star_total.hasOwnProperty(i)) {
+                        this._gameData.grant_at_star_total[i] = data.grant_at_star_total[i];
+                    }
+                }
+            }
+
+            if (data.currencies) {
+                for (i in data.currencies) {
+                    if (data.currencies.hasOwnProperty(i)) {
+                        this._gameData.currencies[i] = data.currencies[i];
+                    }
+                }
+            }
+
+            if (data.levels) {
+                for (i in data.levels) {
+                    if (data.levels.hasOwnProperty(i)) {
+                        this._gameData.levels[i] = data.levels[i];
+                    }
+                }
+            }
+        },
+
+        _itemIdFromString: function (itemName) {
+            if (this.itemStringToIdMap.hasOwnProperty(itemName.toLowerCase())) {
+                return this.itemStringToIdMap[itemName.toLowerCase()];
+            }
+
+            return 0;
         }
     };
 
