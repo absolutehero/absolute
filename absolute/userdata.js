@@ -431,6 +431,10 @@ define (['absolute/rest'], function (REST) {
             return this._userData.items[itemId].amount;
         },
 
+        hasMaxItems: function (itemId) {
+            return this._userData.items[itemId].amount = this._gameData.items[itemId].max_amount;
+        },
+
         buyCurrency: function (amount) {
             // XXXCBR temporarily fake currency purchase until we have API from Spil
             this._userData.currencies[this.currencyId].amount += amount;
