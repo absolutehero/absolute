@@ -31,6 +31,9 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                 'audio' : {
                     'close': '',
                     'open': 'show_details_window'
+                },
+                'tween': {
+                    'type': 'none'
                 }
             };
 
@@ -70,7 +73,22 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                 AudioManager.playSound(this.options.audio.open);
             }
 
+            if (this.options.tween.type !== 'none') {
+                var self = this,
+                    endY = this.position.y;
+
+                this.position.y = this.ui.height;
+                new TWEEN.Tween({ y: this.position.y })
+                    .to({y: endY }, 500)
+                    .easing(TWEEN.Easing.Elastic.Out)
+                    .onUpdate(function () {
+                        self.position.y = this.y;
+                    })
+                    .start();
+            }
+
             this.ui.showModal(this);
+
         };
 
         Dialog.prototype.close = function() {

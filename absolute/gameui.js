@@ -50,6 +50,8 @@ function (
         this.refreshBackground = false;
         this.backGroundColor = backgroundColor;
         this.supportsOrientationChange = !!supportsOrientationChange;
+        this.modalStack = [];
+        this.modalBgStack = [];
 
         this.stage.push(new PIXI.Stage(0x0, true));
         this.stage.push(new PIXI.Stage(0x0, true));
@@ -262,6 +264,7 @@ function (
         this.currentScreen.onShow(this.portrait);
     };
 
+    /*
     GameUI.prototype.showModal = function (screen, alpha, hideCurrentScreen) {
 
         this.modal = screen;
@@ -311,7 +314,53 @@ function (
 
         this.modal = null;
     };
+    */
 
+    GameUI.prototype.showModal = function (screen, alpha, hideCurrentScreen) {
+        var modalBackground = this.buildModalBackground(alpha || 0.5);
+
+        if (this.modalBgStack.length > 0) {
+            this.stage[0].removeChild(this.modalBgStack[this.modalBgStack.length - 1]);
+        }
+        else {
+            this.hideCurrent();
+        }
+
+        this.modalBgStack.push(modalBackground);
+        this.stage[0].addChild(modalBackground);
+
+        this.modalStack.push(screen);
+        this.stage[0].addChild(screen);
+        screen.onShow();
+    };
+
+    GameUI.prototype.hideModal = function () {
+        if (this.modalStack.length > 0) {
+            // hide the modal
+            var modal = this.modalStack.pop();
+            modal.onHide();
+            this.stage[0].removeChild(modal);
+
+            // remove the background
+            var modalBG = this.modalBgStack.pop();
+            if(typeof modalBG !== 'undefined' && modalBG !== null) {
+                this.stage[0].removeChild(modalBG);
+            } else if (this.stage[1].children.length > 0) {
+                var oldBackground = this.stage[1].getChildAt(0);
+                this.stage[1].removeChild(oldBackground);
+            }
+
+            // restore the last modal or screen
+            var l = this.modalStack.length;
+            if (l === 0) {
+                this.showCurrent();
+            }
+            else {
+                this.stage[0].addChild(this.modalBgStack[l - 1]);
+                this.stage[0].addChild(this.modalStack[l - 1]);
+            }
+        }
+    };
 
     GameUI.prototype.hideCurrent = function () {
 
@@ -325,6 +374,19 @@ function (
             this.stage[1].removeChild(oldBackground);
         }
 
+    };
+
+    GameUI.prototype.buildModalBackground = function (alpha) {
+        var osr = new PIXI.CanvasRenderer(this.width, this.height, null, true);
+        var graphics = new PIXI.Graphics();
+        graphics.beginFill(0x010101, alpha); // PIXI has a bug - won't render pure black
+        graphics.drawRect(0, 0, this.width, this.height);
+        graphics.endFill();
+        this.stage[0].addChild(graphics);
+        osr.render(this.stage[0]);
+        this.stage[0].removeChild(graphics);
+
+        return new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
     };
 
     GameUI.prototype.showCurrent = function () {

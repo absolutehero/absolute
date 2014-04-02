@@ -47,6 +47,7 @@ define(function (require) {
         UserData: require('absolute/userdata'),
         GraphSerializer: require('absolute/graphserializer'),
         ScrollArea: require('absolute/scrollarea'),
-        NineSlice: require('absolute/nineslice')
+        NineSlice: require('absolute/nineslice'),
+        MessageDialog: require('absolute/messagedialog')
     };
 });
