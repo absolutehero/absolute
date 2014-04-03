@@ -9,7 +9,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
             pages: [],
             pagePadding: {x: Coords.x(10), y: Coords.y(100)},
             borderThickness: {left: Coords.x(18), right: Coords.x(35)},
-            interfacePadding: Coords.x(50),
+            interfacePadding: {arrows: {x:Coords.x(50),y:Coords.y(50)}, pips: Coords.y(50)},
             buttonScale: 0.5,
             pageButtonImage: 'btn_main_LAGOONRETURN.png',
             pageChangedCallback: function(){},
@@ -26,7 +26,6 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         Dialog.call(this, ui, options);
 
         this.pages = this.options.pages;
-
         this.initContent();
         this.initTouchInterface();
         this.initNonTouchInterface();
@@ -88,10 +87,10 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
             }.bind(this),
             false
         );
-        var buttonY = this.height - (this.nextpageButton.height * this.options.buttonScale) - this.options.interfacePadding;
+        var buttonY = this.height - (this.nextpageButton.height * this.options.buttonScale) - this.options.interfacePadding.arrows.y;
         this.nextpageButton.scale.x = -1 * this.options.buttonScale;
         this.nextpageButton.scale.y = this.options.buttonScale;
-        this.nextpageButton.position.x = this.width - this.options.interfacePadding;
+        this.nextpageButton.position.x = this.width - this.options.interfacePadding.arrows.x;
         this.nextpageButton.position.y = buttonY;
         this.addChild(this.nextpageButton);
 
@@ -107,7 +106,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         );
         this.prevpageButton.position.y = buttonY;
         this.prevpageButton.scale.x = this.prevpageButton.scale.y = this.options.buttonScale;
-        this.prevpageButton.position.x = this.options.interfacePadding;
+        this.prevpageButton.position.x = this.options.interfacePadding.arrows.x;
         this.addChild(this.prevpageButton);
 
     };
@@ -117,7 +116,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         if(this.pages.length > 1) {
             this.pips = new PageIndicator(this.pages.length, 0, {clickCallback: this.scrollToPage.bind(this)});
             this.pips.position.x = (this.width - this.pips.width) / 2;
-            this.pips.position.y = this.height - this.pips.height - this.options.interfacePadding;
+            this.pips.position.y = this.height - this.pips.height - this.options.interfacePadding.pips;
             this.addChild(this.pips);
         }
 
