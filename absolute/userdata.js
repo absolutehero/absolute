@@ -104,7 +104,197 @@ define (['absolute/rest'], function (REST) {
 
             "grant_at_star_total": {},
 
-            "levels": {},
+            "levels": {
+                "1": {
+                    "level_id": 1,
+                    "level_data": "{\"position\":{\"x\":350,\"y\":556}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 1,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 1,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 1,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        2
+                    ]
+                },
+                "2": {
+                    "level_id": 2,
+                    "level_data": "{\"position\":{\"x\":625,\"y\":440}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 2,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 2,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 2,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        3
+                    ]
+                },
+                "3": {
+                    "level_id": 3,
+                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 3,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 3,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 3,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        4
+                    ]
+                },
+                "4": {
+                    "level_id": 4,
+                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 4,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 4,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 4,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        5
+                    ]
+                },
+                "5": {
+                    "level_id": 5,
+                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 5,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 5,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 5,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        6
+                    ]
+                },
+                "7": {
+                    "level_id": 7,
+                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 7,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 7,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 7,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        8
+                    ]
+                },
+                "8": {
+                    "level_id": 8,
+                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 8,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 8,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 8,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        9
+                    ]
+                },
+                "9": {
+                    "level_id": 9,
+                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 9,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 9,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 9,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        10
+                    ]
+                },
+                "10": {
+                    "level_id": 10,
+                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
+                    "stars": {
+                        "0": {
+                            "level_id": 10,
+                            "score": 250
+                        },
+                        "1": {
+                            "level_id": 10,
+                            "score": 500
+                        },
+                        "2": {
+                            "level_id": 10,
+                            "score": 750
+                        }
+                    },
+                    "next_level_ids": [
+                        1
+                    ]
+                }
+            },
 
             "items": {
                 "1": {
@@ -300,7 +490,8 @@ define (['absolute/rest'], function (REST) {
                     // 'http://social-dev.spilgames.com/api/game_config/user/test/game/1/'
                     REST.get(this._restUrl('game_config', {}),
                         function (data) {
-                            console.log(data);
+                            console.log(JSON.stringify(data, null, 4));
+
                             this._updateLocalGameData(data);
                             callback(true);
                         }.bind(this),
@@ -341,6 +532,12 @@ define (['absolute/rest'], function (REST) {
             if (this.currentLevel > 0) {
                 // TODO temp until we get working keys
                 this._userData.state.last_won_level = this.currentLevel;
+                this._userData.scores[this.currentLevel] = {
+                    "level_id": this.currentLevel,
+                    "score": score,
+                    "user_id": this.userId,
+                    "stars": this._getStarsForScore(this.currentLevel, score)
+                };
                 // 'http://social-dev.spilgames.com/api/end_level/user/test/game/1/score/' + score + '/',
                 REST.post(this._restUrl('end_level', { score: score }),
                     function (data) {
@@ -349,7 +546,6 @@ define (['absolute/rest'], function (REST) {
                         callback(true);
                     }.bind(this),
                     function (response) {
-
                         console.log('error on end_level: ' + response.message);
                         callback(false);
                     }.bind(this)
@@ -448,6 +644,13 @@ define (['absolute/rest'], function (REST) {
             return level > this._userData.state.last_won_level || 0;
         },
 
+        getLevelStars: function (level) {
+            if (this._userData.scores[level]) {
+                return this._userData.scores[level].stars;
+            }
+            return 0;
+        },
+
         getNumKeys: function () {
             if (this._userData.items[1]) {
                 return this._userData.items[1].amount;
@@ -537,7 +740,22 @@ define (['absolute/rest'], function (REST) {
             }
 
             return 0;
+        },
+
+        _getStarsForScore: function (level, score) {
+            var starThresholds = this._gameData.levels[level].stars;
+
+            for (var i = 0; i < 3; i += 1) {
+                console.log ("i" + i + "score " + score + " threshold " + starThresholds[i].score);
+                if (score < starThresholds[i].score) {
+                    return i;
+                }
+            }
+
+            return 3;
         }
+
+
     };
 
     return UserData;
