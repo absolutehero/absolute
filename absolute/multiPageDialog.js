@@ -16,12 +16,12 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
             startPage: 0
         };
 
-        this.initOptionsScreen(ui, _.extend(defaultOptions, options));
+        this.initMultiPageDialog(ui, _.extend(defaultOptions, options));
     };
 
     MultiPageDialog.prototype = Object.create(Dialog.prototype);
 
-    MultiPageDialog.prototype.initOptionsScreen = function (ui, options) {
+    MultiPageDialog.prototype.initMultiPageDialog = function (ui, options) {
 
         Dialog.call(this, ui, options);
 

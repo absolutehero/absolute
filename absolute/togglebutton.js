@@ -44,6 +44,9 @@ define(['pixi', 'absolute/button'], function(PIXI, Button) {
             this.addChild(this.disabledButton);
         }
 
+        this.width = PIXI.Texture.fromFrame(baseName + '_1.png').width;
+        this.height = PIXI.Texture.fromFrame(baseName + '_1.png').height;
+
     };
 
     ToggleButton.prototype.onAction = function () {
