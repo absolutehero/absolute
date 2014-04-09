@@ -12,7 +12,11 @@ define (['absolute/rest'], function (REST) {
 
         _gameData: null,
 
-        server: 'http://absoluteherogames.com:7777', //'http://localhost:7777', //http://social-dev.spilgames.com',
+        //server: http://social-dev.spilgames.com',
+
+        server: 'http://absoluteherogames.com:7777',
+
+        //server: 'http://localhost:7777',
 
         userId: 'test' + (1000000 * Math.random()).toFixed(),
 
@@ -214,9 +218,18 @@ define (['absolute/rest'], function (REST) {
             return this._userData.items[itemId].amount = this._gameData.items[itemId].max_amount;
         },
 
-        buyCurrency: function (amount) {
-            // XXXCBR temporarily fake currency purchase until we have API from Spil
-            this._userData.currencies[this.currencyId].amount += amount;
+        buyCurrency: function (amount, callback) {
+            REST.post(this._restUrl('buy_currency', { currency: this.currencyId, amount: amount }),
+                function (data) {
+                    console.log(data);
+                    this._updateLocalUserData(data);
+                    callback(true);
+                }.bind(this),
+                function (response) {
+                    console.log('error on buy_currency: ' + response.message);
+                    callback(false);
+                }.bind(this)
+            );
         },
 
         getCurrencyBalance: function () {
