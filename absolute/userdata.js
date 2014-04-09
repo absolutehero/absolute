@@ -8,397 +8,11 @@ define (['absolute/rest'], function (REST) {
 
     var UserData = {
 
-        _userData: {
-            /**
-             * Items:
-             "1": {
-                "item_id": 1,
-                "item_name": "Key",
-                "amount": 0
-            }
-             */
-            items: {
-                "1": {
-                    "item_id": 1,
-                    "item_name": "Key",
-                    "amount": 5
-                },
-                "2": {
-                    "item_id": 2,
-                    "item_name": "extramoves",
-                    "amount": 0
-                },
-                "3": {
-                    "item_id": 3,
-                    "item_name": "time",
-                    "amount": 0
-                },
-                "4": {
-                    "item_id": 4,
-                    "item_name": "hammer",
-                    "amount": 0
-                },
-                "5": {
-                    "item_id": 5,
-                    "item_name": "row",
-                    "amount": 0
-                },
-                "6": {
-                    "item_id": 6,
-                    "item_name": "shuffle",
-                    "amount": 0
-                },
-                "7": {
-                    "item_id": 7,
-                    "item_name": "color",
-                    "amount": 0
-                }
-            },
+        _userData: null,
 
+        _gameData: null,
 
-            /**
-             * State
-             */
-            state: {
-                user_id: "",
-                abgroup: "",
-                last_won_level: null,
-                is_guest: true,
-                game_id: null,
-                global_userData: ""
-            },
-
-            /**
-             * Currencies
-             "1": {
-                 "currency_id": 1,
-                 "amount": 87800,
-                 "name": "test coins"
-             }
-             */
-            currencies: {
-                "1": {
-                    "currency_id": 1,
-                    "amount": 99999,
-                    "name": "test coins"
-                }
-            },
-
-            /**
-             * Scores
-             "1": {
-                 "level_id": 1,
-                 "score": 100,
-                 "user_id": "test",
-                 "stars": 2
-             }
-             */
-            scores: {
-
-            }
-        },
-
-        _gameData: {
-
-            "currencies": {},
-
-            "grant_at_star_total": {},
-
-            "levels": {
-                "1": {
-                    "level_id": 1,
-                    "level_data": "{\"position\":{\"x\":350,\"y\":556}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 1,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 1,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 1,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        2
-                    ]
-                },
-                "2": {
-                    "level_id": 2,
-                    "level_data": "{\"position\":{\"x\":625,\"y\":440}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 2,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 2,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 2,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        3
-                    ]
-                },
-                "3": {
-                    "level_id": 3,
-                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 3,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 3,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 3,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        4
-                    ]
-                },
-                "4": {
-                    "level_id": 4,
-                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 4,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 4,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 4,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        5
-                    ]
-                },
-                "5": {
-                    "level_id": 5,
-                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 5,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 5,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 5,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        6
-                    ]
-                },
-                "7": {
-                    "level_id": 7,
-                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 7,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 7,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 7,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        8
-                    ]
-                },
-                "8": {
-                    "level_id": 8,
-                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 8,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 8,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 8,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        9
-                    ]
-                },
-                "9": {
-                    "level_id": 9,
-                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 9,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 9,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 9,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        10
-                    ]
-                },
-                "10": {
-                    "level_id": 10,
-                    "level_data": "{\"position\":{\"x\":385,\"y\":313}}",
-                    "stars": {
-                        "0": {
-                            "level_id": 10,
-                            "score": 250
-                        },
-                        "1": {
-                            "level_id": 10,
-                            "score": 500
-                        },
-                        "2": {
-                            "level_id": 10,
-                            "score": 750
-                        }
-                    },
-                    "next_level_ids": [
-                        1
-                    ]
-                }
-            },
-
-            "items": {
-                "1": {
-                    buyable: true,
-                    gift_amount: 1,
-                    giftable: true,
-                    granted_randomly: false,
-                    initial_value: 5,
-                    item_id: 1,
-                    item_name: "Key",
-                    max_amount: 5,
-                    min_amount: 0,
-                    regeneration_time: 0,
-                    requestable: true,
-                    cost: 100
-                },
-                "2": {
-                    buyable: true,
-                    gift_amount: 1,
-                    giftable: true,
-                    granted_randomly: false,
-                    initial_value: 5,
-                    item_id: 1,
-                    item_name: "extramoves",
-                    max_amount: 5,
-                    min_amount: 0,
-                    regeneration_time: 0,
-                    requestable: true,
-                    cost: 100
-                },
-                "3": {
-                    buyable: true,
-                    gift_amount: 1,
-                    giftable: true,
-                    granted_randomly: false,
-                    initial_value: 0,
-                    item_id: 1,
-                    item_name: "time",
-                    max_amount: 5,
-                    min_amount: 0,
-                    regeneration_time: 0,
-                    requestable: true,
-                    cost: 100
-                },
-                "4": {
-                    buyable: true,
-                    gift_amount: 1,
-                    giftable: true,
-                    granted_randomly: false,
-                    initial_value: 0,
-                    item_id: 1,
-                    item_name: "hammer",
-                    max_amount: 5,
-                    min_amount: 0,
-                    regeneration_time: 0,
-                    requestable: true,
-                    cost: 100
-                },
-                "5": {
-                    buyable: true,
-                    gift_amount: 1,
-                    giftable: true,
-                    granted_randomly: false,
-                    initial_value: 0,
-                    item_id: 1,
-                    item_name: "row",
-                    max_amount: 5,
-                    min_amount: 0,
-                    regeneration_time: 0,
-                    requestable: true,
-                    cost: 100
-                },
-                "6": {
-                    buyable: true,
-                    gift_amount: 1,
-                    giftable: true,
-                    granted_randomly: false,
-                    initial_value: 0,
-                    item_id: 1,
-                    item_name: "shuffle",
-                    max_amount: 5,
-                    min_amount: 0,
-                    regeneration_time: 0,
-                    requestable: true,
-                    cost: 100
-                },
-                "7": {
-                    buyable: true,
-                    gift_amount: 1,
-                    giftable: true,
-                    granted_randomly: false,
-                    initial_value: 0,
-                    item_id: 1,
-                    item_name: "color",
-                    max_amount: 5,
-                    min_amount: 0,
-                    regeneration_time: 0,
-                    requestable: true,
-                    cost: 100
-                }
-            }
-        },
-
-        server: 'http://social-dev.spilgames.com',
+        server: 'http://absoluteherogames.com:7777', //'http://localhost:7777', //http://social-dev.spilgames.com',
 
         userId: 'test' + (1000000 * Math.random()).toFixed(),
 
@@ -482,17 +96,14 @@ define (['absolute/rest'], function (REST) {
                 function (data) {
                     console.log(data);
 
-                    this._updateLocalUserData(data);
-
-                    // XXXCBR grant us some test currency
-                    this._userData.currencies[this.currencyId].amount = 1000;
+                    this._userData = data;
 
                     // 'http://social-dev.spilgames.com/api/game_config/user/test/game/1/'
                     REST.get(this._restUrl('game_config', {}),
                         function (data) {
-                            console.log(JSON.stringify(data, null, 4));
+                            console.log(data);
 
-                            this._updateLocalGameData(data);
+                            this._gameData = data;
                             callback(true);
                         }.bind(this),
                         function (response) {
@@ -530,19 +141,17 @@ define (['absolute/rest'], function (REST) {
 
         endLevel: function (score, callback) {
             if (this.currentLevel > 0) {
-                // TODO temp until we get working keys
-                this._userData.state.last_won_level = this.currentLevel;
-                this._userData.scores[this.currentLevel] = {
-                    "level_id": this.currentLevel,
-                    "score": score,
-                    "user_id": this.userId,
-                    "stars": this._getStarsForScore(this.currentLevel, score)
-                };
+
                 // 'http://social-dev.spilgames.com/api/end_level/user/test/game/1/score/' + score + '/',
                 REST.post(this._restUrl('end_level', { score: score }),
                     function (data) {
                         console.log(data);
                         this._updateLocalUserData(data);
+                        console.log("this._userData ");
+                        console.log(this._userData);
+
+                        this._updateLastLevelWon();
+
                         callback(true);
                     }.bind(this),
                     function (response) {
@@ -557,20 +166,6 @@ define (['absolute/rest'], function (REST) {
 
             if (typeof itemId === "string") {
                 itemId = this._itemIdFromString(itemId);
-            }
-
-            // XXXCBR: temporarily fake purchases for items other than keys until
-            // Spil gives us access to the admin tool to config new items
-            if (itemId > 1) {
-                if (this.getCurrencyBalance() >= this._gameData.items[itemId].cost) {
-                    this._userData.currencies[this.currencyId].amount -= this._gameData.items[itemId].cost;
-                    this._userData.items[itemId].amount++;
-                    callback(true);
-                }
-                else {
-                    callback(false);
-                }
-                return;
             }
 
             REST.post(this._restUrl('buy_item', { item: itemId, currency: this.currencyId }),
@@ -592,18 +187,6 @@ define (['absolute/rest'], function (REST) {
                 itemId = this._itemIdFromString(itemId);
             }
 
-            // XXXCBR: temporarily fake usage for items other than keys until
-            // Spil gives us access to the admin tool to config new items
-            if (itemId > 1) {
-                if (this._userData.items[itemId].amount > 0) {
-                    this._userData.items[itemId].amount--;
-                    callback(true);
-                }
-                else {
-                    callback(false);
-                }
-                return;
-            }
 
             REST.post(this._restUrl('use_item', { item: itemId, currency: this.currencyId }),
                 function (data) {
@@ -645,8 +228,12 @@ define (['absolute/rest'], function (REST) {
         },
 
         getLevelStars: function (level) {
-            if (this._userData.scores[level]) {
-                return this._userData.scores[level].stars;
+            for (var l in this._userData.scores) {
+                if (this._userData.scores.hasOwnProperty(l)) {
+                    if (this._userData.scores[l].level_id === level) {
+                        return this._userData.scores[l].stars;
+                    }
+                }
             }
             return 0;
         },
@@ -660,6 +247,29 @@ define (['absolute/rest'], function (REST) {
 
         getLastLevelWon: function () {
             return this._userData.state.last_won_level || 0;
+        },
+
+        getStarTotal: function () {
+            var total = 0;
+            for (var i in this._userData.scores) {
+                if (this._userData.scores.hasOwnProperty(i)) {
+                    total += this._userData.scores[i].stars;
+                }
+            }
+
+            return stars;
+        },
+
+        getItemForStarTotal: function (stars) {
+
+        },
+
+        getStarTotalForItem: function (item) {
+
+        },
+
+        getNextEarnableItem: function (stars) {
+
         },
 
         _updateLocalUserData: function (data) {
@@ -734,6 +344,18 @@ define (['absolute/rest'], function (REST) {
             }
         },
 
+        _updateLastLevelWon: function () {
+            var last_won_level = 0;
+            for (var i in this._userData.scores) {
+                if (this._userData.scores.hasOwnProperty(i)) {
+                    if (this._userData.scores[i].stars > 0) {
+                        last_won_level = this._userData.scores[i].level_id;
+                    }
+                }
+            }
+            this._userData.state.last_won_level = last_won_level;
+        },
+
         _itemIdFromString: function (itemName) {
             if (this.itemStringToIdMap.hasOwnProperty(itemName.toLowerCase())) {
                 return this.itemStringToIdMap[itemName.toLowerCase()];
@@ -742,17 +364,20 @@ define (['absolute/rest'], function (REST) {
             return 0;
         },
 
-        _getStarsForScore: function (level, score) {
-            var starThresholds = this._gameData.levels[level].stars;
+        _dump: function () {
+            var out = {};
 
-            for (var i = 0; i < 3; i += 1) {
-                console.log ("i" + i + "score " + score + " threshold " + starThresholds[i].score);
-                if (score < starThresholds[i].score) {
-                    return i;
-                }
-            }
+            out.games = {};
 
-            return 3;
+            out.games[1] = {};
+
+            out.games[1].game_config = this._gameData;
+
+            out.games[1].users = {};
+
+            out.games[1].users[this.userId] = this._userData;
+
+            //console.log(JSON.stringify(out, null, 4));
         }
 
 
