@@ -249,6 +249,17 @@ define (['absolute/rest'], function (REST) {
             return this._userData.state.last_won_level || 0;
         },
 
+        getStarGoals: function (levelId) {
+            if (this._gameData.levels[levelId] && this._gameData.levels[levelId].stars) {
+                var stars = this._gameData.levels[levelId].stars;
+                return [stars["0"].score, stars["1"].score, stars["2"].score]
+            }
+
+            throw("Level " + levelId + "has no star goals configured");
+            // default for levels not configured -- should never happen
+            return [100, 200, 300];
+        },
+
         getStarTotal: function () {
             var total = 0;
             for (var i in this._userData.scores) {
