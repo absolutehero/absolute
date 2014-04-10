@@ -36,7 +36,7 @@ define (['absolute/rest'], function (REST) {
 
         itemStringToIdMap: {
             "key": 1,
-            "extramoves": 2,
+            "extraMoves": 2,
             "time": 3,
             "hammer": 4,
             "row": 5,
