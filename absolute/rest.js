@@ -4,7 +4,7 @@
  * Time: 4:33 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(function () {
+define(['pixi'], function (PIXI) {
 
     var REST = {
 
@@ -17,25 +17,28 @@ define(function () {
         },
 
         request: function(method, url, success, error) {
-            var request = new XMLHttpRequest();
+            this.ajaxRequest = new PIXI.AjaxRequest(true);
 
-            request.open(method, url, true);
-            request.responseType = 'json';
-
-            request.onload = function () {
-                if (request.status !== 200) {
-                    if (typeof error === "function") {
-                        error(request.response);
+            this.ajaxRequest.onreadystatechange = function () {
+                if (this.ajaxRequest.readyState === 4) {
+                    if (this.ajaxRequest.status === 200 || window.location.protocol.indexOf('http') === -1) {
+                        if (typeof success === "function") {
+                            success(JSON.parse(this.ajaxRequest.responseText));
+                        }
                     }
-                }
-                else {
-                    if (typeof success === "function") {
-                        success(request.response);
+                    else {
+                        if (typeof error === "function") {
+                            error(JSON.parse(this.ajaxRequest.responseText));
+                        }
                     }
                 }
             }.bind(this);
 
-            request.send();
+            this.ajaxRequest.open('GET', url, true);
+            if (this.ajaxRequest.overrideMimeType) {
+                this.ajaxRequest.overrideMimeType('application/json');
+            }
+            this.ajaxRequest.send(null);
         }
 
 

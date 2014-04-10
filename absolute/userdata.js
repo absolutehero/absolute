@@ -44,6 +44,16 @@ define (['absolute/rest'], function (REST) {
             "color": 7
         },
 
+        itemIdToStringMap: {
+            "1": "key",
+            "2": "extraMoves",
+            "3": "time",
+            "4": "hammer",
+            "5": "row",
+            "6": "shuffle",
+            "7": "color"
+        },
+
         _restUrl: function (message, params) {
             var url = this.server + '/api/' + message + '/user/' + this.userId + '/game/' + this.gameId;
 
@@ -259,7 +269,10 @@ define (['absolute/rest'], function (REST) {
         },
 
         getLastLevelWon: function () {
-            return this._userData.state.last_won_level || 0;
+            if (this._userData.state.last_won_level) {
+                return this._userData.state.last_won_level;
+            }
+            return 0;
         },
 
         getStarGoals: function (levelId) {
@@ -281,7 +294,24 @@ define (['absolute/rest'], function (REST) {
                 }
             }
 
-            return stars;
+            return total;
+        },
+
+        getNextBoosterAward: function () {
+            var currentStars = this.getStarTotal();
+
+            for (var i in this._gameData.grant_at_star_total) {
+                var st = this._gameData.grant_at_star_total[i];
+
+                if (st.stars > currentStars) {
+                    return {
+                        stars: st.stars,
+                        booster: this.itemIdToStringMap[st.item_id]
+                    }
+                }
+            }
+
+            return {stars: 0, booster: null};
         },
 
         getItemForStarTotal: function (stars) {
