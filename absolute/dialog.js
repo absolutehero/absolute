@@ -108,12 +108,14 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
             if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
                 this.width = getPercentageSize(this.ui.width, this.options.width);
+                this.options.width = this.width;
             } else {
                 this.width = this.options.width;
             }
 
             if(typeof this.options.height === 'string' && this.options.height.indexOf('%') > -1) {
                 this.height = getPercentageSize(this.ui.height, this.options.height);
+                this.options.height = this.height;
             } else {
                 this.height = this.options.height;
             }
