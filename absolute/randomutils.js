@@ -7,7 +7,15 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
 
         distributeItems: function(ui, items, areaRect, randomItems, options) {
 
-            options = _.extend({'minSpacing': 100, 'scaleWithY':true, 'minScale': 0.3, 'minAlpha': 0.2 }, options);
+            options = _.extend({
+                'minSpacing': 100,
+                'scaleWithY':true,
+                'minScale': 0.3,
+                'minAlpha': 0.2,
+                'lockY': null,
+                'lockX': null,
+                'shade': false
+            }, options);
             this.ui = ui;
             areaRect.area = areaRect.width * areaRect.height;
 
@@ -39,8 +47,31 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
 
                         }
                         randomItem.sprite = new PIXI.Sprite.fromFrame(randomItem.url);
-                        randomItem.sprite.position.x = x;
-                        randomItem.sprite.position.y = y;
+
+                        if(options.shade) {
+
+                            var shadedSprite = new PIXI.Sprite.fromFrame(randomItem.url);
+                            shadedSprite.tint = 0x000000;
+                            shadedSprite.alpha = 0.8;
+                            shadedSprite.blendMode = PIXI.blendModes.OVERLAY;
+
+                            randomItem.sprite.addChild(shadedSprite);
+                        }
+
+
+                        if(options.lockX !== null) {
+                            randomItem.sprite.position.x = 0;
+                        } else {
+                            randomItem.sprite.position.x = x;
+                        }
+                        if(options.lockY !== null) {
+                            randomItem.sprite.position.y = 0;
+                        } else {
+                            randomItem.sprite.position.y = y;
+                        }
+
+
+
                         if(options.scaleWithY) {
 
                             var scale = (y - areaRect.y) / areaRect.height;
