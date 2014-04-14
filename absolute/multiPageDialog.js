@@ -26,12 +26,27 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         Dialog.call(this, ui, options);
 
         this.pages = this.options.pages;
+        var startPage = this.options.startPage < this.pages.length ? this.options.startPage : 0;
+
+        this.reset(false, startPage);
+
+    };
+
+    MultiPageDialog.prototype.reset = function (cleanUp, startPage) {
+
+        if(cleanUp) {
+            try {
+                this.removeChild(this.pageTray);
+                this.removeChild(this.pips);
+                this.removeChild(this.nextpageButton);
+                this.removeChild(this.prevpageButton);
+            } catch (e) {}
+        }
+
         this.initContent();
         this.initTouchInterface();
         this.initNonTouchInterface();
         this.initPagePips();
-
-        var startPage = this.options.startPage < this.pages.length ? this.options.startPage : 0;
 
         this.scrollToPage(startPage);
 
@@ -202,6 +217,14 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         for (i = 0, l = this.pages.length; i < l; i++) {
             this.pages[i].interactive = enable;
         }
+
+    };
+
+    MultiPageDialog.prototype.handleOrientationChange = function (isPortrait) {
+
+        Dialog.prototype.handleOrientationChange.call(this,isPortrait);
+
+        this.reset(true, this.currentPage);
 
     };
 

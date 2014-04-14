@@ -316,7 +316,7 @@ function (
     };
     */
 
-    GameUI.prototype.showModal = function (screen, alpha, hideCurrentScreen) {
+    GameUI.prototype.showModal = function (screen, alpha) {
         var modalBackground = this.buildModalBackground(alpha || 0.5);
 
         if (this.modalBgStack.length > 0) {

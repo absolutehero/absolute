@@ -232,6 +232,14 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
         };
 
+        Dialog.prototype.handleOrientationChange = function(isPortrait) {
+
+            this.ui.hideModal();
+            this.updateDialog(this.options);
+            this.ui.showModal(this);
+
+        };
+
         return Dialog;
     }
 );
