@@ -50,6 +50,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             this.options = options;
             this.cachedContent = this.options.content;
 
+            this.isOpen = false;
+
             this.container = new PIXI.DisplayObjectContainer();
 
             this._setSize();
@@ -89,6 +91,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
 
             this.ui.showModal(this);
 
+            this.isOpen = true;
+
         };
 
         Dialog.prototype.close = function() {
@@ -97,6 +101,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                 AudioManager.playSound(this.options.audio.close);
             }
             this.ui.hideModal(this);
+
+            this.isOpen = false;
         };
 
         Dialog.prototype._setSize = function() {
@@ -239,6 +245,17 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
             this.ui.showModal(this);
 
         };
+
+        Object.defineProperty(Dialog.prototype, 'isOpen', {
+            get: function() {
+                return this.openState;
+            },
+            set: function(state) {
+                this.openState = state;
+
+            }
+
+        });
 
         return Dialog;
     }
