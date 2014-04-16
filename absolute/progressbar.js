@@ -36,7 +36,7 @@ define(['pixi', 'absolute/coords', 'absolute/tweenutils'], function(PIXI, Coords
 
         this.fillMask = new PIXI.Graphics();
         this.fillMask.beginFill();
-        this.fillMask.drawRect(this.start, 0, this.end - this.start, this.height);
+        this.fillMask.drawRect(this.start, 0, 0, this.height);
         this.fillMask.endFill();
         this.addChild(this.fillMask);
 
