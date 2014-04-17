@@ -27,6 +27,7 @@ define(function (require) {
         ToggleButton: require('absolute/togglebutton'),
         MusicManager: require('absolute/musicmanager'),
         ProgressBar: require('absolute/progressbar'),
+        ProgressDial: require('absolute/progressdial'),
         TweenUtils: require('absolute/tweenutils'),
         Screen: require('absolute/screen'),
         SimpleMessageBox: require('absolute/simplemessagebox'),
