@@ -326,6 +326,10 @@ function (
             this.hideCurrent();
         }
 
+        if (this.modalStack.length > 0) {
+            this.stage[0].removeChild(this.modalStack[this.modalStack.length - 1]);
+        }
+
         this.modalBgStack.push(modalBackground);
         this.stage[0].addChild(modalBackground);
 
