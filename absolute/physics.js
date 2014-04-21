@@ -4,7 +4,7 @@
  * Time: 3:37 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(function () {
+define(['box2d'], function (Box2D) {
 
     var Physics = {
 

@@ -4,7 +4,7 @@
  * Time: 5:11 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(['pixi','absolute/physics'], function (PIXI, Physics) {
+define(['pixi','box2d', 'absolute/physics'], function (PIXI, Box2D, Physics) {
 
     var PhysicsShape = function(id, config) {
         this._initPhysicsShape(id, config);
