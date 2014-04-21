@@ -4,7 +4,7 @@
  * Time: 5:11 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(['pixi','box2d', 'absolute/physics'], function (PIXI, Box2D, Physics) {
+define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function (PIXI, Box2D, Physics, ScreenMetrics) {
 
     var PhysicsShape = function(id, config) {
         this._initPhysicsShape(id, config);
@@ -76,8 +76,8 @@ define(['pixi','box2d', 'absolute/physics'], function (PIXI, Box2D, Physics) {
         var offset = 0;
         for (var i = 0; i < vertices.length; i += 2) {
             //console.log("Adding vertex at (" + vertices[i] / Physics.pixelsPerMeter + ", " + vertices[i + 1] / Physics.pixelsPerMeter  + ")");
-            Box2D.setValue(buffer+(offset),   (vertices[i] - this.width / 2) / Physics.pixelsPerMeter, 'float'); // x
-            Box2D.setValue(buffer+(offset+4),  (vertices[i + 1] + this.height / 2) / Physics.pixelsPerMeter, 'float'); // y
+            Box2D.setValue(buffer+(offset),   (ScreenMetrics.getResScale() * vertices[i] - this.width / 2) / Physics.pixelsPerMeter, 'float'); // x
+            Box2D.setValue(buffer+(offset+4), (ScreenMetrics.getResScale() * vertices[i + 1] + this.height / 2) / Physics.pixelsPerMeter, 'float'); // y
             offset += 8;
         }
         var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
