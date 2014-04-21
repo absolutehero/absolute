@@ -45,9 +45,9 @@ define(['pixi','box2d', 'absolute/physics'], function (PIXI, Box2D, Physics) {
         for (var s = 0; s < this.config.length; s += 1) {
             var fixture = new Box2D.b2FixtureDef();
             fixture.set_shape(this.buildShapeFromVertices(this.config[s].shape));
-            fixture.set_density(0.25/*this.config[s].density*/);
+            fixture.set_density(0.5/*this.config[s].density*/);
             fixture.set_friction(1/*this.config[s].friction*/);
-            fixture.set_restitution(0.0001/*this.config[s].bounce*/);
+           // fixture.set_restitution(0.01/*this.config[s].bounce*/);
 
             this.body.CreateFixture(fixture);
         }

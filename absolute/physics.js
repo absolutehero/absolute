@@ -4,7 +4,7 @@
  * Time: 3:37 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(['box2d'], function (Box2D) {
+define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
     var Physics = {
 
@@ -18,6 +18,8 @@ define(['box2d'], function (Box2D) {
 
         init: function (ui, gravityX, gravityY) {
             this.ZERO = new Box2D.b2Vec2(0, 0);
+
+            this.pixelsPerMeter = 32 * ScreenMetrics.getResScale();
 
             this.renderContext = ui.renderer[0].context;
             this.renderCanvas = ui.renderer[0].view;
@@ -39,7 +41,7 @@ define(['box2d'], function (Box2D) {
             this.contactListener = new Box2D.b2ContactListener();
 
             var self = this;
-
+/*
             Box2D.customizeVTable(this.contactListener, [{
                 original: Box2D.b2ContactListener.prototype.BeginContact,
                 replacement:
@@ -82,6 +84,7 @@ define(['box2d'], function (Box2D) {
             }]);
 
             this.world.SetContactListener( this.contactListener );
+            */
         },
 
         buildGround: function () {
