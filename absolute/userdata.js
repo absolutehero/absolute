@@ -281,7 +281,9 @@ define (['absolute/rest'], function (REST) {
                 return [stars["0"].score, stars["1"].score, stars["2"].score]
             }
 
-            throw("Level " + levelId + "has no star goals configured");
+           // throw("Level " + levelId + "has no star goals configured");
+            window.alert("Level " + levelId + " has no star goals configured");
+            console.log("Level " + levelId + " has no star goals configured");
             // default for levels not configured -- should never happen
             return [100, 200, 300];
         },
