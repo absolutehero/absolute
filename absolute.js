@@ -50,6 +50,7 @@ define(function (require) {
         ScrollArea: require('absolute/scrollarea'),
         TextButton: require('absolute/textbutton'),
         NineSlice: require('absolute/nineslice'),
-        MessageDialog: require('absolute/messagedialog')
+        MessageDialog: require('absolute/messagedialog'),
+        Integration: require('absolute/integration')
     };
 });
