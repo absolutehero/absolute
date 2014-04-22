@@ -39,17 +39,12 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
             tmpDisabled = new PIXI.Sprite(this.defaultImage),
             tmpBase = new PIXI.Sprite(this.defaultImage);
 
-        if(PIXI.canUseNewCanvasBlendModes) {
-            tmpDisabled.tint = 0x000000;
-            tmpDisabled.blendMode = PIXI.blendModes.SATURATION;
-        } else {
-            tmpDisabled.tint =  0x7c7c7c;
-        }
-        container.addChild(tmpBase);
+        tmpBase.alpha = 0.2;
+        tmpDisabled.tint = 0x777777;
+
         container.addChild(tmpDisabled);
+        container.addChild(tmpBase);
         this.disabledTexture = container.generateTexture();
-
-
 
         this.buttonMode = true;
 
@@ -117,11 +112,9 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
 
         if (!active) {
             this.setTexture(this.disabledTexture);
-            this.alpha = 0.5;
         }
         else {
             this.setTexture(this.defaultImage);
-            this.alpha = 1;
         }
         this.interactive = active;
     };
