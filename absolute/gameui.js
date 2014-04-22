@@ -10,7 +10,6 @@ define(
     'tween',
     'absolute/debug',
     'absolute/screenmetrics',
-    'absolute/particlesystem',
     'absolute/platform',
     'fpsmeter'
 ],
@@ -19,7 +18,6 @@ function (
     TWEEN,
     Debug,
     ScreenMetrics,
-    ParticleSystem,
     Platform,
     FPSMeter
     )
@@ -72,8 +70,6 @@ function (
 
 
         this.renderer = [];
-
-        ParticleSystem.init();
 
         window.addEventListener('resize', this.resize.bind(this));
         this.resize();
@@ -230,7 +226,6 @@ function (
                 self.beforeRender();
                 TWEEN.update();
 
-                ParticleSystem.update();
                 self.renderer[0].render(self.stage[0]);
                 if (self.refreshBackground) {
                     self.refreshBackground = false;
