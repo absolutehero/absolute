@@ -31,7 +31,7 @@ define(['absolute/debug'],function(Debug) {
 
                     window.setTimeout(function(){
 
-                        Debug.log('Spil api failure: gamebreak');
+                        Debug.log('ahg: Spil api failure: gamebreak');
                         safetyCallback.call(this);
 
                     }.bind(this), 500);
@@ -45,6 +45,74 @@ define(['absolute/debug'],function(Debug) {
 
 
             }
+        },
+        'iwin': {
+
+            ready: function(callback) {
+
+                if(window.iConsole) {
+                    window.iConsole.game.ready().result( function() {
+                        callback.call(this);
+                    });
+                } else {
+                    Debug.log('ahg: iWin api not available game ready failed.');
+                }
+
+            },
+            loadProgress: function(progress) {
+
+                if(window.iConsole) {
+                    window.iConsole.game.loadProgress({
+                        'progress': progress,
+                        'file': 'ahg: file name not available.'
+                    });
+                } else {
+                    Debug.log('ahg: iWin api not available loadProgress failed.');
+                }
+
+            },
+            loaded: function(success, failOverCallback) {
+                if(window.iConsole) {
+                    window.iConsole.game.loaded({
+                        'success': success
+                    });
+                } else {
+                    Debug.log('ahg: iWin api not available loaded failed.');
+                    failOverCallback.call(this);
+                }
+            },
+            levelStarted: function(level, callback) {
+
+                if(window.iConsole) {
+                    window.iConsole.game.levelStarted({
+                        'level': level
+                    }).result(function (levelData) {
+                        callback.call(this, levelData);
+                    }.bind(this));
+                } else {
+                    callback.call(this);
+                }
+
+            },
+            levelFinished: function(callback, level, score, time, won, data) {
+
+                if(window.iConsole) {
+
+                    window.iConsole.game.levelFinished({
+                        level: level,
+                        score: score,
+                        time: time,
+                        won: won,
+                        data: data || {}
+                    }).result(function () {
+                        callback.call(this);
+                    });
+
+                } else {
+                    callback.call(this);
+                }
+            }
+
         }
 
     };
