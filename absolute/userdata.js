@@ -232,6 +232,9 @@ define (['absolute/rest'], function (REST) {
         },
 
         buyCurrency: function (amount, callback) {
+            // disable currency purchase for now
+            callback(false);
+
             REST.post(this._restUrl('buy_currency', { currency: this.currencyId, amount: amount }),
                 function (data) {
                     console.log(data);
