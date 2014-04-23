@@ -19,10 +19,6 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
         useTap = typeof useTap !== 'undefined' ? useTap : false;
 
         if (!this.replaceOnHover) {
-            var s = new PIXI.Sprite(defaultImage);
-            s.addChild(new PIXI.Sprite(hoverImage));
-            var ss = new Snapshot(s);
-            hoverImage = ss.getSnapshot();
             this.replaceOnHover = true;
         }
 
@@ -33,26 +29,18 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
 
         this.images = {};
         this.defaultImage = defaultImage;
-        this.hoverImage = hoverImage;
+        this.hoverImage = SpriteUtils.brightness(this, 0.2);
 
         var container = new PIXI.DisplayObjectContainer(),
-            tmpDisabled = new PIXI.Sprite(this.defaultImage),
+            tmpDisabled = new PIXI.Sprite(SpriteUtils.greyscale(this, 0.5)),
             tmpBase = new PIXI.Sprite(this.defaultImage);
 
-        if(PIXI.canUseNewCanvasBlendModes) {
-            tmpDisabled.tint = 0x000000;
-            tmpDisabled.blendMode = PIXI.blendModes.SATURATION;
-        } else {
-            tmpDisabled.tint =  0x7c7c7c;
-        }
+        tmpDisabled.alpha = 0.8;
         container.addChild(tmpBase);
         container.addChild(tmpDisabled);
         this.disabledTexture = container.generateTexture();
 
-
-
         this.buttonMode = true;
-
         this.setInteractive(true);
 
         var self = this;
@@ -117,11 +105,9 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
 
         if (!active) {
             this.setTexture(this.disabledTexture);
-            this.alpha = 0.5;
         }
         else {
             this.setTexture(this.defaultImage);
-            this.alpha = 1;
         }
         this.interactive = active;
     };
