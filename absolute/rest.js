@@ -28,13 +28,19 @@ define(['pixi'], function (PIXI) {
                     }
                     else {
                         if (typeof error === "function") {
-                            error(JSON.parse(this.ajaxRequest.responseText));
+                            if (this.ajaxRequest.responseText) {
+                                var response = JSON.parse(this.ajaxRequest.responseText);
+                                error(response.message);
+                            }
+                            else {
+                                error(this.ajaxRequest.statusText);
+                            }
                         }
                     }
                 }
             }.bind(this);
 
-            this.ajaxRequest.open('GET', url, true);
+            this.ajaxRequest.open(method, url, true);
             if (this.ajaxRequest.overrideMimeType) {
                 this.ajaxRequest.overrideMimeType('application/json');
             }
