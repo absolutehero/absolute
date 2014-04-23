@@ -12,9 +12,9 @@ define (['absolute/rest'], function (REST) {
 
         _gameData: null,
 
-        //server: http://social-dev.spilgames.com',
+        server: 'http://social-dev.spilgames.com',
 
-        server: 'http://absoluteherogames.com:7777',
+        //server: 'http://absoluteherogames.com:7777',
 
         //server: 'http://localhost:7777',
 
@@ -120,15 +120,15 @@ define (['absolute/rest'], function (REST) {
                             this._gameData = data;
                             callback(true);
                         }.bind(this),
-                        function (response) {
-                            console.log('error on game_config:' + response.message);
+                        function (message) {
+                            console.log('error on game_config:' + message);
                             callback(false);
                         }.bind(this)
                     );
 
                 }.bind(this),
-                function (response) {
-                    console.log('error on init_user: ' + response.message);
+                function (message) {
+                    console.log('error on init_user: ' + message);
                     callback(false);
                 }.bind(this)
             );
@@ -145,8 +145,8 @@ define (['absolute/rest'], function (REST) {
                     this._updateLocalUserData(data);
                     callback(true);
                 }.bind(this),
-                function (response) {
-                    console.log('error on start_level: ' + response.message  );
+                function (message) {
+                    console.log('error on start_level: ' + message  );
                     callback(false);
                 }.bind(this)
             );
@@ -168,8 +168,8 @@ define (['absolute/rest'], function (REST) {
 
                         callback(true);
                     }.bind(this),
-                    function (response) {
-                        console.log('error on end_level: ' + response.message);
+                    function (message) {
+                        console.log('error on end_level: ' + message);
                         callback(false);
                     }.bind(this)
                 );
@@ -188,8 +188,8 @@ define (['absolute/rest'], function (REST) {
                     this._updateLocalUserData(data);
                     callback(true);
                 }.bind(this),
-                function (response) {
-                    console.log('error on buy_item: ' + response.message);
+                function (message) {
+                    console.log('error on buy_item: ' + message);
                     callback(false);
                 }.bind(this)
             );
@@ -202,14 +202,14 @@ define (['absolute/rest'], function (REST) {
             }
 
 
-            REST.post(this._restUrl('use_item', { item: itemId, currency: this.currencyId }),
+            REST.post(this._restUrl('use_item', { item: itemId }),
                 function (data) {
                     console.log(data);
                     this._updateLocalUserData(data);
                     callback(true);
                 }.bind(this),
-                function (response) {
-                    console.log('error on use_item: ' + response.message);
+                function (message) {
+                    console.log('error on use_item: ' + message);
                     callback(false);
                 }.bind(this)
             );
@@ -221,7 +221,10 @@ define (['absolute/rest'], function (REST) {
                 itemId = this._itemIdFromString(itemId);
             }
 
-            return this._userData.items[itemId].amount;
+            if (this._userData.items[itemId]) {
+                return this._userData.items[itemId].amount;
+            }
+            return 0;
         },
 
         hasMaxItems: function (itemId) {
@@ -229,21 +232,30 @@ define (['absolute/rest'], function (REST) {
         },
 
         buyCurrency: function (amount, callback) {
+            // disable currency purchase for now
+            callback(false);
+
             REST.post(this._restUrl('buy_currency', { currency: this.currencyId, amount: amount }),
                 function (data) {
                     console.log(data);
                     this._updateLocalUserData(data);
                     callback(true);
                 }.bind(this),
-                function (response) {
-                    console.log('error on buy_currency: ' + response.message);
+                function (message) {
+                    console.log('error on buy_currency: ' + message);
                     callback(false);
                 }.bind(this)
             );
         },
 
         getCurrencyBalance: function () {
-            return this._userData.currencies[this.currencyId].amount
+            for (var c in this._userData.currencies) {
+                if (this._userData.currencies[c].currency_id === this.currencyId) {
+                    return this._userData.currencies[c].amount;
+                }
+            }
+
+            return 0;
         },
 
         isLevelLocked: function (level) {
@@ -276,9 +288,13 @@ define (['absolute/rest'], function (REST) {
         },
 
         getStarGoals: function (levelId) {
-            if (this._gameData.levels[levelId] && this._gameData.levels[levelId].stars) {
+            if (this._gameData.levels[levelId] &&
+                this._gameData.levels[levelId].stars &&
+                this._gameData.levels[levelId].stars["1"] &&
+                this._gameData.levels[levelId].stars["2"] &&
+                this._gameData.levels[levelId].stars["3"]) {
                 var stars = this._gameData.levels[levelId].stars;
-                return [stars["0"].score, stars["1"].score, stars["2"].score]
+                return [stars["1"].score, stars["2"].score, stars["3"].score]
             }
 
            // throw("Level " + levelId + "has no star goals configured");
