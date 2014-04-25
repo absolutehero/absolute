@@ -190,6 +190,12 @@ function (
         this.resetStage();
         if (this.supportsOrientationChange && this.currentScreen) {
             this.currentScreen.handleOrientationChange(this.portrait);
+
+            // restore the last modal or screen
+            var l = this.modalStack.length;
+            if (l > 0) {
+                this.modalStack[l - 1].handleOrientationChange(this.portrait);
+            }
         }
 
     };
@@ -357,6 +363,8 @@ function (
             else {
                 this.stage[0].addChild(this.modalBgStack[l - 1]);
                 this.stage[0].addChild(this.modalStack[l - 1]);
+
+                this.modalStack[l - 1].handleOrientationChange(this.portrait);
             }
         }
     };
