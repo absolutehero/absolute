@@ -204,7 +204,7 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
 
         },
 
-        getResStepsDown: function(resClassIndex) {
+        getResStepsDown: function(resClassIndex, stepDownResClassAggressively) {
 
 
             var steps = 0;
@@ -215,10 +215,10 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             if(!PIXI.canUseNewCanvasBlendModes()) {
                 Debug.log('Lowering resClass because this device does not support canvas blends.');
                 steps ++;
-            } else if(this.isPhone()) {
+            } else if(stepDownResClassAggressively && this.isPhone()) {
                 Debug.log('Lowering resClass because this is a phone.');
                 steps ++;
-            } else if(this._isiPad && resClassIndex >= 3) {
+            } else if(stepDownResClassAggressively && this._isiPad && resClassIndex >= 3) {
                 Debug.log('Lowering resClass because this is an ipad that can\'t handle big textures.');
                 steps ++;
             }
@@ -239,7 +239,7 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
                 steps ++;
             }
 
-            if(steps == 0) {
+            if(stepDownResClassAggressively && steps == 0) {
                 steps = 1;
             }
 

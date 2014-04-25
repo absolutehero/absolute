@@ -13,6 +13,7 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
         kDefaultHeight: 2008,
         resClass: "",
         stepDownResClass: false,
+        stepDownResClassAggressively: true,
 
         refresh: function() {
             this.devicePixelRatio = window.devicePixelRatio || 1;
@@ -138,7 +139,7 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
 
             // lower the res for older/low performing devices
             if(this.stepDownResClass) {
-                resClassIndex = resClassIndex - Platform.getResStepsDown(resClassIndex);
+                resClassIndex = resClassIndex - Platform.getResStepsDown(resClassIndex, this.stepDownResClassAggressively);
                 if(resClassIndex < 0) {
                     resClassIndex = 0;
                 }
