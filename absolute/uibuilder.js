@@ -29,7 +29,7 @@ define ([
 
         load: function (layoutJSON) {
             var l = JSON.parse(layoutJSON);
-            _.extend(_layouts, l);
+            _.merge(_layouts, l);
         },
 
         findWidget: function (key, l) {

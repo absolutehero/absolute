@@ -46,7 +46,7 @@ define ([
 
         StringManager.load = function (stringsJSON) {
             var s = JSON.parse(stringsJSON);
-            _.extend(_strings, s);
+            _.merge(_strings, s);
         };
 
         return StringManager;

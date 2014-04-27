@@ -11,7 +11,7 @@ define(['lodash', 'text!absolute/ui/assetmap.json'], function(_, assetMap) {
     return {
         load: function (jsonMap) {
             var m = JSON.parse(jsonMap);
-            _.extend(_map, m);
+            _.merge(_map, m);
         },
 
         lookup: function (key) {
