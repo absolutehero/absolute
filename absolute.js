@@ -51,6 +51,9 @@ define(function (require) {
         TextButton: require('absolute/textbutton'),
         NineSlice: require('absolute/nineslice'),
         MessageDialog: require('absolute/messagedialog'),
-        Integration: require('absolute/integration')
+        Integration: require('absolute/integration'),
+        AssetMap: require('absolute/assetmap'),
+        UIBuilder: require('absolute/uibuilder'),
+        StringManager: require('absolute/stringmanager')
     };
 });
