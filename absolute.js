@@ -54,6 +54,8 @@ define(function (require) {
         Integration: require('absolute/integration'),
         AssetMap: require('absolute/assetmap'),
         UIBuilder: require('absolute/uibuilder'),
-        StringManager: require('absolute/stringmanager')
+        StringManager: require('absolute/stringmanager'),
+        AnimatedButton: require('absolute/animatedbutton'),
+        AnimatedTextButton: require('absolute/animatedtextbutton')
     };
 });
