@@ -16,8 +16,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
                     'middleRight':'MDS_9slice_modal_06.png',
                     'bottomLeft':'MDS_9slice_modal_07.png',
                     'bottomCenter':'MDS_9slice_modal_08.png',
-                    'bottomRight':'MDS_9slice_modal_09.png',
-                    'close': 'btn_level_exit.png'
+                    'bottomRight':'MDS_9slice_modal_09.png'
                 }
             };
 

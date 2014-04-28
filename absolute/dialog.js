@@ -1,6 +1,6 @@
-define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button', 'absolute/audiomanager', 'absolute/nineslice'],
+define(['pixi', 'absolute/assetmap', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button', 'absolute/audiomanager', 'absolute/nineslice'],
 
-    function(PIXI, Screen, Debug, _, Button, AudioManager, NineSlice) {
+    function(PIXI, _a, Screen, Debug, _, Button, AudioManager, NineSlice) {
 
         var Dialog = function(ui, options) {
 
@@ -11,15 +11,16 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
                 'y': null,
                 'name': 'default',
                 'images': {
-                    'topLeft':'MDS_9slice_modal_01.png',
-                    'topCenter':'MDS_9slice_modal_02.png',
-                    'topRight':'MDS_9slice_modal_03.png',
-                    'middleLeft':'MDS_9slice_modal_04.png',
-                    'middleCenter':'MDS_9slice_modal_05.png',
-                    'middleRight':'MDS_9slice_modal_06.png',
-                    'bottomLeft':'MDS_9slice_modal_07.png',
-                    'bottomCenter':'MDS_9slice_modal_08.png',
-                    'bottomRight':'MDS_9slice_modal_09.png',
+                    'topLeft': _a("dialogNineSlice.topLeft"),
+                    'topCenter':_a("dialogNineSlice.topCenter"),
+                    'topRight':_a("dialogNineSlice.topRight"),
+                    'topRight_closeBackground': _a("dialogNineSlice.topRight_closeBackground"),
+                    'middleLeft':_a("dialogNineSlice.middleLeft"),
+                    'middleCenter':_a("dialogNineSlice.middleCenter"),
+                    'middleRight':_a("dialogNineSlice.middleRight"),
+                    'bottomLeft':_a("dialogNineSlice.bottomLeft"),
+                    'bottomCenter':_a("dialogNineSlice.bottomCenter"),
+                    'bottomRight':_a("dialogNineSlice.bottomRight"),
                     'close': 'btn_level_exit.png'
                 },
                 'fillOpacity': 0.95,
@@ -168,6 +169,13 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button'
         };
 
         Dialog.prototype._createBackground = function() {
+
+            var images = this.options.images;
+
+            if (this.options.displayCloseButton && images.topRight_closeBackground) {
+                images.topRight = images.topRight_closeBackground;
+                this.options.images = images;
+            }
 
             var background = new NineSlice(this.options);
 

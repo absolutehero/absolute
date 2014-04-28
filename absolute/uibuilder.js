@@ -7,20 +7,22 @@
 define ([
     'pixi',
     'lodash',
+    'absolute/assetmap',
     'absolute/stringmanager',
     'absolute/coords',
     'absolute/screenmetrics',
     'absolute/progressbar',
-    'absolute/assetmap',
+    'absolute/nineslice',
     'text!absolute/ui/layout.json'],
     function (
         PIXI,
         _,
+        _a,
         _s,
         Coords,
         ScreenMetrics,
         ProgressBar,
-        AssetMap,
+        NineSlice,
         layoutJSON) {
 
     var _layouts = JSON.parse(layoutJSON);
@@ -63,8 +65,8 @@ define ([
                 case "ProgressBar":
                     this.checkParams({"frame": "string", "fill": "string"}, config.params);
                     widget = new ProgressBar(
-                        PIXI.Texture.fromFrame(AssetMap.lookup(config.params.frame)),
-                        PIXI.Texture.fromFrame(AssetMap.lookup(config.params.fill))
+                        PIXI.Texture.fromFrame(_a(config.params.frame)),
+                        PIXI.Texture.fromFrame(_a(config.params.fill))
                     );
                     break;
 
@@ -96,13 +98,33 @@ define ([
 
                 case "Sprite":
                     this.checkParams({"texture": "string"}, config.params);
-                    widget = PIXI.Sprite.fromFrame(AssetMap.lookup(config.params.texture));
+                    widget = PIXI.Sprite.fromFrame(_a(config.params.texture));
                     break;
 
                 case "Container":
                     widget = new PIXI.DisplayObjectContainer();
                     widget.width = parent.width;
                     widget.height = parent.height;
+                    break;
+
+                case "NineSlice":
+                    this.checkParams({"width": "number", "height": "number", "imageBase": "string"}, config.params);
+                    var options = {
+                        width: config.params.width,
+                        height: config.params.height,
+                        images: {
+                            'topLeft':_a(config.params.imageBase + '_topLeft'),
+                            'topCenter': _a(config.params.imageBase + '_topCenter'),
+                            'topRight': _a(config.params.imageBase + '_topRight'),
+                            'middleLeft': _a(config.params.imageBase + '_middleLeft'),
+                            'middleCenter': _a(config.params.imageBase + '_middleCenter'),
+                            'middleRight': _a(config.params.imageBase + '_middleRight'),
+                            'bottomLeft': _a(config.params.imageBase + '_bottomLeft'),
+                            'bottomCenter': _a(config.params.imageBase + '_bottomCenter'),
+                            'bottomRight': _a(config.params.imageBase + '_bottomRight')
+                        }
+                    };
+                    widget = new NineSlice(options);
                     break;
             }
 

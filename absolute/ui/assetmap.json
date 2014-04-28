@@ -1,4 +1,18 @@
 {
     "loading_bar_frame": "loading_bar_frame.png",
-    "loading_bar_marker": "loading_bar_marker.png"
+    "loading_bar_marker": "loading_bar_marker.png",
+    
+    "dialogNineSlice": {
+        "topLeft":"MDS_9slice_modal_01.png",
+        "topCenter":"MDS_9slice_modal_02.png",
+        "topRight":"MDS_9slice_modal_03.png",
+        "topRight_closeBackground":"MDS_9slice_modal_03.png",
+        "middleLeft":"MDS_9slice_modal_04.png",
+        "middleCenter":"MDS_9slice_modal_05.png",
+        "middleRight":"MDS_9slice_modal_06.png",
+        "bottomLeft":"MDS_9slice_modal_07.png",
+        "bottomCenter":"MDS_9slice_modal_08.png",
+        "bottomRight":"MDS_9slice_modal_09.png",
+        "close": "btn_level_exit.png"
+    }
 }
