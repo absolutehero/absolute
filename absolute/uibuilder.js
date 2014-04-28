@@ -110,18 +110,18 @@ define ([
                 case "NineSlice":
                     this.checkParams({"width": "number", "height": "number", "imageBase": "string"}, config.params);
                     var options = {
-                        width: config.params.width,
-                        height: config.params.height,
+                        width: Coords.x(config.params.width),
+                        height: Coords.y(config.params.height),
                         images: {
-                            'topLeft':_a(config.params.imageBase + '_topLeft'),
-                            'topCenter': _a(config.params.imageBase + '_topCenter'),
-                            'topRight': _a(config.params.imageBase + '_topRight'),
-                            'middleLeft': _a(config.params.imageBase + '_middleLeft'),
-                            'middleCenter': _a(config.params.imageBase + '_middleCenter'),
-                            'middleRight': _a(config.params.imageBase + '_middleRight'),
-                            'bottomLeft': _a(config.params.imageBase + '_bottomLeft'),
-                            'bottomCenter': _a(config.params.imageBase + '_bottomCenter'),
-                            'bottomRight': _a(config.params.imageBase + '_bottomRight')
+                            'topLeft':_a(config.params.imageBase + '.topLeft'),
+                            'topCenter': _a(config.params.imageBase + '.topCenter'),
+                            'topRight': _a(config.params.imageBase + '.topRight'),
+                            'middleLeft': _a(config.params.imageBase + '.middleLeft'),
+                            'middleCenter': _a(config.params.imageBase + '.middleCenter'),
+                            'middleRight': _a(config.params.imageBase + '.middleRight'),
+                            'bottomLeft': _a(config.params.imageBase + '.bottomLeft'),
+                            'bottomCenter': _a(config.params.imageBase + '.bottomCenter'),
+                            'bottomRight': _a(config.params.imageBase + '.bottomRight')
                         }
                     };
                     widget = new NineSlice(options);
