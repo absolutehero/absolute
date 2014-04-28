@@ -1,6 +1,6 @@
-define(['pixi', 'absolute/assetmap', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button', 'absolute/audiomanager', 'absolute/nineslice'],
+define(['pixi', 'absolute/assetmap', 'absolute/coords', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button', 'absolute/audiomanager', 'absolute/nineslice'],
 
-    function(PIXI, _a, Screen, Debug, _, Button, AudioManager, NineSlice) {
+    function(PIXI, _a, Coords, Screen, Debug, _, Button, AudioManager, NineSlice) {
 
         var Dialog = function(ui, options) {
 
@@ -21,7 +21,7 @@ define(['pixi', 'absolute/assetmap', 'absolute/screen', 'absolute/debug', 'lodas
                     'bottomLeft':_a("dialogNineSlice.bottomLeft"),
                     'bottomCenter':_a("dialogNineSlice.bottomCenter"),
                     'bottomRight':_a("dialogNineSlice.bottomRight"),
-                    'close': 'btn_level_exit.png'
+                    'close': _a("dialogNineSlice.close")
                 },
                 'fillOpacity': 0.95,
                 'content': '',
@@ -35,7 +35,9 @@ define(['pixi', 'absolute/assetmap', 'absolute/screen', 'absolute/debug', 'lodas
                 },
                 'tween': {
                     'type': 'none'
-                }
+                },
+                'buttons': [],
+                'buttonSpacing': Coords.x(20)
             };
 
             this._initDialog(ui, _.extend(defaultOptions, options));
@@ -60,6 +62,9 @@ define(['pixi', 'absolute/assetmap', 'absolute/screen', 'absolute/debug', 'lodas
             this._createBackground();
             if (this.options.displayCloseButton) {
                 this._createCloseButton();
+            }
+            if (this.options.buttons.length > 0) {
+                this.addButtons(this.options.buttons, this.options.buttonSpacing);
             }
             this._setContent(this.options.content);
 
@@ -162,10 +167,46 @@ define(['pixi', 'absolute/assetmap', 'absolute/screen', 'absolute/debug', 'lodas
             this.closeButton.hitArea = new PIXI.Rectangle( -this.closeButton.width/3, -this.closeButton.height/3, this.closeButton.width * 1.6,
                 this.closeButton.height * 1.6);
 
-            this.closeButton.position.x = this.width - ( this.closeButton.width / 1.5 );
-            this.closeButton.position.y = - ( this.closeButton.height / 3 );
+            // if we have a background for the close button, assume the button itself is positioned
+            // relative to the top-right corner of the dialog
+            if (this.options.images.topRight_closeBackground) {
+                this.closeButton.position.x = this.width - this.closeButton.width;
+                this.closeButton.position.y = 0;
+            }
+            else {
+                this.closeButton.position.x = this.width - ( this.closeButton.width / 1.5 );
+                this.closeButton.position.y = - ( this.closeButton.height / 3 );
+            }
             this.container.addChild(this.closeButton);
+        };
 
+        Dialog.prototype.addButtons = function (buttons, buttonSpacing) {
+            var xOffset = 0,
+                maxHeight = 0;
+
+            buttonSpacing = buttonSpacing || 0;
+
+            if (buttons.length > 0) {
+                if (this.buttonContainer) {
+                    this.removeChild(this.buttonContainer);
+                }
+                this.buttonContainer = new PIXI.DisplayObjectContainer();
+
+                for (var i = 0; i < buttons.length; i += 1) {
+                    var button = buttons[i];
+                    button.x = xOffset;
+                    this.buttonContainer.addChild(button);
+                    xOffset += button.width + buttonSpacing;
+                    if (button.height > maxHeight) {
+                        maxHeight = button.height;
+                    }
+                }
+
+                this.buttonContainer.position.x = (this.width - (xOffset - buttonSpacing)) / 2;
+                this.buttonContainer.position.y = this.height - maxHeight;
+
+                this.container.addChild(this.buttonContainer);
+            }
         };
 
         Dialog.prototype._createBackground = function() {
