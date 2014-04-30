@@ -210,13 +210,16 @@ function (
 
             // refresh the background snapshot
             this.showCurrent();
-            var modalBackground = this.buildModalBackground(0.5);
+            var modalBackground = this.buildModalBackground(modalBG.alpha || 0.5);
+            modalBackground.alpha = modalBG.alpha;
             this.modalBgStack.push(modalBackground);
             var oldScreen = this.stage[0].getChildAt(0);
             this.stage[0].removeChild(oldScreen);
             this.stage[0].addChild(modalBackground);
 
-            this.modalStack[this.modalStack.length - 1].handleOrientationChange(this.portrait);
+            if (typeof this.modalStack[this.modalStack.length - 1].handleOrientationChange !== 'undefined') {
+                this.modalStack[this.modalStack.length - 1].handleOrientationChange(this.portrait);
+            }
 
             // refresh the modal content
             this.stage[0].addChild(this.modalStack[this.modalStack.length-1]);
@@ -343,6 +346,7 @@ function (
 
     GameUI.prototype.showModal = function (screen, alpha) {
         var modalBackground = this.buildModalBackground(alpha || 0.5);
+        modalBackground.alpha = alpha;
 
         if (this.modalBgStack.length > 0) {
             this.stage[0].removeChild(this.modalBgStack[this.modalBgStack.length - 1]);
