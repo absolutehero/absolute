@@ -289,9 +289,9 @@ define(['pixi', 'absolute/assetmap', 'absolute/coords', 'absolute/screen', 'abso
 
         Dialog.prototype.handleOrientationChange = function(isPortrait) {
 
-            this.ui.hideModal();
+            //this.ui.hideModal();
             this.updateDialog(this.options);
-            this.ui.showModal(this);
+            //this.ui.showModal(this);
 
         };
 

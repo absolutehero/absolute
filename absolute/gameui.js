@@ -188,14 +188,38 @@ function (
         }
 
         this.resetStage();
+
         if (this.supportsOrientationChange && this.currentScreen) {
             this.currentScreen.handleOrientationChange(this.portrait);
+        }
 
-            // restore the last modal or screen
-            var l = this.modalStack.length;
-            if (l > 0) {
-                this.modalStack[l - 1].handleOrientationChange(this.portrait);
+        this.refreshModal();
+
+    };
+
+    GameUI.prototype.refreshModal = function () {
+
+        if (this.supportsOrientationChange &&  this.modalStack.length > 0) {
+
+            // remove the current background and modal
+            var modalBG = this.modalBgStack.pop();
+            if(typeof modalBG !== 'undefined' && modalBG !== null) {
+                this.stage[0].removeChild(modalBG);
             }
+            this.stage[0].removeChild(this.modalStack[this.modalStack.length - 1]);
+
+            // refresh the background snapshot
+            this.showCurrent();
+            var modalBackground = this.buildModalBackground(0.5);
+            this.modalBgStack.push(modalBackground);
+            var oldScreen = this.stage[0].getChildAt(0);
+            this.stage[0].removeChild(oldScreen);
+            this.stage[0].addChild(modalBackground);
+
+            this.modalStack[this.modalStack.length - 1].handleOrientationChange(this.portrait);
+
+            // refresh the modal content
+            this.stage[0].addChild(this.modalStack[this.modalStack.length-1]);
         }
 
     };
@@ -350,10 +374,10 @@ function (
             var modalBG = this.modalBgStack.pop();
             if(typeof modalBG !== 'undefined' && modalBG !== null) {
                 this.stage[0].removeChild(modalBG);
-            } else if (this.stage[1].children.length > 0) {
+            } /*else if (this.stage[1].children.length > 0) {
                 var oldBackground = this.stage[1].getChildAt(0);
                 this.stage[1].removeChild(oldBackground);
-            }
+            }*/
 
             // restore the last modal or screen
             var l = this.modalStack.length;
@@ -361,10 +385,12 @@ function (
                 this.showCurrent();
             }
             else {
+
                 this.stage[0].addChild(this.modalBgStack[l - 1]);
                 this.stage[0].addChild(this.modalStack[l - 1]);
 
-                this.modalStack[l - 1].handleOrientationChange(this.portrait);
+                this.refreshModal();
+
             }
         }
     };
@@ -401,6 +427,7 @@ function (
             try {
                 this.stage[0].addChildAt(this.currentScreen, 0);
                 this.stage[1].addChildAt(this.currentScreen.background, 0);
+                this.renderer[1].render(this.stage[1]);
                 this.refreshBackground = true;
             }
             catch (e) {
@@ -414,9 +441,16 @@ function (
      */
     GameUI.prototype.resetStage = function() {
 
-        if(this.stage[1].children.length > 0) {
-            var oldScreen = this.stage[1].getChildAt(0);
-            this.stage[1].removeChild(oldScreen);
+        if(this.stage[1].children.length == 0) {
+
+            return false;
+
+        } else {
+
+            for(var i =0; i < this.stage[1].children.length; i ++ ) {
+                this.stage[1].removeChildAt(i);
+            }
+
         }
 
         if(this.stage[0].children.length > 0) {
@@ -437,10 +471,7 @@ function (
 
         window.setTimeout(function() {
 
-            if(this.stage[1].children.length > 0) {
-                var tempBackground = this.stage[1].getChildAt(0);
-                this.stage[1].removeChild(tempBackground);
-            }
+            this.stage[1].removeChildAt(0);
 
             if(this.stage[0].children.length > 0) {
                 var oldScreen = this.stage[0].getChildAt(0);
@@ -452,7 +483,7 @@ function (
             }
 
             if(this.currentScreen && this.currentScreen.background) {
-                this.stage[1].addChildAt(this.currentScreen.background, 0);
+                this.stage[1].addChild(this.currentScreen.background);
                 this.renderer[1].render(this.stage[1]);
             }
 
