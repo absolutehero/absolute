@@ -346,6 +346,15 @@ define (['absolute/rest'], function (REST) {
 
         },
 
+        getLevelData: function (levelId) {
+            var ld = null;
+
+            if (this._gameData.levels[levelId]  && this._gameData.levels[levelId].level_data) {
+                ld = JSON.parse(this._gameData.levels[levelId].level_data);
+            }
+            return ld;
+        },
+
         _updateLocalUserData: function (data) {
             var i;
 
