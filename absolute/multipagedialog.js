@@ -107,6 +107,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         this.nextpageButton.scale.y = this.options.buttonScale;
         this.nextpageButton.position.x = this.width - this.options.interfacePadding.arrows.x;
         this.nextpageButton.position.y = buttonY;
+        this.nextpageButton.setActive(false);
         this.addChild(this.nextpageButton);
 
         this.prevpageButton = new Button(
@@ -122,6 +123,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         this.prevpageButton.position.y = buttonY;
         this.prevpageButton.scale.x = this.prevpageButton.scale.y = this.options.buttonScale;
         this.prevpageButton.position.x = this.options.interfacePadding.arrows.x;
+        this.prevpageButton.setActive(false);
         this.addChild(this.prevpageButton);
 
     };
@@ -205,8 +207,8 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
 
     MultiPageDialog.prototype.setCurrentPage = function (page) {
         this.currentPage = page;
-        this.nextpageButton.visible = (page !== this.pages.length - 1);
-        this.prevpageButton.visible = (page !== 0);
+        this.nextpageButton.setActive((page !== this.pages.length - 1));
+        this.prevpageButton.setActive((page !== 0));
         this.options.pageChangedCallback(page);
     };
 
