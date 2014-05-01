@@ -137,7 +137,8 @@ define ([
                     var textStyleOptions = {
                         text: _s(config.params.textStyle.text),
                         font : (Math.floor(config.params.textStyle.fontSize * ScreenMetrics.getResScale()) + "px " + config.params.textStyle.fontFamily),
-                        align : config.params.textStyle.align
+                        align : config.params.textStyle.align,
+                        fontSize : config.params.textStyle.fontSize
                     };
 
                     var threeSliceOptions = {

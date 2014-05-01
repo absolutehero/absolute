@@ -12,7 +12,7 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
             textStyle : { font: Math.floor(90 * ScreenMetrics.getResScale()) + "px Ganache", align: "center" }
         };
 
-        textStyleOptions = textStyleOptions || defaultTextStyleOptions;
+        var options = textStyleOptions || defaultTextStyleOptions;
 
         if (typeof threeSliceOptions === 'object' ) {
             this.container = new PIXI.DisplayObjectContainer();
@@ -20,7 +20,7 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
             hoverImage = this._createThreeSliceImage(threeSliceOptions);
         }
 
-        this._initTextButton(defaultImage, hoverImage, action, replaceOnHover, useTap, _.extend(defaultTextStyleOptions, textStyleOptions));
+        this._initTextButton(defaultImage, hoverImage, action, replaceOnHover, useTap, _.extend(defaultTextStyleOptions, options));
     };
 
     TextButton.constructor = TextButton;
