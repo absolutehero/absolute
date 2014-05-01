@@ -13,6 +13,7 @@ define ([
     'absolute/screenmetrics',
     'absolute/progressbar',
     'absolute/nineslice',
+    'absolute/animatedtextbutton',
     'text!absolute/ui/layout.json'],
     function (
         PIXI,
@@ -23,6 +24,7 @@ define ([
         ScreenMetrics,
         ProgressBar,
         NineSlice,
+        AnimatedTextButton,
         layoutJSON) {
 
     var _layouts = JSON.parse(layoutJSON);
@@ -53,7 +55,7 @@ define ([
             return null;
         },
 
-        buildLayout: function (config, parent) {
+        buildLayout: function (config, parent, handler) {
             var widget = null,
                 self = this;
 
@@ -126,6 +128,29 @@ define ([
                     };
                     widget = new NineSlice(options);
                     break;
+                case "AnimatedTextButton":
+                    this.checkParams({"action": "string"}, config.params);
+                    this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string"}, config.params.textStyle);
+                    this.checkParams({"width": "number", "height": "number", "imageBase": "string"}, config.params.threeSlice);
+
+                    var action = (handler && handler[config.params.action].bind(handler) || null);
+                    var textStyleOptions = {
+                        text: _s(config.params.textStyle.text),
+                        font : (Math.floor(config.params.textStyle.fontSize * ScreenMetrics.getResScale()) + "px " + config.params.textStyle.fontFamily),
+                        align : config.params.textStyle.align
+                    };
+
+                    var threeSliceOptions = {
+                        width: Coords.x(config.params.threeSlice.width),
+                        height: Coords.y(config.params.threeSlice.height),
+                        images: {
+                            'left':_a(config.params.threeSlice.imageBase + '.left'),
+                            'center': _a(config.params.threeSlice.imageBase + '.center'),
+                            'right': _a(config.params.threeSlice.imageBase + '.right')
+                        }
+                    };
+                    widget = new AnimatedTextButton(action, textStyleOptions, threeSliceOptions);
+                    break;
             }
 
             if (widget) {
@@ -134,7 +159,7 @@ define ([
                     widget.widgets = [];
                     for (var c in config.children) {
                         if (config.children.hasOwnProperty(c)) {
-                            widget.widgets[c] = this.buildLayout(config.children[c], widget);
+                            widget.widgets[c] = this.buildLayout(config.children[c], widget, handler);
                             widget.addChild(widget.widgets[c]);
                         }
                     }
