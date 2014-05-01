@@ -223,6 +223,7 @@ function (
 
             // refresh the modal content
             this.stage[0].addChild(this.modalStack[this.modalStack.length-1]);
+            this.modalStack[this.modalStack.length-1].onShow();
         }
 
     };
