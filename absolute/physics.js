@@ -10,23 +10,23 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
         world: null,
 
-        pixelsPerMeter: 32,
+        pixelsPerMeter: 110,
 
         ZERO: null,
 
         debugRenderer: null,
 
-        init: function (ui, gravityX, gravityY) {
+        init: function (ui, gravityX, gravityY, worldOffset) {
             this.ZERO = new Box2D.b2Vec2(0, 0);
 
-            this.pixelsPerMeter = 32 * ScreenMetrics.getResScale();
+            this.pixelsPerMeter = 110 * ScreenMetrics.getResScale();
 
             this.renderContext = ui.renderer[0].context;
             this.renderCanvas = ui.renderer[0].view;
 
             this.debugRenderer = this.getCanvasDebugDraw();
             this.debugRenderer.SetFlags(this.e_shapeBit);
-            this.debugRenderer.SetFlags(this.e_jointBit);
+            //this.debugRenderer.SetFlags(this.e_jointBit);
             //this.debugRenderer.SetFlags(this.e_aabbBit);
 
             if ( this.world != null )
@@ -35,8 +35,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             this.world = new Box2D.b2World( new Box2D.b2Vec2(gravityX, gravityY) );
             this.world.SetDebugDraw(this.debugRenderer);
 
-            this.setWorldXOffset(this.renderCanvas.width / 2);
-            this.setWorldYOffset(this.renderCanvas.height / 2);
+            this.setWorldXOffset(worldOffset.x);
+            this.setWorldYOffset(worldOffset.y);
 
             this.contactListener = new Box2D.b2ContactListener();
 
@@ -82,26 +82,22 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
                         }
                     }
             }]);
-
+ */
             this.world.SetContactListener( this.contactListener );
-            */
+
         },
 
-        buildGround: function () {
+        buildGround: function (start, end) {
             var bd_ground = new Box2D.b2BodyDef();
             this.groundBody = this.world.CreateBody(bd_ground);
             //ground edges
             var shape0 = new Box2D.b2EdgeShape();
-            shape0.Set(new Box2D.b2Vec2(-13.0, -23.7), new Box2D.b2Vec2(13.0, -23.7));
-            this.groundBody.CreateFixture(shape0, 0.0);
-            shape0.Set(new Box2D.b2Vec2(-13.0, -28.0), new Box2D.b2Vec2(-13.0, -23.7));
-            this.groundBody.CreateFixture(shape0, 0.0);
-            shape0.Set(new Box2D.b2Vec2(13.0, -28.0), new Box2D.b2Vec2(13.0, -23.7));
+            shape0.Set(new Box2D.b2Vec2(start.x, start.y), new Box2D.b2Vec2(end.x, end.y));
             var fixture = new Box2D.b2FixtureDef();
             fixture.set_shape(shape0);
             fixture.set_density(1);
             fixture.set_friction(1);
-            fixture.set_restitution(0.01);
+            fixture.set_restitution(0);
             this.groundBody.CreateFixture(fixture);
         },
 
@@ -145,7 +141,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
             this.renderContext.save();
             this.renderContext.resetTransform();
-            this.renderContext.translate(this.renderCanvas.width / 2, this.renderCanvas.height / 2);
+            this.renderContext.translate(this.worldXOffset, this.worldYOffset);
             //this.renderContext.translate(canvasOffset.x, canvasOffset.y);
             this.renderContext.scale(1,-1);
             this.renderContext.scale(this.pixelsPerMeter,this.pixelsPerMeter);

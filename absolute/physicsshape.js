@@ -24,6 +24,8 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         //this.pivot.x = 0.5;//this.width / 2;
         //this.pivot.y = 0.5;//this.height / 2;
 
+        this.collided = false;
+
         this.attachments = [];
     };
 
@@ -45,9 +47,9 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         for (var s = 0; s < this.config.length; s += 1) {
             var fixture = new Box2D.b2FixtureDef();
             fixture.set_shape(this.buildShapeFromVertices(this.config[s].shape));
-            fixture.set_density(0.5/*this.config[s].density*/);
+            fixture.set_density(1/*this.config[s].density*/);
             fixture.set_friction(1/*this.config[s].friction*/);
-           // fixture.set_restitution(0.01/*this.config[s].bounce*/);
+            fixture.set_restitution(0/*this.config[s].bounce*/);
 
             this.body.CreateFixture(fixture);
         }
@@ -123,6 +125,21 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         this.rotation = r;
     };
 
+    PhysicsShape.prototype.getTop = function () {
+        return this.body.GetFixtureList().GetAABB().get_upperBound().get_y();
+    };
+
+    PhysicsShape.prototype.getBottom = function () {
+        return this.body.GetFixtureList().GetAABB().get_lowerBound().get_y();
+    };
+
+    PhysicsShape.prototype.hasCollided = function () {
+        if (!this.collided) {
+            this.collided = (this.body.GetContactList().a !== 0);
+            // just collided - callback?
+        }
+        return this.collided;
+    };
 
     return PhysicsShape;
 });
