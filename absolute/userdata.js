@@ -227,6 +227,17 @@ define (['absolute/rest'], function (REST) {
             return 0;
         },
 
+        getItemCost: function (itemId) {
+            if (typeof itemId === "string") {
+                itemId = this._itemIdFromString(itemId);
+            }
+
+            if (this._gameData.items[itemId]) {
+                return this._gameData.items[itemId]["1"].cost;
+            }
+            return 0;
+        },
+
         hasMaxItems: function (itemId) {
             return this._userData.items[itemId].amount = this._gameData.items[itemId].max_amount;
         },
