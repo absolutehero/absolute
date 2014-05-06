@@ -10,16 +10,16 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
         world: null,
 
-        pixelsPerMeter: 110,
+        pixelsPerMeter: 0,
 
         ZERO: null,
 
         debugRenderer: null,
 
-        init: function (ui, gravityX, gravityY, worldOffset) {
+        init: function (ui, gravityX, gravityY, worldOffset, pixelsPerMeter) {
             this.ZERO = new Box2D.b2Vec2(0, 0);
 
-            this.pixelsPerMeter = 110 * ScreenMetrics.getResScale();
+            this.pixelsPerMeter = pixelsPerMeter * ScreenMetrics.getResScale();
 
             this.renderContext = ui.renderer[0].context;
             this.renderCanvas = ui.renderer[0].view;
@@ -85,6 +85,29 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
  */
             this.world.SetContactListener( this.contactListener );
 
+            this.myQueryCallback = new Box2D.b2QueryCallback();
+
+            Box2D.customizeVTable(this.myQueryCallback, [{
+                original: Box2D.b2QueryCallback.prototype.ReportFixture,
+                replacement:
+                    function(thsPtr, fixturePtr) {
+                        var ths = Box2D.wrapPointer( thsPtr, Box2D.b2QueryCallback );
+                        var fixture = Box2D.wrapPointer( fixturePtr, Box2D.b2Fixture );
+                        if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
+                            return true;
+                        if ( ! fixture.TestPoint( ths.m_point ) )
+                            return true;
+                        ths.m_fixture = fixture;
+                        return false;
+                    }
+            }]);
+
+            this.mouseJointGroundBody = this.world.CreateBody( new Box2D.b2BodyDef() );
+
+        },
+
+        setPixelsPerMeter: function (pixelsPerMeter) {
+            this.pixelsPerMeter = pixelsPerMeter * ScreenMetrics.getResScale();
         },
 
         buildGround: function (start, end) {
@@ -99,6 +122,50 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             fixture.set_friction(1);
             fixture.set_restitution(0);
             this.groundBody.CreateFixture(fixture);
+        },
+
+        startMouseJoint: function(mousePosWorld) {
+
+            if ( this.mouseJoint != null )
+                return;
+
+            // Make a small box.
+            var aabb = new Box2D.b2AABB();
+            var d = 0.001;
+            aabb.set_lowerBound(new Box2D.b2Vec2(mousePosWorld.x - d, mousePosWorld.y - d));
+            aabb.set_upperBound(new Box2D.b2Vec2(mousePosWorld.x + d, mousePosWorld.y + d));
+
+            // Query the world for overlapping shapes.
+            this.myQueryCallback.m_fixture = null;
+            this.myQueryCallback.m_point = new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y);
+            this.world.QueryAABB(this.myQueryCallback, aabb);
+
+            if (this.myQueryCallback.m_fixture)
+            {
+                var body = this.myQueryCallback.m_fixture.GetBody();
+                var md = new Box2D.b2MouseJointDef();
+                md.set_bodyA(this.mouseJointGroundBody);
+                md.set_bodyB(body);
+                md.set_target( new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y) );
+                md.set_maxForce( 1000 * body.GetMass() );
+                md.set_collideConnected(true);
+
+                this.mouseJoint = Box2D.castObject( this.world.CreateJoint(md), Box2D.b2MouseJoint );
+                body.SetAwake(true);
+            }
+        },
+
+        stopMouseJoint: function () {
+            if ( this.mouseJoint != null ) {
+                this.world.DestroyJoint(this.mouseJoint);
+                this.mouseJoint = null;
+            }
+        },
+
+        moveMouseJoint: function (mousePosWorld) {
+            if (this.mouseJoint) {
+                this.mouseJoint.SetTarget( new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y) );
+            }
         },
 
         step: function () {

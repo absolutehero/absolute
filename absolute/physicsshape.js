@@ -26,6 +26,35 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
 
         this.collided = false;
 
+        this.setInteractive(true);
+        this.buttonMode = true;
+
+        this.dragging = false;
+
+        this.mousedown = this.touchstart = function (data) {
+            data.originalEvent.preventDefault();
+
+            this.dragging = true;
+            if (!this.body) {
+                this.letsGetPhysical();
+            }
+            Physics.startMouseJoint(new PIXI.Point(Physics.screenToWorldX(data.global.x), Physics.screenToWorldY(data.global.y)));
+        };
+
+        this.mousemove = this.touchmove = function (data) {
+            if (this.dragging) {
+                data.originalEvent.preventDefault();
+                Physics.moveMouseJoint(new PIXI.Point(Physics.screenToWorldX(data.global.x), Physics.screenToWorldY(data.global.y)));
+            }
+        };
+
+        this.mouseup = this.mouseupoutside = this.touchend = function (data) {
+            if (this.dragging){
+                data.originalEvent.preventDefault();
+                Physics.stopMouseJoint();
+            }
+        };
+
         this.attachments = [];
     };
 
@@ -38,6 +67,10 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
     };
 
     PhysicsShape.prototype.letsGetPhysical = function () {
+        if (this.body) {
+            return;
+        }
+
         var bd = new Box2D.b2BodyDef();
         bd.set_type(Box2D.b2_dynamicBody);
         bd.set_position(new Box2D.b2Vec2(0, 0));
@@ -49,7 +82,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
             fixture.set_shape(this.buildShapeFromVertices(this.config[s].shape));
             fixture.set_density(1/*this.config[s].density*/);
             fixture.set_friction(1/*this.config[s].friction*/);
-            fixture.set_restitution(0/*this.config[s].bounce*/);
+            fixture.set_restitution(0.0001/*this.config[s].bounce*/);
 
             this.body.CreateFixture(fixture);
         }
@@ -140,6 +173,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         }
         return this.collided;
     };
+
 
     return PhysicsShape;
 });
