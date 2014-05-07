@@ -55,11 +55,15 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         this.width = width;
         this.height = height;
 
+        if (this.mask) {
+            this.removeChild(this.mask);
+        }
         var mask = new PIXI.Graphics();
         mask.beginFill(0xFFFFFF, 1.0);
         mask.drawRect(0, 0, this.width, this.height);
         mask.endFill();
         this.mask = mask;
+        this.addChild(this.mask);
 
         this.updateContentBounds();
     };
