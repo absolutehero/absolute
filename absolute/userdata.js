@@ -4,7 +4,7 @@
  * Time: 4:13 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define (['absolute/rest'], function (REST) {
+define (['absolute/rest', 'socialengine/socialapi'], function (REST, SocialAPI) {
 
     var UserData = {
 
@@ -72,36 +72,42 @@ define (['absolute/rest'], function (REST) {
             this.gameId = gameId;
 
             // try to grab user data from Facebook
-            if (typeof FB !== "undefined") {
-                FB.getLoginStatus(function(response) {
-                    if (response.status === 'connected') {
-                        FB.api('/me', function(response) {
-                            console.log('Good to see you, ' + response.name + '.');
-                            this.userId = 'fb' + response.id;
-                            this.isGuest = 0;
-                            this.userFirstName = response.first_name;
-                            this.userGender = response.gender;
-
-                            FB.api('/me/picture?type=square&redirect=false', function (response) {
-                                if (response.data) {
-                                    this.userImageUrl = response.data.url;
-                                    this._initSpilApi(callback);
-                                }
-                            }.bind(this));
-                            //graph.facebook.com/craig.robinson/picture?type=squar
-                        }.bind(this));
-                    }
-                    else {
-                        // TODO grab user data from local storage?
-                        this._initSpilApi(callback);
-                    }
-                }.bind(this));
-            }
-            else {
+            if (SocialAPI.platformAvailable(SocialAPI.platforms.FB)) {
+                SocialAPI.getLoginStatus(SocialAPI.platforms.FB, this._onGetLoginStatusComplete.bind(this), callback);
+            } else {
                 // TODO grab user data from local storage?
                 this._initSpilApi(callback);
             }
         },
+
+        _onGetLoginStatusComplete: function (response, callback) {
+            if (response === 'connected') {
+                console.log("connected");
+                SocialAPI.getUserInfo(SocialAPI.platforms.FB, this._onGetUserInfoComplete.bind(this), callback);
+            } else {
+                // TODO grab user data from local storage?
+                this._initSpilApi(callback);
+            }
+        },
+
+        _onGetUserInfoComplete: function (response, callback) {
+            console.log('Good to see you, ' + response.name + '.');
+            this.userId = 'fb' + response.id;
+            this.isGuest = 0;
+            this.userFirstName = response.first_name;
+            this.userGender = response.gender;
+
+            SocialAPI.getUserPicture(SocialAPI.platforms.FB, this._onGetUserPictureComplete.bind(this), callback);
+        },
+
+        _onGetUserPictureComplete: function (response, callback) {
+            if (response.data) {
+                this.userImageUrl = response.data.url;
+                this._initSpilApi(callback);
+            }
+            //graph.facebook.com/craig.robinson/picture?type=squar
+        },
+
 
         _initSpilApi: function (callback) {
 
