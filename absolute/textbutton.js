@@ -14,7 +14,7 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
         var options = textStyleOptions || defaultTextStyleOptions;
 
-        if (typeof threeSliceOptions === 'object' ) {
+        if (threeSliceOptions && typeof threeSliceOptions === 'object' ) {
             this.container = new PIXI.DisplayObjectContainer();
             defaultImage = this._createThreeSliceImage(threeSliceOptions);
             hoverImage = this._createThreeSliceImage(threeSliceOptions);

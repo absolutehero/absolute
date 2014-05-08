@@ -137,17 +137,33 @@ define ([
 
                     var action = (handler && handler[config.params.action].bind(handler) || null);
 
+                    var replaceOnHover = (config.params.replaceOnHover || null);
+                    var useTap = (config.params.replaceOnHover || null);
+
                     widget = new AnimatedButton(
                         PIXI.Sprite.fromFrame(_a(config.params.defaultTexture)),
                         PIXI.Sprite.fromFrame(_a(config.params.hoverTexture)),
-                        action);
+                        action, replaceOnHover, useTap);
 
                     break;
 
                 case "AnimatedTextButton":
                     this.checkParams({"action": "string"}, config.params);
                     this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string"}, config.params.textStyle);
-                    this.checkParams({"width": "number", "height": "number", "imageBase": "string"}, config.params.threeSlice);
+
+                    var threeSlice = config.params.threeSlice || null;
+                    if (threeSlice) {
+                        this.checkParams({"width": "number", "height": "number", "imageBase": "string"}, config.params.threeSlice);
+                    }
+
+                    var defaultTexture = (config.params.defaultTexture && (typeof config.params.defaultTexture === 'string')) ? config.params.defaultTexture : null;
+                    var hoverTexture = (config.params.hoverTexture && (typeof config.params.hoverTexture === 'string')) ? config.params.hoverTexture : null;
+
+                    var defaultImage = (defaultTexture !== null ? PIXI.Sprite.fromFrame(_a(defaultTexture)) : null);
+                    var hoverImage = (hoverTexture !== null ? PIXI.Sprite.fromFrame(_a(hoverTexture)) : null);
+
+                    var replaceOnHover = (config.params.replaceOnHover || null);
+                    var useTap = (config.params.replaceOnHover || null);
 
                     var action = (handler && handler[config.params.action].bind(handler) || null);
                     var textStyleOptions = {
@@ -157,16 +173,19 @@ define ([
                         fontSize : config.params.textStyle.fontSize
                     };
 
-                    var threeSliceOptions = {
-                        width: Coords.x(config.params.threeSlice.width),
-                        height: Coords.y(config.params.threeSlice.height),
-                        images: {
-                            'left':_a(config.params.threeSlice.imageBase + '.left'),
-                            'center': _a(config.params.threeSlice.imageBase + '.center'),
-                            'right': _a(config.params.threeSlice.imageBase + '.right')
-                        }
-                    };
-                    widget = new AnimatedTextButton(action, textStyleOptions, threeSliceOptions);
+                    var threeSliceOptions = null;
+                    if (threeSlice) {
+                        threeSliceOptions = {
+                            width: Coords.x(config.params.threeSlice.width),
+                            height: Coords.y(config.params.threeSlice.height),
+                            images: {
+                                'left': _a(config.params.threeSlice.imageBase + '.left'),
+                                'center': _a(config.params.threeSlice.imageBase + '.center'),
+                                'right': _a(config.params.threeSlice.imageBase + '.right')
+                            }
+                        };
+                    }
+                    widget = new AnimatedTextButton(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions);
                     break;
 
                 case "ToggleButton":

@@ -4,15 +4,15 @@
 define(['pixi','absolute/textbutton', 'lodash', 'absolute/platform'],
     function (PIXI, TextButton, _, Platform) {
 
-        var AnimatedTextButton = function(action, textStyleOptions, threeSliceOptions) {
-            this._initAnimatedTextButton(action, textStyleOptions, threeSliceOptions)
+        var AnimatedTextButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions) {
+            this._initAnimatedTextButton(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions)
         };
 
         AnimatedTextButton.constructor = AnimatedTextButton;
         AnimatedTextButton.prototype = Object.create(TextButton.prototype);
 
-        AnimatedTextButton.prototype._initAnimatedTextButton = function(action, textStyleOptions, threeSliceOptions) {
-            TextButton.call(this, null, null, action, null, null, textStyleOptions, threeSliceOptions);
+        AnimatedTextButton.prototype._initAnimatedTextButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions) {
+            TextButton.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions);
 
             if (!Platform.supportsTouch()) {
                 this.mouseover = function (evt) {
