@@ -111,8 +111,11 @@ function (
 
     GameUI.prototype.resize = function() {
 
-        var windowWidth = document.documentElement.clientWidth,
-            windowHeight = document.documentElement.clientHeight;
+        ScreenMetrics.refresh();
+
+        var windowWidth = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientWidth : ScreenMetrics.screenWidth,
+            windowHeight = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientHeight : ScreenMetrics.screenHeight;
+
 
         var clientWidth = windowWidth,
             clientHeight = windowHeight;
@@ -366,6 +369,10 @@ function (
         this.modalStack.push(screen);
         this.stage[0].addChild(screen);
         screen.onShow();
+    };
+
+    GameUI.prototype.hasModal = function () {
+        return (this.modalStack.length > 0);
     };
 
     GameUI.prototype.hideModal = function () {

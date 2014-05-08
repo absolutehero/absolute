@@ -49,11 +49,10 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
             this.mouseover = function(evt) {
                 self.setTexture(self.hoverImage);
             };
+            this.mouseout = function(evt) {
+                self.setTexture(self.defaultImage);
+            };
         }
-
-        this.mouseout = function(evt) {
-            self.setTexture(self.defaultImage);
-        };
 
         var triggerAction = function() {
             self.setTexture(self.defaultImage);
@@ -63,11 +62,12 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
         if (Platform.supportsTouch()) {
 
             if(useTap) {
-                this.tap = function(evt) {
+                this.click = this.tap = function(evt) {
                     triggerAction();
                 };
             } else {
-                this.touchstart = function(evt) {
+                // remove the mousedown if causes double input on older android
+                this.mousedown = this.touchstart = function(evt) {
                     triggerAction();
                 };
             }

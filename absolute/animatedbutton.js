@@ -21,12 +21,13 @@ define(['pixi','absolute/button', 'lodash', 'absolute/screenmetrics', 'absolute/
                     this.defaultY = this.position.y;
                     this.position.y = this.defaultY + 2;
                 };
+                this.mouseout = function(evt) {
+                    this.setTexture(this.defaultImage);
+                    this.position.y = this.defaultY;
+                };
             }
 
-            this.mouseout = function(evt) {
-                this.setTexture(this.defaultImage);
-                this.position.y = this.defaultY;
-            };
+
         };
 
         return AnimatedButton;

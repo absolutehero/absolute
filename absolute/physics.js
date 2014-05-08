@@ -10,23 +10,23 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
         world: null,
 
-        pixelsPerMeter: 32,
+        pixelsPerMeter: 0,
 
         ZERO: null,
 
         debugRenderer: null,
 
-        init: function (ui, gravityX, gravityY) {
+        init: function (ui, gravityX, gravityY, worldOffset, pixelsPerMeter) {
             this.ZERO = new Box2D.b2Vec2(0, 0);
 
-            this.pixelsPerMeter = 32 * ScreenMetrics.getResScale();
+            this.pixelsPerMeter = pixelsPerMeter * ScreenMetrics.getResScale();
 
             this.renderContext = ui.renderer[0].context;
             this.renderCanvas = ui.renderer[0].view;
 
             this.debugRenderer = this.getCanvasDebugDraw();
             this.debugRenderer.SetFlags(this.e_shapeBit);
-            this.debugRenderer.SetFlags(this.e_jointBit);
+            //this.debugRenderer.SetFlags(this.e_jointBit);
             //this.debugRenderer.SetFlags(this.e_aabbBit);
 
             if ( this.world != null )
@@ -35,8 +35,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             this.world = new Box2D.b2World( new Box2D.b2Vec2(gravityX, gravityY) );
             this.world.SetDebugDraw(this.debugRenderer);
 
-            this.setWorldXOffset(this.renderCanvas.width / 2);
-            this.setWorldYOffset(this.renderCanvas.height / 2);
+            this.setWorldXOffset(worldOffset.x);
+            this.setWorldYOffset(worldOffset.y);
 
             this.contactListener = new Box2D.b2ContactListener();
 
@@ -82,27 +82,90 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
                         }
                     }
             }]);
-
+ */
             this.world.SetContactListener( this.contactListener );
-            */
+
+            this.myQueryCallback = new Box2D.b2QueryCallback();
+
+            Box2D.customizeVTable(this.myQueryCallback, [{
+                original: Box2D.b2QueryCallback.prototype.ReportFixture,
+                replacement:
+                    function(thsPtr, fixturePtr) {
+                        var ths = Box2D.wrapPointer( thsPtr, Box2D.b2QueryCallback );
+                        var fixture = Box2D.wrapPointer( fixturePtr, Box2D.b2Fixture );
+                        if ( fixture.GetBody().GetType() != Box2D.b2_dynamicBody ) //mouse cannot drag static bodies around
+                            return true;
+                        if ( ! fixture.TestPoint( ths.m_point ) )
+                            return true;
+                        ths.m_fixture = fixture;
+                        return false;
+                    }
+            }]);
+
+            this.mouseJointGroundBody = this.world.CreateBody( new Box2D.b2BodyDef() );
+
         },
 
-        buildGround: function () {
+        setPixelsPerMeter: function (pixelsPerMeter) {
+            this.pixelsPerMeter = pixelsPerMeter * ScreenMetrics.getResScale();
+        },
+
+        buildGround: function (start, end) {
             var bd_ground = new Box2D.b2BodyDef();
             this.groundBody = this.world.CreateBody(bd_ground);
             //ground edges
             var shape0 = new Box2D.b2EdgeShape();
-            shape0.Set(new Box2D.b2Vec2(-13.0, -23.7), new Box2D.b2Vec2(13.0, -23.7));
-            this.groundBody.CreateFixture(shape0, 0.0);
-            shape0.Set(new Box2D.b2Vec2(-13.0, -28.0), new Box2D.b2Vec2(-13.0, -23.7));
-            this.groundBody.CreateFixture(shape0, 0.0);
-            shape0.Set(new Box2D.b2Vec2(13.0, -28.0), new Box2D.b2Vec2(13.0, -23.7));
+            shape0.Set(new Box2D.b2Vec2(start.x, start.y), new Box2D.b2Vec2(end.x, end.y));
             var fixture = new Box2D.b2FixtureDef();
             fixture.set_shape(shape0);
             fixture.set_density(1);
             fixture.set_friction(1);
-            fixture.set_restitution(0.01);
+            fixture.set_restitution(0);
             this.groundBody.CreateFixture(fixture);
+        },
+
+        startMouseJoint: function(mousePosWorld) {
+
+            if ( this.mouseJoint != null )
+                return;
+
+            // Make a small box.
+            var aabb = new Box2D.b2AABB();
+            var d = 0.001;
+            aabb.set_lowerBound(new Box2D.b2Vec2(mousePosWorld.x - d, mousePosWorld.y - d));
+            aabb.set_upperBound(new Box2D.b2Vec2(mousePosWorld.x + d, mousePosWorld.y + d));
+
+            // Query the world for overlapping shapes.
+            this.myQueryCallback.m_fixture = null;
+            this.myQueryCallback.m_point = new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y);
+            this.world.QueryAABB(this.myQueryCallback, aabb);
+
+            if (this.myQueryCallback.m_fixture)
+            {
+                var body = this.myQueryCallback.m_fixture.GetBody();
+                var md = new Box2D.b2MouseJointDef();
+                md.set_bodyA(this.mouseJointGroundBody);
+                md.set_bodyB(body);
+                md.set_target( new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y) );
+                md.set_maxForce( 1000 * body.GetMass() );
+                md.set_collideConnected(true);
+
+                this.mouseJoint = Box2D.castObject( this.world.CreateJoint(md), Box2D.b2MouseJoint );
+                body.SetAwake(true);
+            }
+        },
+
+        stopMouseJoint: function () {
+            if ( this.mouseJoint != null ) {
+                this.world.DestroyJoint(this.mouseJoint);
+                this.mouseJoint = null;
+            }
+        },
+
+        moveMouseJoint: function (mousePosWorld) {
+            if (this.mouseJoint) {
+                this.mouseJoint.SetTarget( new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y) );
+            }
         },
 
         step: function () {
@@ -145,7 +208,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
             this.renderContext.save();
             this.renderContext.resetTransform();
-            this.renderContext.translate(this.renderCanvas.width / 2, this.renderCanvas.height / 2);
+            this.renderContext.translate(this.worldXOffset, this.worldYOffset);
             //this.renderContext.translate(canvasOffset.x, canvasOffset.y);
             this.renderContext.scale(1,-1);
             this.renderContext.scale(this.pixelsPerMeter,this.pixelsPerMeter);

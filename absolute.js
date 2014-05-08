@@ -45,7 +45,6 @@ define(function (require) {
         PageIndicator:require('absolute/pageindicator'),
         MultiPageDialog:require('absolute/multipagedialog'),
         //ParticleEmitter: require('absolute/particleemitter'),
-        UserData: require('absolute/userdata'),
         GraphSerializer: require('absolute/graphserializer'),
         ScrollArea: require('absolute/scrollarea'),
         TextButton: require('absolute/textbutton'),

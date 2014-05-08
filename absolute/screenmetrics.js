@@ -5,7 +5,7 @@
  * Time: 2:00 PM
  * To change this template use File | Settings | File Templates.
  */
-define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
+define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platform, _) {
 
     var ScreenMetrics = {
 
@@ -15,30 +15,97 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
         stepDownResClass: false,
         stepDownResClassAggressively: true,
 
+        realWindow:
+            (function() {
+
+                var windowRef,
+                    isInIframe = (parent !== window);
+
+                if(isInIframe) {
+                    try {
+
+                        windowRef= parent.window;
+
+                        var crossOriginTest = windowRef.devicePixelRatio;
+
+                    } catch (e) {
+                        // crossOriginTest failure
+                        windowRef = window;
+                    }
+                } else {
+                    windowRef = window;
+                }
+
+
+                return windowRef;
+
+            })(),
+        realScreen: (function() {
+
+            var screenRef,
+                isInIframe = (parent !== window);
+
+            if(isInIframe) {
+                try {
+                    screenRef = parent.screen;
+                } catch (e) {
+                    // crossOriginTest failure
+                    screenRef = screen;
+                }
+            } else {
+                screenRef = screen;
+            }
+
+
+            return screenRef;
+
+        })(),
         refresh: function() {
-            this.devicePixelRatio = window.devicePixelRatio || 1;
-            this.screenWidth = screen.width;
-            this.screenHeight = screen.height;
-            this.innerWidth = window.innerWidth;
-            this.innerHeight = window.innerHeight;
-            this.outerWidth = window.outerWidth;
-            this.outerHeight = window.outerHeight;
+
+            this.devicePixelRatio = this.realWindow.devicePixelRatio || 1;
+            this.screenWidth = this.realScreen.width;
+            this.screenHeight = this.realScreen.height;
+            this.innerWidth = this.realWindow.innerWidth;
+            this.innerHeight = this.realWindow.innerHeight;
+            this.outerWidth = this.realWindow.outerWidth;
+            this.outerHeight = this.realWindow.outerHeight;
+            this.clientWidth = document.documentElement.clientWidth;
+            this.clientHeight = document.documentElement.clientHeight;
+
+        },
+
+        getMinNonZero: function minNonZero (numbers) {
+
+            return Math.min.apply(null, _.filter(numbers, function(num) {
+                return num > 0;
+            }));
+
         },
 
         isPortrait: function() {
-            if (this.innerWidth < this.innerHeight) {
-                return true;
-            }
 
-            return false;
+            this.refresh();
+
+            var width = this.getMinNonZero([this.innerWidth, this.screenWidth, this.clientWidth]),
+                height = this.getMinNonZero([this.innerHeight, this.screenHeight, this.clientHeight]);
+
+            return width < height;
+
         },
 
-        getWidth: function() {
-            //
-            var w = document.documentElement.clientWidth,
-                h = document.documentElement.clientHeight;
+        getWidth: function(applyPixelRatio) {
 
-            if (this.isPortrait()) {
+            applyPixelRatio = typeof applyPixelRatio !== 'undefined' ? applyPixelRatio : false;
+
+            var w = this.clientWidth,
+                h = this.clientHeight;
+
+            if(applyPixelRatio) {
+                w = w * this.devicePixelRatio;
+                h = h * this.devicePixelRatio;
+            }
+
+            if (this.isPortrait() && w > 0) {
                 return w;
             }
             else {
@@ -50,25 +117,36 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
                         return 800; // this is a hack to fix Chrome on Galaxy Tab 2, returns 752!?!
                     }
                     if (Platform._isAndroid()) {
-                        return Math.max(screen.height, h);
+                        return Math.max(this.realScreen.height, h);
                     }
                     else {
-                        return Math.max(screen.width, h);
+                        var screenWidth = this.realScreen.width;
+                        if(applyPixelRatio) {
+                            screenWidth = screenWidth * this.devicePixelRatio;
+                        }
+                        return Math.max(screenWidth, h);
                     }
                 }
             }
         },
 
-        getHeight: function() {
+        getHeight: function(applyPixelRatio) {
+
+            applyPixelRatio = typeof applyPixelRatio !== 'undefined' ? applyPixelRatio : false;
+
             var h;
-            if (this.isPortrait()) {
-                h = this.innerHeight;
-            }
-            else {
+
+            if (this.isPortrait() && this.clientHeight > 0) {
+                h = this.clientHeight;
+            } else {
                 if (this.screenWidth < this.screenHeight)
                     h = (this.screenHeight) - (this.screenWidth - this.innerHeight);
                 else
                     h = (this.screenWidth) - (this.screenHeight - this.innerHeight);
+            }
+
+            if(applyPixelRatio) {
+                h = h * this.devicePixelRatio;
             }
 
             if (navigator.userAgent.match(/iPhone/i)) {
@@ -123,15 +201,11 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
                 return this.resClass;
             }
 
-            var width = this.getWidth() * this.devicePixelRatio,
+            var size = Math.min(this.getHeight(true) , this.getWidth(true)),
                 resClassIndex = "";
 
-            if (!this.isPortrait()) {
-                width = this.getHeight() * this.devicePixelRatio;
-            }
-
             for( var i = this.resClasses.length - 1 ; i > 0 ; i-- ) {
-                if(width > this.resClasses[i].resfloor) {
+                if(size > this.resClasses[i].resfloor) {
                     resClassIndex = i;
                     break;
                 }
@@ -189,16 +263,17 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
             Debug.log('getScaledContentHeight ' + this.getScaledContentHeight());
             Debug.log('getScaledViewportWidth ' + this.getScaledViewportWidth());
             Debug.log('getScaledViewportHeight ' + this.getScaledViewportHeight());
+
         },
 
         getScreenParams: function() {
             return 'devicePixelRatio=' + this.devicePixelRatio + '&' +
-                'screen.width=' + screen.width + '&' +
-                'screen.height=' + screen.height + '&' +
-                'window.innerWidth=' + window.innerWidth + '&' +
-                'window.innerHeight=' + window.innerHeight + '&' +
-                'window.outerWidth=' + window.outerWidth + '&' +
-                'window.outerHeight=' + window.outerHeight + '&' +
+                'screen.width=' + this.realScreen.width + '&' +
+                'screen.height=' + this.realScreen.height + '&' +
+                'window.innerWidth=' + this.realWindow.innerWidth + '&' +
+                'window.innerHeight=' + this.realWindow.innerHeight + '&' +
+                'window.outerWidth=' + this.realWindow.outerWidth + '&' +
+                'window.outerHeight=' + this.realWindow.outerHeight + '&' +
                 'document.documentElement.clientWidth=' + document.documentElement.clientWidth + '&' +
                 'document.documentElement.clientHeight=' + document.documentElement.clientHeight + '&' +
                 'resClass=' + this.getResClass() + '&' +
@@ -224,11 +299,11 @@ define(['absolute/debug', 'absolute/platform'], function (Debug, Platform) {
 
             if(Platform.supportsDeviceOrientation) {
 
-                window.addEventListener('deviceorientation', handleOrientationChange.bind(this));
+                this.realWindow.addEventListener('deviceorientation', handleOrientationChange.bind(this));
 
             } else {
 
-                window.addEventListener('resize', handleOrientationChange.bind(this));
+                this.realWindow.addEventListener('resize', handleOrientationChange.bind(this));
 
             }
 

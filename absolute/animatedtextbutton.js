@@ -20,12 +20,13 @@ define(['pixi','absolute/textbutton', 'lodash', 'absolute/platform'],
                     this.defaultY = this.position.y;
                     this.position.y = this.defaultY + 2;
                 };
+
+                this.mouseout = function (evt) {
+                    this.setTexture(this.defaultImage);
+                    this.position.y = this.defaultY;
+                }
             }
 
-            this.mouseout = function (evt) {
-                this.setTexture(this.defaultImage);
-                this.position.y = this.defaultY;
-            }
         };
 
         return AnimatedTextButton;

@@ -45,7 +45,7 @@ define(['pixi', 'absolute/coords', 'absolute/tweenutils'], function(PIXI, Coords
 
     };
 
-    ProgressBar.prototype.setProgress = function (percent, tween, tweenCallback) {
+    ProgressBar.prototype.setProgress = function (percent, tween, tweenCallback, duration) {
 
         if (percent < 0) {
             percent = 0;
@@ -53,13 +53,15 @@ define(['pixi', 'absolute/coords', 'absolute/tweenutils'], function(PIXI, Coords
             percent = 1;
         }
 
+        duration = duration || 500;
+
         var targetWidth =(this.end - this.start) * percent;
 
         if(tween) {
 
             var self = this,
                 maskTween = new TWEEN.Tween({ width: this.previousWidth })
-                .to({ width: targetWidth }, 500)
+                .to({ width: targetWidth }, duration)
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(function () {
 
