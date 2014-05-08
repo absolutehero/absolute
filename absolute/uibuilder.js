@@ -55,6 +55,10 @@ define ([
             return null;
         },
 
+        getConfigData: function (config) {
+            return _layouts[config];
+        },
+
         buildLayout: function (config, parent, handler) {
             var widget = null,
                 self = this;
