@@ -15,9 +15,51 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
         stepDownResClass: false,
         stepDownResClassAggressively: true,
 
-        realWindow: parent.window || window,
-        realScreen: parent.screen || screen,
+        realWindow:
+            (function() {
 
+                var windowRef,
+                    isInIframe = (parent !== window);
+
+                if(isInIframe) {
+                    try {
+
+                        windowRef= parent.window;
+
+                        var crossOriginTest = windowRef.devicePixelRatio;
+
+                    } catch (e) {
+                        // crossOriginTest failure
+                        windowRef = window;
+                    }
+                } else {
+                    windowRef = window;
+                }
+
+
+                return windowRef;
+
+            })(),
+        realScreen: (function() {
+
+            var screenRef,
+                isInIframe = (parent !== window);
+
+            if(isInIframe) {
+                try {
+                    screenRef = parent.screen;
+                } catch (e) {
+                    // crossOriginTest failure
+                    screenRef = screen;
+                }
+            } else {
+                screenRef = screen;
+            }
+
+
+            return screenRef;
+
+        })(),
         refresh: function() {
 
             this.devicePixelRatio = this.realWindow.devicePixelRatio || 1;

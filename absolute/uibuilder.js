@@ -36,8 +36,14 @@ define ([
     return {
 
         load: function (layoutJSON) {
-            var l = JSON.parse(layoutJSON);
-            _.merge(_layouts, l);
+            try {
+                var l = JSON.parse(layoutJSON);
+                _.merge(_layouts, l);
+            }
+            catch (e) {
+                alert("UIBuilder: error in layout.json");
+                throw(e);
+            }
         },
 
         findWidget: function (key, l) {
@@ -57,6 +63,10 @@ define ([
                 }
             }
             return null;
+        },
+
+        getConfigData: function (config) {
+            return _layouts[config];
         },
 
         buildLayout: function (config, parent, handler) {

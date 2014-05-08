@@ -1,6 +1,6 @@
-define(['pixi', 'absolute/assetmap', 'absolute/coords', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button', 'absolute/audiomanager', 'absolute/nineslice'],
+define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'absolute/screen', 'absolute/debug', 'lodash', 'absolute/button', 'absolute/audiomanager', 'absolute/nineslice'],
 
-    function(PIXI, _a, Coords, Screen, Debug, _, Button, AudioManager, NineSlice) {
+    function(PIXI, UIBuilder, _a, Coords, Screen, Debug, _, Button, AudioManager, NineSlice) {
 
         var Dialog = function(ui, options) {
 
@@ -37,7 +37,8 @@ define(['pixi', 'absolute/assetmap', 'absolute/coords', 'absolute/screen', 'abso
                     'type': 'none'
                 },
                 'buttons': [],
-                'buttonSpacing': Coords.x(20)
+                'buttonSpacing': Coords.x(20),
+                'layout': ''
             };
 
             this._initDialog(ui, _.extend(defaultOptions, options));
@@ -112,6 +113,19 @@ define(['pixi', 'absolute/assetmap', 'absolute/coords', 'absolute/screen', 'abso
         };
 
         Dialog.prototype._setSize = function() {
+
+            // override width and height if a layout config exists
+            if (this.options.layout) {
+                var layoutConfig = UIBuilder.getConfigData(this.options.layout);
+                if (layoutConfig) {
+                    if (layoutConfig.width) {
+                        this.options.width = layoutConfig.width;
+                    }
+                    if (layoutConfig.height) {
+                        this.options.height = layoutConfig.height;
+                    }
+                }
+            }
 
             function getPercentageSize(canvasWidth, percentage) {
                 var convertedPercentage = parseInt(percentage.slice( 0, percentage.length - 1)) / 100;
