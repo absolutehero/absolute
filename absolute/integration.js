@@ -12,7 +12,7 @@ define(['absolute/debug'],function(Debug) {
 
             'gameBreak': function(resumeCallback, pauseCallback) {
 
-                if(window.SpilGameAPIInstance && window.SpilGameAPIInstance.GameBreak) {
+                if(window.SpilGameAPIInstance && !window.SpilGameAPIInstance.IS_STANDALONE && window.SpilGameAPIInstance.GameBreak) {
 
                     var safetyTimeout, callbackComplete = false;
 
