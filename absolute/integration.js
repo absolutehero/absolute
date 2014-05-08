@@ -10,7 +10,7 @@ define(['absolute/debug'],function(Debug) {
 
         'spil': {
 
-            'gameBreak': function(callback) {
+            'gameBreak': function(resumeCallback, pauseCallback) {
 
                 if(window.SpilGameAPIInstance && window.SpilGameAPIInstance.GameBreak) {
 
@@ -18,14 +18,14 @@ define(['absolute/debug'],function(Debug) {
 
                     function safetyCallback () {
                         if(!callbackComplete) {
-                            callback.call(this);
+                            resumeCallback.call(this);
                             callbackComplete = true;
                         }
                         window.clearTimeout(safetyTimeout);
                     }
 
                     window.SpilGameAPIInstance.GameBreak.request(
-                        function () {},
+                        pauseCallback.bind(this),
                         safetyCallback.bind(this)
                     );
 
@@ -34,11 +34,11 @@ define(['absolute/debug'],function(Debug) {
                         Debug.log('ahg: Spil api failure: gamebreak');
                         safetyCallback.call(this);
 
-                    }.bind(this), 500);
+                    }.bind(this), 10000);
 
                 } else {
 
-                    callback.call(this);
+                    resumeCallback.call(this);
 
                 }
 
