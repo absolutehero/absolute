@@ -371,6 +371,10 @@ function (
         screen.onShow();
     };
 
+    GameUI.prototype.hasModal = function () {
+        return (this.modalStack.length > 0);
+    };
+
     GameUI.prototype.hideModal = function () {
         if (this.modalStack.length > 0) {
             // hide the modal

@@ -13,7 +13,9 @@ define ([
     'absolute/screenmetrics',
     'absolute/progressbar',
     'absolute/nineslice',
+    'absolute/animatedbutton',
     'absolute/animatedtextbutton',
+    'absolute/togglebutton',
     'text!absolute/ui/layout.json'],
     function (
         PIXI,
@@ -24,7 +26,9 @@ define ([
         ScreenMetrics,
         ProgressBar,
         NineSlice,
+        AnimatedButton,
         AnimatedTextButton,
+        ToggleButton,
         layoutJSON) {
 
     var _layouts = JSON.parse(layoutJSON);
@@ -128,6 +132,18 @@ define ([
                     };
                     widget = new NineSlice(options);
                     break;
+                case "AnimatedButton":
+                    this.checkParams({"defaultTexture": "string", "hoverTexture": "string", "action": "string"}, config.params);
+
+                    var action = (handler && handler[config.params.action].bind(handler) || null);
+
+                    widget = new AnimatedButton(
+                        PIXI.Sprite.fromFrame(_a(config.params.defaultTexture)),
+                        PIXI.Sprite.fromFrame(_a(config.params.hoverTexture)),
+                        action);
+
+                    break;
+
                 case "AnimatedTextButton":
                     this.checkParams({"action": "string"}, config.params);
                     this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string"}, config.params.textStyle);
@@ -151,6 +167,15 @@ define ([
                         }
                     };
                     widget = new AnimatedTextButton(action, textStyleOptions, threeSliceOptions);
+                    break;
+
+                case "ToggleButton":
+                    this.checkParams({"baseName": "string", "action": "string", "enabled" : "boolean"}, config.params);
+
+                    var action = (handler && handler[config.params.action].bind(handler) || null);
+                    var useOverlay = config.params.useOverlay || false;
+
+                    widget = new ToggleButton(config.params.baseName, action, config.params.enabled, useOverlay);
                     break;
             }
 
