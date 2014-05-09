@@ -172,22 +172,29 @@ function (
 
         this.buildRenderers(this.width, this.height);
 
-        this.renderer[1].view.style.width = this.renderer[0].view.style.width = clientWidth  + "px";
-        this.renderer[1].view.style.height = this.renderer[0].view.style.height = clientHeight + "px";
-        this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
-
-        if (clientWidth < windowWidth) {
-            this.renderer[1].view.style.left = this.renderer[0].view.style.left = Math.round((windowWidth - clientWidth) / 2) + 'px';
+        if (this.container.style.width !== "" && this.container.style.height !== "") {
+            this.renderer[1].view.style.width = this.renderer[0].view.style.width = this.container.style.width;
+            this.renderer[1].view.style.height = this.renderer[0].view.style.height = this.container.style.height;
+            this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
         }
         else {
-            this.renderer[1].view.style.left = this.renderer[0].view.style.left = '0';
-        }
+            this.renderer[1].view.style.width = this.renderer[0].view.style.width = clientWidth  + "px";
+            this.renderer[1].view.style.height = this.renderer[0].view.style.height = clientHeight + "px";
+            this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
 
-        if (clientHeight < windowHeight) {
-            this.renderer[1].view.style.top = this.renderer[0].view.style.top = Math.round((windowHeight - clientHeight) / 2) + 'px';
-        }
-        else {
-            this.renderer[1].view.style.top =this.renderer[0].view.style.top = '0';
+            if (clientWidth < windowWidth) {
+                this.renderer[1].view.style.left = this.renderer[0].view.style.left = Math.round((windowWidth - clientWidth) / 2) + 'px';
+            }
+            else {
+                this.renderer[1].view.style.left = this.renderer[0].view.style.left = '0';
+            }
+
+            if (clientHeight < windowHeight) {
+                this.renderer[1].view.style.top = this.renderer[0].view.style.top = Math.round((windowHeight - clientHeight) / 2) + 'px';
+            }
+            else {
+                this.renderer[1].view.style.top =this.renderer[0].view.style.top = '0';
+            }
         }
 
         this.resetStage();
