@@ -111,73 +111,76 @@ function (
 
     GameUI.prototype.resize = function() {
 
-        ScreenMetrics.refresh();
-
-        var windowWidth = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientWidth : ScreenMetrics.screenWidth,
-            windowHeight = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientHeight : ScreenMetrics.screenHeight;
-
-
-        var clientWidth = windowWidth,
-            clientHeight = windowHeight;
-
-        if (this.supportsOrientationChange) {
-            this.portrait = clientWidth < clientHeight;
-        }
-        else {
-            this.portrait = this.width < this.height;
-        }
-
-        var aspectRatio = windowWidth / windowHeight;
-
-        if (this.portrait) {
-
-            if (this.supportsOrientationChange && this.width > this.height) {
-
-                this.baseWidth = this.origBaseHeight;
-                this.baseHeight = this.origBaseWidth;
-                this.width = this.origHeight;
-                this.height = this.origWidth;
-
-            }
-
-            if (aspectRatio > 0.83) {
-                clientWidth = 0.83 * windowHeight;
-            }
-            else if (aspectRatio < 0.56) {
-                clientHeight = windowWidth / 0.56;
-            }
-        }
-        else {
-            if (this.supportsOrientationChange && this.height > this.width) {
-
-                this.baseWidth = this.origBaseWidth;
-                this.baseHeight = this.origBaseHeight;
-                this.width = this.origWidth;
-                this.height = this.origHeight;
-
-            }
-
-             aspectRatio = 1 / aspectRatio;
-
-             if (aspectRatio > 0.70) {
-                 clientHeight = 0.70 * windowWidth;
-             }
-             else if (aspectRatio < 0.56) {
-                 clientWidth = windowHeight / 0.56;
-             }
-        }
-
-        clientWidth = Math.floor(clientWidth);
-        clientHeight = Math.floor(clientHeight);
-
-        this.buildRenderers(this.width, this.height);
-
         if (this.container.style.width !== "" && this.container.style.height !== "") {
+            this.buildRenderers(this.width, this.height);
+
             this.renderer[1].view.style.width = this.renderer[0].view.style.width = this.container.style.width;
             this.renderer[1].view.style.height = this.renderer[0].view.style.height = this.container.style.height;
             this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
         }
         else {
+
+            ScreenMetrics.refresh();
+
+            var windowWidth = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientWidth : ScreenMetrics.screenWidth,
+                windowHeight = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientHeight : ScreenMetrics.screenHeight;
+
+
+            var clientWidth = windowWidth,
+                clientHeight = windowHeight;
+
+            if (this.supportsOrientationChange) {
+                this.portrait = clientWidth < clientHeight;
+            }
+            else {
+                this.portrait = this.width < this.height;
+            }
+
+            var aspectRatio = windowWidth / windowHeight;
+
+            if (this.portrait) {
+
+                if (this.supportsOrientationChange && this.width > this.height) {
+
+                    this.baseWidth = this.origBaseHeight;
+                    this.baseHeight = this.origBaseWidth;
+                    this.width = this.origHeight;
+                    this.height = this.origWidth;
+
+                }
+
+                if (aspectRatio > 0.85) {
+                    clientWidth = 0.85 * windowHeight;
+                }
+                else if (aspectRatio < 0.56) {
+                    clientHeight = windowWidth / 0.56;
+                }
+            }
+            else {
+                if (this.supportsOrientationChange && this.height > this.width) {
+
+                    this.baseWidth = this.origBaseWidth;
+                    this.baseHeight = this.origBaseHeight;
+                    this.width = this.origWidth;
+                    this.height = this.origHeight;
+
+                }
+
+                aspectRatio = 1 / aspectRatio;
+
+                if (aspectRatio > 0.80) {
+                    clientHeight = 0.80 * windowWidth;
+                }
+                else if (aspectRatio < 0.56) {
+                    clientWidth = windowHeight / 0.56;
+                }
+            }
+
+            clientWidth = Math.floor(clientWidth);
+            clientHeight = Math.floor(clientHeight);
+
+            this.buildRenderers(this.width, this.height);
+
             this.renderer[1].view.style.width = this.renderer[0].view.style.width = clientWidth  + "px";
             this.renderer[1].view.style.height = this.renderer[0].view.style.height = clientHeight + "px";
             this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
@@ -195,15 +198,15 @@ function (
             else {
                 this.renderer[1].view.style.top =this.renderer[0].view.style.top = '0';
             }
+
+            this.resetStage();
+
+            if (this.supportsOrientationChange && this.currentScreen) {
+                this.currentScreen.handleOrientationChange(this.portrait);
+            }
+
+            this.refreshModal();
         }
-
-        this.resetStage();
-
-        if (this.supportsOrientationChange && this.currentScreen) {
-            this.currentScreen.handleOrientationChange(this.portrait);
-        }
-
-        this.refreshModal();
 
     };
 
