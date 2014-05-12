@@ -1,4 +1,5 @@
-define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUtils, Coords, PIXI, _) {
+define(['absolute/mathutils','absolute/coords','pixi', 'lodash', 'absolute/spriteutils'],function(MathUtils, Coords,
+    PIXI, _, SpriteUtils) {
     var RandomUtils = {
 
         getRandomIntFromRange: function(min, max) {
@@ -11,10 +12,11 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
                 'minSpacing': 100,
                 'scaleWithY':true,
                 'minScale': 0.3,
+                'maxScale': 1,
                 'minAlpha': 0.2,
                 'lockY': null,
                 'lockX': null,
-                'shade': false
+                'shade': 0
             }, options);
             this.ui = ui;
             areaRect.area = areaRect.width * areaRect.height;
@@ -25,7 +27,7 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
                     tmpTexture = new PIXI.Texture.fromFrame(randomItem.url);
 
                 randomItem.area = tmpTexture.width * tmpTexture.height;
-                randomItem.count = Math.round(( randomItem.fillDensity * areaRect.area ) / randomItem.area)
+                randomItem.count = Math.round(( randomItem.fillDensity * areaRect.area ) / randomItem.area);
 
                 for(var i = 0; i < randomItem.count; i ++ ) {
 
@@ -48,13 +50,9 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
                         }
                         randomItem.sprite = new PIXI.Sprite.fromFrame(randomItem.url);
 
-                        if(options.shade) {
-
-                            var shadedSprite = new PIXI.Sprite.fromFrame(randomItem.url);
-                            shadedSprite.tint = 0x000000;
-                            shadedSprite.alpha = 0.8;
-                            shadedSprite.blendMode = PIXI.blendModes.OVERLAY;
-
+                        if(options.shade > 0) {
+                            var shadedSprite = new PIXI.Sprite(SpriteUtils.greyscale(PIXI.Sprite.fromFrame(randomItem.url), 0.5));
+                            shadedSprite.alpha = options.shade;
                             randomItem.sprite.addChild(shadedSprite);
                         }
 
@@ -84,6 +82,20 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash'],function(MathUt
 
                             randomItem.sprite.scale.x = randomItem.sprite.scale.y = scale;
                             randomItem.sprite.alpha = Math.max(randomItem.sprite.scale.y, options.minAlpha);
+                        } else {
+
+                            var randomScale = self.getRandomIntFromRange(options.minScale * 100, options.maxScale * 100) / 100;
+
+                            randomItem.sprite.scale.x = randomItem.sprite.scale.y = randomScale;
+
+                            if(Math.random() > 0.5) {
+                                randomItem.sprite.scale.x = -randomItem.sprite.scale.x;
+                            }
+
+                            if(randomScale > 1) {
+                                randomItem.sprite.y = randomItem.sprite.texture.height - (randomItem.sprite.texture.height * randomScale);
+                            }
+
                         }
                         randomItems.addChild(randomItem.sprite);
                     }
