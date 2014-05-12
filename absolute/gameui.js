@@ -168,8 +168,8 @@ function (
 
                 aspectRatio = 1 / aspectRatio;
 
-                if (aspectRatio > 0.70) {
-                    clientHeight = 0.70 * windowWidth;
+                if (aspectRatio > 0.80) {
+                    clientHeight = 0.80 * windowWidth;
                 }
                 else if (aspectRatio < 0.56) {
                     clientWidth = windowHeight / 0.56;
