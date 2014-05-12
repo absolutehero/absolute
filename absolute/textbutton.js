@@ -31,7 +31,7 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
         Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap);
 
         this.text = textStyleOptions.text;
-        this.textStyle = textStyleOptions.textStyle;
+        this.textStyle = textStyleOptions;
 
         this.label = new PIXI.BitmapText(this.text, this.textStyle);
         this.label.position.x = (this.width - this.label.textWidth) / 2;

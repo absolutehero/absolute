@@ -143,16 +143,17 @@ define ([
                     widget = new NineSlice(options);
                     break;
                 case "AnimatedButton":
-                    this.checkParams({"defaultTexture": "string", "hoverTexture": "string", "action": "string"}, config.params);
+                    this.checkParams({"action": "string"}, config.params);
+                    this.checkParams({"defaultTexture": "string", "hoverTexture": "string"}, config.params);
 
-                    var action = (handler && handler[config.params.action].bind(handler) || null);
+                    var action = (handler && handler[config.params.action] && handler[config.params.action].bind(handler) || null);
 
                     var replaceOnHover = (config.params.replaceOnHover || null);
                     var useTap = (config.params.replaceOnHover || null);
 
                     widget = new AnimatedButton(
-                        PIXI.Sprite.fromFrame(_a(config.params.defaultTexture)),
-                        PIXI.Sprite.fromFrame(_a(config.params.hoverTexture)),
+                        PIXI.Texture.fromFrame(_a(config.params.defaultTexture)),
+                        PIXI.Texture.fromFrame(_a(config.params.hoverTexture)),
                         action, replaceOnHover, useTap);
 
                     break;
@@ -169,13 +170,13 @@ define ([
                     var defaultTexture = (config.params.defaultTexture && (typeof config.params.defaultTexture === 'string')) ? config.params.defaultTexture : null;
                     var hoverTexture = (config.params.hoverTexture && (typeof config.params.hoverTexture === 'string')) ? config.params.hoverTexture : null;
 
-                    var defaultImage = (defaultTexture !== null ? PIXI.Sprite.fromFrame(_a(defaultTexture)) : null);
-                    var hoverImage = (hoverTexture !== null ? PIXI.Sprite.fromFrame(_a(hoverTexture)) : null);
+                    var defaultImage = (defaultTexture !== null ? PIXI.Texture.fromFrame(_a(defaultTexture)) : null);
+                    var hoverImage = (hoverTexture !== null ? PIXI.Texture.fromFrame(_a(hoverTexture)) : null);
 
                     var replaceOnHover = (config.params.replaceOnHover || null);
                     var useTap = (config.params.replaceOnHover || null);
 
-                    var action = (handler && handler[config.params.action].bind(handler) || null);
+                    var action = (handler && handler[config.params.action] && handler[config.params.action].bind(handler) || null);
                     var textStyleOptions = {
                         text: _s(config.params.textStyle.text),
                         font : (Math.floor(config.params.textStyle.fontSize * ScreenMetrics.getResScale()) + "px " + config.params.textStyle.fontFamily),
@@ -201,7 +202,7 @@ define ([
                 case "ToggleButton":
                     this.checkParams({"baseName": "string", "action": "string", "enabled" : "boolean"}, config.params);
 
-                    var action = (handler && handler[config.params.action].bind(handler) || null);
+                    var action = (handler && handler[config.params.action] && handler[config.params.action].bind(handler) || null);
                     var useOverlay = config.params.useOverlay || false;
 
                     widget = new ToggleButton(config.params.baseName, action, config.params.enabled, useOverlay);
