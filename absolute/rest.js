@@ -12,12 +12,14 @@ define(['pixi'], function (PIXI) {
             this.request('GET', url, success, error);
         },
 
-        post: function (url, success, error) {
-            this.request('POST', url, success, error);
+        post: function (url, success, error, data) {
+            this.request('POST', url, success, error, data);
         },
 
-        request: function(method, url, success, error) {
+        request: function(method, url, success, error, data) {
+            var params = null;
             this.ajaxRequest = new PIXI.AjaxRequest(true);
+
 
             this.ajaxRequest.onreadystatechange = function () {
                 if (this.ajaxRequest.readyState === 4) {
@@ -41,10 +43,23 @@ define(['pixi'], function (PIXI) {
             }.bind(this);
 
             this.ajaxRequest.open(method, url, true);
+
+            if (data) {
+                params = "";
+                for (var field in data) {
+                    var sep = "";
+                    if (data.hasOwnProperty(field)) {
+                        params += sep + field + "=" + data[field];
+                        sep = "&";
+                    }
+                }
+                this.ajaxRequest.setRequestHeader("Content-Type", "applicaton/x-www-form-urlencoded");
+            }
+
             if (this.ajaxRequest.overrideMimeType) {
                 this.ajaxRequest.overrideMimeType('application/json');
             }
-            this.ajaxRequest.send(null);
+            this.ajaxRequest.send(params);
         }
 
 
