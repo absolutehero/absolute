@@ -52,11 +52,6 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
         };
 
         MultiPageList.prototype.createPages = function () {
-            this.createPages();
-            this.reset(0);
-        };
-
-        MultiPageList.prototype.createPages = function () {
 
             this.pages = [];
 
@@ -92,7 +87,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                     itemX += (this.cellWidth + this.gapX);
                     page.addChild(items[i]);
                 }
-            } else if (!this.isPortrait || this.lockLayout == "horizontal") {
+            } else if (!this.isPortrait || this.lockLayout !== "horizontal") {
                 var itemY = 0;
                 for (var i = 0; i < items.length; i += 1) {
                     items[i].position.x = 0;
@@ -109,7 +104,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
         };
 
-        MultiPageList.prototype.reset = function (cleanUp, startPage) {
+        MultiPageList.prototype.reset = function () {
             if (this.pageTray) {
                 this.removeChild(this.pageTray);
                 this.pageTray = null;
@@ -128,7 +123,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             this.initContent();
             // this.initTouchInterface();
 
-            this.scrollToPage(startPage);
+            //ßthis.scrollToPage(startPage);
         };
 
         MultiPageList.prototype.initContent = function() {
@@ -307,7 +302,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
         MultiPageList.prototype.handleOrientationChange = function (isPortrait) {
             this.isPortrait = isPortrait;
-            this.reset(true, this.currentPage);
+            this.reset();
         };
 
         return MultiPageList;
