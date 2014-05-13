@@ -29,9 +29,11 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             this.gapX = 0;
             this.gapY = 0;
 
+            this.lockLayout = options.lockLayout || "none";
+
             this.isPortrait = ui.portrait;
 
-            if (ui.portrait) {
+            if (this.isPortrait) {
                 this.layoutPortrait();
             } else {
                 this.layoutLandscape();
@@ -71,7 +73,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
             var page = new PIXI.DisplayObjectContainer();
 
-            if (this.isPortrait) {
+            if (this.isPortrait && this.lockLayout !== "vertical") {
                 var itemX = 0;
                 for (var i = 0; i < items.length; i += 1) {
                     items[i].position.x = itemX;
@@ -79,7 +81,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                     itemX += (this.cellWidth + this.gapX);
                     page.addChild(items[i]);
                 }
-            } else {
+            } else if (!this.isPortrait || this.lockLayout == "horizontal") {
                 var itemY = 0;
                 for (var i = 0; i < items.length; i += 1) {
                     items[i].position.x = 0;
@@ -116,7 +118,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
             this.pageTray = new PIXI.DisplayObjectContainer();
 
-            if (this.isPortrait) {
+            if (this.isPortrait && (this.lockLayout !== "vertical" || this.lockLayout == "none")) {
                 for (var i = 0, l = this.pages.length; i < l; i += 1) {
                     var page = this.pages[i];
                     page.position.x = i * page.width;
@@ -127,7 +129,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                 this.centerOffset = (this.width - page.width)/2;
                 this.pageTray.position.x = this.centerOffset;
 
-            } else {
+            } else if (!this.isPortrait && (this.lockLayout !== "horizontal" || this.lockLayout == "none")) {
                 for (var i = 0, l = this.pages.length; i < l; i += 1) {
                     var page = this.pages[i];
                     page.position.x = 0;
@@ -225,7 +227,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
         MultiPageList.prototype.scrollToPage = function(pageIndex) {
             this.setCurrentPage(pageIndex);
 
-            if (this.isPortrait) {
+            if (this.direction == "horizontal") {
                 var destination = -(pageIndex * this.pages[pageIndex].width) + this.centerOffset,
                     self = this;
 
@@ -274,6 +276,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
         };
 
         MultiPageList.prototype.layoutPortrait = function () {
+            this.direction = this.options.portraitLayout.direction;
             this.width = this.options.portraitLayout.pageWidth;
             this.height = this.options.portraitLayout.pageHeight;
             this.gapX = this.options.portraitLayout.gap;
@@ -281,14 +284,11 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             this.cellHeight = this.options.portraitLayout.itemHeight + (this.options.portraitLayout.gap / 2);
             this.colsPerPage = Math.floor(this.width / this.cellWidth);
             this.rowsPerPage = Math.floor(this.height / this.cellHeight);
-            this.maskXOffset = this.options.portraitLayout.maskXOffset;
-            this.maskWidthOffset = this.options.portraitLayout.maskWidthOffset;
-            this.maskYOffset = this.options.portraitLayout.maskYOffset;
-            this.maskHeightOffset = this.options.portraitLayout.maskHeightOffset;
             this.maskRect = this.options.portraitLayout.maskRect;
         };
 
         MultiPageList.prototype.layoutLandscape = function () {
+            this.direction = this.options.landscapeLayout.direction;
             this.width = this.options.landscapeLayout.pageWidth;
             this.height = this.options.landscapeLayout.pageHeight;
             this.gapY = this.options.landscapeLayout.gap;
@@ -300,7 +300,9 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
         };
 
         MultiPageList.prototype.handleOrientationChange = function (isPortrait) {
+
             this.isPortrait = isPortrait;
+
             if (isPortrait) {
                 this.layoutPortrait();
             } else {
