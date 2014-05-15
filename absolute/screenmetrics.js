@@ -89,6 +89,11 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             var width = this.getMinNonZero([this.innerWidth, this.screenWidth, this.clientWidth]),
                 height = this.getMinNonZero([this.innerHeight, this.screenHeight, this.clientHeight]);
 
+            if(Platform._isAndroid()) {
+                width = this.getMinNonZero([this.innerWidth, this.clientWidth]),
+                height = this.getMinNonZero([this.innerHeight, this.clientHeight]);
+            }
+
             return width < height;
 
         },
