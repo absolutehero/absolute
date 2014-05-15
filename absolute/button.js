@@ -80,7 +80,9 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
 
             } else {
                 // remove the mousedown if causes double input on older android
-                this.mousedown = this.touchstart = function(evt) {
+                // jwg: removed because this was breaking smore words on android
+                // this.mousedown = 
+                this.touchstart = function(evt) {
                     triggerAction();
                 };
             }

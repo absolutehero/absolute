@@ -1,7 +1,7 @@
 /**
  * This is a dumping ground for browser fixes and shims.
  */
-define(function() {
+define(['pixi'], function(PIXI) {
 
     // Some versions of V8 on ARM (like the one in the stock Android 4 browser) are affected by
     // this nasty bug: https://code.google.com/p/v8/issues/detail?id=2234
@@ -26,6 +26,21 @@ define(function() {
             return +(new Date);
         };
     }
+
+    // patch PIXI json loader to support IE10 (this kills support for IE8 which didn't work anyway
+    PIXI.JsonLoader.prototype.load = function () {
+
+        this.ajaxRequest = new window.XMLHttpRequest();
+
+        var scope = this;
+
+        this.ajaxRequest.onload = function () {
+            scope.onJSONLoaded();
+        };
+
+        this.ajaxRequest.open('GET',this.url,false);
+        this.ajaxRequest.send();
+    };
 
 
 });
