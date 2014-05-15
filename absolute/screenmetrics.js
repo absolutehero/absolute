@@ -191,8 +191,11 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             { id:'r320', resfloor: 0 },
             { id:'r640', resfloor: 320 },
             { id:'r768', resfloor: 640 },
-            { id:'r1280', resfloor: 768 },
-            { id:'r1536', resfloor: 1280 }
+            { id:'r1280', resfloor: 768 }
+
+            // Suppressing highest res class -- saves memory, improves perf, fixes scaling issues, no noticeable quality loss
+            //,
+            // { id:'r1536', resfloor: 1280 }
         ],
 
         getResClass: function() {

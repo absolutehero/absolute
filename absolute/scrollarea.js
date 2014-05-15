@@ -77,7 +77,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         if (!this.constrainX) {
             var xp = this.contents.position.x + deltaX;
             if (xp <= 0 && xp >= this.width - this.contents.width) {
-                this.contents.position.x = xp;
+                this.contents.position.x = Math.round(xp);
             }
         }
     };
@@ -86,7 +86,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         if (!this.constrainY) {
             var yp = this.contents.position.y + deltaY;
             if (yp <= 0 && yp >= this.height - this.contents.height) {
-                this.contents.position.y = yp;
+                this.contents.position.y =  Math.round(yp);
             }
         }
     };

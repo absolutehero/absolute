@@ -11,6 +11,7 @@ define(
     'absolute/debug',
     'absolute/screenmetrics',
     'absolute/platform',
+    'absolute/coords',
     'fpsmeter'
 ],
 function (
@@ -19,16 +20,17 @@ function (
     Debug,
     ScreenMetrics,
     Platform,
+    Coords,
     FPSMeter
     )
 {
 
-    var GameUI = function(container, width, height, backgroundColor, supportsOrientationChange) {
+    var GameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout) {
         backgroundColor = backgroundColor || 0xFFFFFF;
-        this._initGameUI(container, width, height, backgroundColor, supportsOrientationChange);
+        this._initGameUI(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout);
     };
 
-    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor, supportsOrientationChange) {
+    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout) {
 
         this.currentScreen = null;
         this.modal = null;
@@ -48,6 +50,7 @@ function (
         this.refreshBackground = false;
         this.backGroundColor = backgroundColor;
         this.supportsOrientationChange = !!supportsOrientationChange;
+        this.supportsLiquidLayout = !!supportsLiquidLayout;
         this.modalStack = [];
         this.modalBgStack = [];
 
@@ -125,7 +128,6 @@ function (
             var windowWidth = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientWidth : ScreenMetrics.screenWidth,
                 windowHeight = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientHeight : ScreenMetrics.screenHeight;
 
-
             var clientWidth = windowWidth,
                 clientHeight = windowHeight;
 
@@ -138,46 +140,72 @@ function (
 
             var aspectRatio = windowWidth / windowHeight;
 
-            if (this.portrait) {
+            if (!this.supportsLiquidLayout) {
+                if (this.portrait) {
 
-                if (this.supportsOrientationChange && this.width > this.height) {
+                    if (this.supportsOrientationChange && this.width > this.height) {
 
-                    this.baseWidth = this.origBaseHeight;
-                    this.baseHeight = this.origBaseWidth;
-                    this.width = this.origHeight;
-                    this.height = this.origWidth;
+                        this.baseWidth = this.origBaseHeight;
+                        this.baseHeight = this.origBaseWidth;
+                        this.width = this.origHeight;
+                        this.height = this.origWidth;
 
+                    }
+
+                    if (aspectRatio > 0.85) {
+                        clientWidth = 0.85 * windowHeight;
+                    }
+                    else if (aspectRatio < 0.56) {
+                        clientHeight = windowWidth / 0.56;
+                    }
+                }
+                else {
+                    // fix for a bug on iPad where bottom of screen is chopped off
+                    if (Platform._isiPad) {
+                        //windowHeight -=  Coords.y(18);
+                        clientHeight -= Coords.y(18);
+                    }
+
+                    if (this.supportsOrientationChange && this.height > this.width) {
+
+                        this.baseWidth = this.origBaseWidth;
+                        this.baseHeight = this.origBaseHeight;
+                        this.width = this.origWidth;
+                        this.height = this.origHeight;
+
+                    }
+
+                    aspectRatio = 1 / aspectRatio;
+
+                    if (aspectRatio > 0.80) {
+                        clientHeight = 0.80 * windowWidth;
+                    }
+                    else if (aspectRatio < 0.56) {
+                        clientWidth = windowHeight / 0.56;
+                    }
                 }
 
-                if (aspectRatio > 0.85) {
-                    clientWidth = 0.85 * windowHeight;
-                }
-                else if (aspectRatio < 0.56) {
-                    clientHeight = windowWidth / 0.56;
-                }
+                clientWidth = Math.floor(clientWidth);
+                clientHeight = Math.floor(clientHeight);
             }
             else {
-                if (this.supportsOrientationChange && this.height > this.width) {
+                if (this.supportsLiquidLayout) {
+                    if (this.portrait) {
+                        this.width = Math.floor(1536 * ScreenMetrics.getResScale());
+                        this.height = Math.floor(this.width * (windowHeight/windowWidth));
+                    }
+                    else {
+                        // fix for a bug on iPad where bottom of screen is chopped off
+                        if (Platform._isiPad) {
+                            windowHeight -=  Coords.y(18);
+                            clientHeight -= Coords.y(18);
+                        }
 
-                    this.baseWidth = this.origBaseWidth;
-                    this.baseHeight = this.origBaseHeight;
-                    this.width = this.origWidth;
-                    this.height = this.origHeight;
-
-                }
-
-                aspectRatio = 1 / aspectRatio;
-
-                if (aspectRatio > 0.80) {
-                    clientHeight = 0.80 * windowWidth;
-                }
-                else if (aspectRatio < 0.56) {
-                    clientWidth = windowHeight / 0.56;
+                        this.height = Math.floor(1536 * ScreenMetrics.getResScale());
+                        this.width = Math.floor(Math.floor(this.height * (windowWidth/windowHeight)));
+                    }
                 }
             }
-
-            clientWidth = Math.floor(clientWidth);
-            clientHeight = Math.floor(clientHeight);
 
             this.buildRenderers(this.width, this.height);
 

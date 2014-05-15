@@ -4,7 +4,7 @@
  * Time: 9:17 PM
  * Copyright (c) 2013 Absolute Hero Games LLC
  */
-define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils'], function (PIXI, Snapshot, AudioManager, Platform, SpriteUtils) {
+define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils'], function (PIXI, Coords, AudioManager, Platform, SpriteUtils) {
 
     var Button = function(defaultImage, hoverImage, action, replaceOnHover, useTap) {
         this._initButton(defaultImage, hoverImage, action, replaceOnHover, useTap);
@@ -62,9 +62,22 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
         if (Platform.supportsTouch()) {
 
             if(useTap) {
-                this.click = this.tap = function(evt) {
-                    triggerAction();
-                };
+                this.touchstart = function(evt) {
+                    this.clickCanceled = false;
+                }.bind(this);
+
+                this.touchmove = function(evt) {
+                    this.clickCanceled = true;
+                }.bind(this);
+
+                this.touchend = function(evt) {
+                    // don't trigger if the cursor moved (we are dragging)
+                    if (!this.clickCanceled) {
+                        triggerAction();
+                    }
+                    this.clickCancelled = false;
+                }.bind(this);
+
             } else {
                 // remove the mousedown if causes double input on older android
                 this.mousedown = this.touchstart = function(evt) {
@@ -75,9 +88,21 @@ define(['pixi', 'absolute/snapshot', 'absolute/audiomanager', 'absolute/platform
         }
         else {
 
-            this.click = function(evt) {
-                triggerAction();
-            };
+            this.mousedown = function(evt) {
+                this.clickCanceled = false;
+            }.bind(this);
+
+            this.mousemove = function(evt) {
+                this.clickCanceled = true;
+            }.bind(this);
+
+            this.mouseup = function(evt) {
+                // don't trigger if the cursor moved (we are dragging)
+                if (!this.clickCanceled) {
+                    triggerAction();
+                }
+                this.clickCancelled = false;
+            }.bind(this);
 
         }
     };
