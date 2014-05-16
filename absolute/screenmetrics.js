@@ -42,17 +42,16 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             })(),
         realScreen: (function() {
 
-            var screenRef,
-                isInIframe = (parent !== window);
+            var screenRef;
 
-            if(isInIframe) {
-                try {
+            try {
+                if(parent !== window) {
                     screenRef = parent.screen;
-                } catch (e) {
-                    // crossOriginTest failure
+                } else {
                     screenRef = screen;
                 }
-            } else {
+            } catch (e) {
+                // crossOriginTest failure
                 screenRef = screen;
             }
 
