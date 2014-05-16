@@ -144,9 +144,9 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
                 h = this.clientHeight;
             } else {
                 if (this.screenWidth < this.screenHeight)
-                    h = (this.screenHeight) - (this.screenWidth - this.innerHeight);
-                else
-                    h = (this.screenWidth) - (this.screenHeight - this.innerHeight);
+                    h = (this.screenHeight) - (this.screenWidth - (this.innerHeight || 0));
+            else
+                h = (this.screenWidth) - (this.screenHeight - (this.innerHeight || 0));
             }
 
             if(applyPixelRatio) {
