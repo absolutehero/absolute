@@ -45,7 +45,7 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             var screenRef;
 
             try {
-                if(parent !== window) {
+                if(parent !== window && parent.screen) {
                     screenRef = parent.screen;
                 } else {
                     screenRef = screen;
