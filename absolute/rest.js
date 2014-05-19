@@ -53,7 +53,7 @@ define(['pixi'], function (PIXI) {
                         sep = "&";
                     }
                 }
-                this.ajaxRequest.setRequestHeader("Content-Type", "applicaton/x-www-form-urlencoded");
+                this.ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
             }
 
             if (this.ajaxRequest.overrideMimeType) {
