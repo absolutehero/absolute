@@ -28,15 +28,22 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
     TextButton.prototype._initTextButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions) {
 
+
         Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap);
 
-        this.text = textStyleOptions.text;
-        this.textStyle = textStyleOptions;
+        var label = new PIXI.BitmapText(textStyleOptions.text, textStyleOptions),
+            labelTextureSprite = new PIXI.Sprite(label.generateTexture());
 
-        this.label = new PIXI.BitmapText(this.text, this.textStyle);
-        this.label.position.x = (this.width - this.label.textWidth) / 2;
-        this.label.position.y = (this.height / 2) - this.label.textHeight;
-        this.addChild(this.label);
+        var labelContainer = new PIXI.DisplayObjectContainer();
+        labelContainer.width = labelTextureSprite.width;
+        labelContainer.height = labelTextureSprite.height;
+        labelContainer.pivot.x = labelContainer.width / 2;
+        labelContainer.pivot.y = labelContainer.height / 2;
+        labelContainer.x = this.width / 2;
+        labelContainer.y = this.height / 2;
+        labelContainer.addChild(labelTextureSprite);
+
+        this.addChild(labelContainer);
     };
 
     TextButton.prototype._createThreeSliceImage = function(options) {
