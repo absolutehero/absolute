@@ -8,7 +8,11 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 'width': '80%',
                 'height':'70%',
                 'x': null,
-                'y': null,
+                'y':null,
+                'landscapeX': null,
+                'landscapeY': null,
+                'portraitX' : null,
+                'portraitY' : null,
                 'name': 'default',
                 'images': {
                     'topLeft': _a("dialogNineSlice.topLeft"),
@@ -148,20 +152,72 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         };
 
-        Dialog.prototype._setPosition = function() {
+        Dialog.prototype.setLandscapePositions = function(options) {
+            if (typeof options.x === 'number') {
+                this.options.landscapeX = Math.round(options.x);
+            }
+            if (typeof options.y === 'number') {
+                this.options.landscapeY = Math.round(options.y);
+            }
+        };
 
+        Dialog.prototype.setPortraitPositions = function(options) {
+            if (typeof options.x === 'number') {
+                this.options.portraitX = Math.round(options.x);
+            }
+            if (typeof options.y === 'number') {
+                this.options.portraitY = Math.round(options.y);
+            }
+        };
+
+        Dialog.prototype._setPosition = function(isPortrait) {
+
+            if (typeof isPortrait !== 'undefined') {
+                if (isPortrait) {
+                    if(this.options.portraitX === null) {
+                        this._setStandardX();
+                    } else {
+                        this.position.x = Math.round(this.options.portraitX);
+                    }
+
+                    if(this.options.portraitY === null) {
+                        this._setStandardY();
+                    } else {
+                        this.position.y = Math.round(this.options.portraitY);
+                    }
+                } else {
+                    if(this.options.landscapeX === null) {
+                        this._setStandardX();
+                    } else {
+                        this.position.x = Math.round(this.options.landscapeX);
+                    }
+
+                    if(this.options.landscapeY === null) {
+                        this._setStandardY();
+                    } else {
+                        this.position.y = Math.round(this.options.landscapeY);
+                    }
+                }
+            } else {
+                this._setStandardX();
+                this._setStandardY();
+            }
+        };
+
+        Dialog.prototype._setStandardX = function() {
             if(this.options.x === null) {
                 this.position.x = Math.round((this.ui.width - this.width ) / 2);
             } else {
                 this.position.x = Math.round(this.options.x);
             }
+        };
 
+        Dialog.prototype._setStandardY = function() {
             if(this.options.y === null) {
                 this.position.y = Math.round((this.ui.height - this.height ) / 2);
             } else {
                 this.position.y = Math.round(this.options.y);
             }
-
         };
 
         Dialog.prototype._onClose = function() {
@@ -270,13 +326,13 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         };
 
-        Dialog.prototype.resize = function(options) {
+        Dialog.prototype.resize = function(options, isPortrait) {
 
-            this.updateDialog(options);
+            this.updateDialog(options, isPortrait);
 
         };
 
-        Dialog.prototype.updateDialog = function(options) {
+        Dialog.prototype.updateDialog = function(options, isPortrait) {
 
             _.extend(this.options, options);
 
@@ -290,7 +346,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             this.container = new PIXI.DisplayObjectContainer();
 
             this._setSize();
-            this._setPosition();
+            this._setPosition(isPortrait);
             this._createBackground();
             if (this.options.displayCloseButton) {
                 this._createCloseButton();
@@ -304,7 +360,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
         Dialog.prototype.handleOrientationChange = function(isPortrait) {
 
             //this.ui.hideModal();
-            this.updateDialog(this.options);
+            this.updateDialog(this.options, isPortrait);
             //this.ui.showModal(this);
 
         };

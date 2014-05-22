@@ -141,7 +141,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                 this.centerOffset = (this.width - page.width)/2;
                 this.pageTray.position.x = this.centerOffset;
 
-            } else if (!this.isPortrait && (this.lockLayout !== "horizontal" || this.lockLayout == "none")) {
+            } else if (this.lockLayout == "vertical" || !this.isPortrait && (this.lockLayout !== "horizontal" || this.lockLayout == "none")) {
                 for (var i = 0, l = this.pages.length; i < l; i += 1) {
                     var page = this.pages[i];
                     page.position.x = 0;
