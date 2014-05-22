@@ -73,6 +73,22 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         this.updateContentBounds();
     };
 
+    ScrollArea.prototype.scrollXAbsolute = function (xp) {
+        if (!this.constrainX) {
+            if (xp <= 0 && xp >= this.width - this.contents.width) {
+                this.contents.position.x = Math.round(xp);
+            }
+        }
+    };
+
+    ScrollArea.prototype.scrollYAbsolute = function (yp) {
+        if (!this.constrainY) {
+            if (yp <= 0 && yp >= this.height - this.contents.height) {
+                this.contents.position.y =  Math.round(yp);
+            }
+        }
+    };
+
     ScrollArea.prototype.scrollX = function (deltaX) {
         if (!this.constrainX) {
             var xp = this.contents.position.x + deltaX;
