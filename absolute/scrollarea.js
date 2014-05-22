@@ -7,14 +7,14 @@
 define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
 
-    var ScrollArea = function(width, height, constraints) {
-        this._initScrollArea(width, height, constraints);
+    var ScrollArea = function(width, height, constraints, scrollArrowTexture) {
+        this._initScrollArea(width, height, constraints, scrollArrowTexture);
     };
 
     ScrollArea.constructor = ScrollArea;
     ScrollArea.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-    ScrollArea.prototype._initScrollArea = function(width, height, constraints) {
+    ScrollArea.prototype._initScrollArea = function(width, height, constraints, scrollArrowTexture) {
         PIXI.DisplayObjectContainer.call(this);
 
         if (constraints) {
@@ -29,6 +29,11 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             else {
                 this.constrainX = this.constrainY = false;
             }
+        }
+
+        if (scrollArrowTexture) {
+            this.scrollArrow = new PIXI.Sprite(scrollArrowTexture);
+            this.scrollArrow.anchor.x = this.scrollArrow.anchor.y = 0.5;
         }
 
         this.moving = false;
@@ -224,6 +229,12 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         this.lastY = pos.y;
         this.startX = pos.x;
         this.startY = pos.y;
+
+        if (this.scrollArrow) {
+            this.addChild(this.scrollArrow);
+            this.scrollArrow.position.x = pos.x;
+            this.scrollArrow.position.y = pos.y;
+        }
     };
 
     ScrollArea.prototype.onMove = function (data) {
@@ -239,6 +250,15 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
             this.scrollY(deltaY);
             this.scrollX(deltaX);
+
+            if (this.scrollArrow) {
+                if (!this.constrainX) {
+                    this.scrollArrow.position.x = pos.x;
+                }
+                if (!this.constrainY) {
+                    this.scrollArrow.position.y = pos.y;
+                }
+            }
         }
     };
 
@@ -249,6 +269,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         var newY = pos.y;
         var deltaX = newX - this.startX;
         var deltaY = newY - this.startY;
+
+        if (this.scrollArrow) {
+            this.removeChild(this.scrollArrow);
+        }
     };
 
 
