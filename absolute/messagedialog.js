@@ -62,10 +62,6 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                 this.okButton.addChild(okLabel);
             }
 
-            if (this.options.displayCloseButton) {
-                this.closeButton.position.x = (this.width - this.closeButton.width - Coords.x(55));
-                this.closeButton.position.y = Coords.x(55);
-            }
         };
 
         MessageDialog.prototype.initContent = function () {
