@@ -234,6 +234,13 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.addChild(this.scrollArrow);
             this.scrollArrow.position.x = pos.x;
             this.scrollArrow.position.y = pos.y;
+            this.scrollArrow.visible = false;
+            setTimeout(function () {
+                if (this.moving) {
+                    this.scrollArrow.visible = true;
+                }
+            }.bind(this), 500);
+
         }
     };
 
