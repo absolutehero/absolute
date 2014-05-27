@@ -2,7 +2,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
     function (PIXI, Hammer, Button, ScreenMetrics,  _, Coords) {
 
-        var MultiPageList = function (ui, items, options, prevButton, nextButton) {
+        var MultiPageList = function (ui, items, prevButton, nextButton, options) {
 
             var defaultOptions = {
                 pagePadding: {x: Coords.x(10), y: Coords.y(10)},
@@ -27,12 +27,12 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             this.lockLayout;
             this.currentPage = 0;
 
-            this.initMultiPageList(ui, items, _.extend(defaultOptions, options), prevButton, nextButton);
+            this.initMultiPageList(ui, items, prevButton, nextButton, _.extend(defaultOptions, options));
         };
 
         MultiPageList.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-        MultiPageList.prototype.initMultiPageList = function (ui, items, layoutOptions, options, prevButton, nextButton) {
+        MultiPageList.prototype.initMultiPageList = function (ui, items, prevButton, nextButton, layoutOptions) {
 
             PIXI.DisplayObjectContainer.call(this, ui);
 
@@ -120,13 +120,6 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                 this.removeChild(this.pageTray);
                 this.pageTray = null;
             }
-            if (this.nextpageButton) {
-                this.nextpageButton = null;
-            }
-            if (this.prevpageButton) {
-                this.prevpageButton = null;
-            }
-
             this.createPages();
 
             this.initContent();
