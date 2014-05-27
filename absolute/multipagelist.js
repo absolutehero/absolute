@@ -2,7 +2,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
     function (PIXI, Hammer, Button, ScreenMetrics,  _, Coords) {
 
-        var MultiPageList = function (ui, items, options) {
+        var MultiPageList = function (ui, items, options, prevButton, nextButton) {
 
             var defaultOptions = {
                 pagePadding: {x: Coords.x(10), y: Coords.y(10)},
@@ -27,22 +27,24 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             this.lockLayout;
             this.currentPage = 0;
 
-            this.initMultiPageList(ui, items, _.extend(defaultOptions, options));
+            this.initMultiPageList(ui, items, _.extend(defaultOptions, options), prevButton, nextButton);
         };
 
         MultiPageList.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-        MultiPageList.prototype.initMultiPageList = function (ui, items, layoutOptions, options) {
+        MultiPageList.prototype.initMultiPageList = function (ui, items, layoutOptions, options, prevButton, nextButton) {
 
             PIXI.DisplayObjectContainer.call(this, ui);
 
-            // TODO - CALCULATE PAGES
             this.layoutOptions = layoutOptions;
             this.options = layoutOptions;
 
             this.lockLayout = layoutOptions.lockLayout || "none";
 
             this.isPortrait = ui.portrait;
+
+            this.prevpageButton = prevButton;
+            this.nextpageButton = nextButton;
 
             this.setItems(items);
         };
@@ -55,24 +57,28 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
             this.pages = [];
 
-            var pageContainer = new PIXI.DisplayObjectContainer();
+            if (this.items.length > 0) {
+                var pageContainer = new PIXI.DisplayObjectContainer();
 
-            var totalRows = this.items.length / this.colsPerPage,
-                totalPages = Math.ceil( totalRows / this.rowsPerPage);
+                var totalRows = this.items.length / this.colsPerPage,
+                    totalPages = Math.ceil(totalRows / this.rowsPerPage);
 
-            for (var i = 0; i < totalPages; i += 1) {
+                for (var i = 0; i < totalPages; i += 1) {
 
-                var startIndex = (this.rowsPerPage * this.colsPerPage) * i,
-                    endIndex = (this.rowsPerPage * this.colsPerPage) * (i + 1);
+                    var startIndex = (this.rowsPerPage * this.colsPerPage) * i,
+                        endIndex = (this.rowsPerPage * this.colsPerPage) * (i + 1);
 
-                if(endIndex > this.items.length) {
-                    endIndex = this.items.length;
+                    if (endIndex > this.items.length) {
+                        endIndex = this.items.length;
+                    }
+
+                    this.pages.push(this.makePage(this.items.slice(startIndex, endIndex)));
                 }
-
-                this.pages.push(this.makePage(this.items.slice(startIndex, endIndex)));
+                if (this.pages.length > 0) {
+                    pageContainer.addChild(this.pages[0]);
+                    this.addChild(pageContainer);
+                }
             }
-            pageContainer.addChild(this.pages[0]);
-            this.addChild(pageContainer);
         };
 
         MultiPageList.prototype.makePage = function (items) {
@@ -104,71 +110,78 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
         };
 
+        MultiPageList.prototype.setNavigationButtons = function(prevButton, nextButton) {
+            this.prevpageButton = prevButton;
+            this.nextpageButton = nextButton;
+        };
+
         MultiPageList.prototype.reset = function () {
             if (this.pageTray) {
                 this.removeChild(this.pageTray);
                 this.pageTray = null;
             }
             if (this.nextpageButton) {
-                this.removeChild(this.nextpageButton);
                 this.nextpageButton = null;
             }
             if (this.prevpageButton) {
-                this.removeChild(this.prevpageButton);
                 this.prevpageButton = null;
             }
 
             this.createPages();
 
             this.initContent();
+
+            this.setCurrentPage(0);
             // this.initTouchInterface();
 
-            //ßthis.scrollToPage(startPage);
+            //this.scrollToPage(startPage);
         };
 
         MultiPageList.prototype.initContent = function() {
 
-            this.pageTray = new PIXI.DisplayObjectContainer();
+            if (this.pages.length > 0) {
+                this.pageTray = new PIXI.DisplayObjectContainer();
 
-            if (this.isPortrait && (this.lockLayout !== "vertical" || this.lockLayout == "none")) {
-                for (var i = 0, l = this.pages.length; i < l; i += 1) {
-                    var page = this.pages[i];
-                    page.position.x = i * page.width;
-                    page.position.y = 0;
-                    this.pageTray.addChild(page);
+                if (this.isPortrait && (this.lockLayout !== "vertical" || this.lockLayout == "none")) {
+                    for (var i = 0, l = this.pages.length; i < l; i += 1) {
+                        var page = this.pages[i];
+                        page.position.x = i * page.width;
+                        page.position.y = 0;
+                        this.pageTray.addChild(page);
+                    }
+                    this.kPanThreshold = page.width / 5;
+                    this.centerOffset = (this.width - page.width) / 2;
+                    this.pageTray.position.x = this.centerOffset;
+
+                } else if (this.lockLayout == "vertical" || !this.isPortrait && (this.lockLayout !== "horizontal" || this.lockLayout == "none")) {
+                    for (var i = 0, l = this.pages.length; i < l; i += 1) {
+                        var page = this.pages[i];
+                        page.position.x = 0;
+                        page.position.y = i * page.height;
+                        this.pageTray.addChild(page);
+                    }
+                    this.kPanThreshold = page.height / 5;
+                    this.centerOffset = (this.height - page.height) / 2;
+                    this.pageTray.position.y = this.centerOffset;
                 }
-                this.kPanThreshold = page.width / 5;
-                this.centerOffset = (this.width - page.width)/2;
-                this.pageTray.position.x = this.centerOffset;
 
-            } else if (this.lockLayout == "vertical" || !this.isPortrait && (this.lockLayout !== "horizontal" || this.lockLayout == "none")) {
-                for (var i = 0, l = this.pages.length; i < l; i += 1) {
-                    var page = this.pages[i];
-                    page.position.x = 0;
-                    page.position.y = i * page.height;
-                    this.pageTray.addChild(page);
+                this.addChild(this.pageTray);
+
+                if (this.mask) {
+                    this.removeChild(this.mask);
                 }
-                this.kPanThreshold = page.height / 5;
-                this.centerOffset = (this.height - page.height)/2;
-                this.pageTray.position.y = this.centerOffset;
-            }
 
-            this.addChild(this.pageTray);
+                if (typeof this.maskRect !== 'undefined') {
+                    var mask = new PIXI.Graphics();
+                    mask.beginFill(0xFFFFFF, 1.0);
 
-            if (this.mask) {
-                this.removeChild(this.mask);
-            }
+                    mask.drawRect(this.maskRect.x, this.maskRect.y, this.maskRect.width, this.maskRect.height);
 
-            if (typeof this.maskRect !== 'undefined') {
-                var mask = new PIXI.Graphics();
-                mask.beginFill(0xFFFFFF, 1.0);
+                    mask.endFill();
 
-                mask.drawRect(this.maskRect.x, this.maskRect.y, this.maskRect.width, this.maskRect.height);
-
-                mask.endFill();
-
-                this.mask = mask;
-                this.addChild(this.mask);
+                    this.mask = mask;
+                    this.addChild(this.mask);
+                }
             }
         };
 
@@ -194,6 +207,10 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             if (this.currentPage > 0) {
                 this.scrollToPage(this.currentPage - 1);
             }
+        };
+
+        MultiPageList.prototype.numPages = function() {
+            return this.pages.length;
         };
 
         MultiPageList.prototype.enableButtons = function (enable) {
@@ -274,9 +291,19 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
         MultiPageList.prototype.setCurrentPage = function (page) {
             this.currentPage = page;
-            // this.nextpageButton.setActive((page !== this.pages.length - 1));
-            // this.prevpageButton.setActive((page !== 0));
+            this.setNavigationButtonActiveStates();
             this.options.pageChangedCallback(page);
+        };
+
+        MultiPageList.prototype.setNavigationButtonActiveStates = function () {
+            if (this.pages.length > 0) {
+                if (this.nextpageButton) {
+                    this.nextpageButton.setActive((this.currentPage !== this.pages.length - 1));
+                }
+                if (this.prevpageButton) {
+                    this.prevpageButton.setActive((this.currentPage !== 0));
+                }
+            }
         };
 
         MultiPageList.prototype.enableButtons = function (enable) {
