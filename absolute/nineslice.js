@@ -128,15 +128,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
         };
 
         NineSlice.prototype.getTextureFromSpriteSheet = function(tempSprite) {
-
-            var canvasRenderer = new PIXI.CanvasRenderer(tempSprite.width, tempSprite.height, null, true);
-
-            this.container.addChild(tempSprite);
-            canvasRenderer.render(tempSprite);
-            this.container.removeChild(tempSprite);
-
-            return PIXI.Texture.fromCanvas(canvasRenderer.view);
-
+            return tempSprite.generateTexture();
         };
 
 
