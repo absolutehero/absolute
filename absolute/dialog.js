@@ -77,11 +77,12 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         };
 
-        Dialog.prototype.open = function(closeCallback) {
+        Dialog.prototype.open = function(closeCallback, openCompleteCallback) {
             //this.visible = true;
             if(typeof closeCallback === 'function') {
                 this.options.callbacks.onClose = closeCallback;
             }
+
             if(this.options.audio.open && this.options.audio.open !== '') {
                 AudioManager.playSound(this.options.audio.open);
             }
@@ -97,14 +98,21 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     .onUpdate(function () {
                         self.position.y = this.y;
                     })
+                    .onComplete(function () {
+                        self.onOpenComplete();
+                    })
                     .start();
+            } else {
+                this.onOpenComplete();
             }
-
             this.ui.showModal(this);
 
             this.isOpen = true;
 
         };
+
+        // Override this
+        Dialog.prototype.onOpenComplete = function() {};
 
         Dialog.prototype.close = function() {
             //this.visible = false;

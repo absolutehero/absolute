@@ -130,7 +130,7 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
         this.emitter.p.y = 0;
 
 
-        this.ui.proton.addEmitter(this.emitter);
+        this.ui.addEmitter(this.emitter);
 
         this.initEvents();
     };

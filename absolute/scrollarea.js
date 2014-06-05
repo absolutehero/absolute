@@ -234,14 +234,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.addChild(this.scrollArrow);
             this.scrollArrow.position.x = pos.x;
             this.scrollArrow.position.y = pos.y;
+            this.scrollArrow.anchor.x = this.scrollArrow.anchor.y = 0.5;
             this.scrollArrow.visible = false;
-            setTimeout(function () {
-                if (this.moving) {
-                    this.scrollArrow.visible = true;
-                }
-            }.bind(this), 500);
-
         }
+
     };
 
     ScrollArea.prototype.onMove = function (data) {
@@ -259,6 +255,9 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.scrollX(deltaX);
 
             if (this.scrollArrow) {
+                if (!this.scrollArrow.visible) {
+                    this.scrollArrow.visible = true;
+                }
                 if (!this.constrainX) {
                     this.scrollArrow.position.x = pos.x;
                 }

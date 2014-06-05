@@ -62,8 +62,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             bottomLeft.position.y = this.height - bottomLeft.height;
 
             var bottomRight = PIXI.Sprite.fromFrame(this.options.images.bottomRight);
-            bottomRight.position.x = this.width - bottomLeft.width;
-            bottomRight.position.y = this.height - bottomLeft.height;
+            bottomRight.position.x = this.width - bottomRight.width;
+            bottomRight.position.y = this.height - bottomRight.height;
 
             // Tile middle left
             var middleLeftSprite = new PIXI.Sprite.fromFrame(this.options.images.middleLeft),
@@ -128,15 +128,7 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
         };
 
         NineSlice.prototype.getTextureFromSpriteSheet = function(tempSprite) {
-
-            var canvasRenderer = new PIXI.CanvasRenderer(tempSprite.width, tempSprite.height, null, true);
-
-            this.container.addChild(tempSprite);
-            canvasRenderer.render(tempSprite);
-            this.container.removeChild(tempSprite);
-
-            return PIXI.Texture.fromCanvas(canvasRenderer.view);
-
+            return tempSprite.generateTexture();
         };
 
 
