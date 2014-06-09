@@ -119,8 +119,14 @@ define ([
 
                 case "Container":
                     widget = new PIXI.DisplayObjectContainer();
-                    widget.width = parent.width;
-                    widget.height = parent.height;
+                    if (config.params) {
+                        widget.width = Coords.x(config.params.width) || parent.width;
+                        widget.height = Coords.y(config.params.height) || parent.height;
+                    }
+                    else {
+                        widget.width = parent.width;
+                        widget.height = parent.height;
+                    }
                     break;
 
                 case "NineSlice":
@@ -222,7 +228,7 @@ define ([
                 }
 
                 this.anchorWidget(widget, config);
-                this.scaleWidget(widget, config);
+                this.scaleWidget(widget, config, parent);
                 this.positionWidget(widget, config, parent);
             }
 
@@ -253,13 +259,45 @@ define ([
             }
         },
 
-        scaleWidget: function (widget, config) {
+        scaleWidget: function (widget, config, parent) {
             if (config.scale) {
                 if (config.scale.x) {
-                    widget.scale.x = config.scale.x;
+                    if (typeof config.scale.x == "string") {
+                        if (config.scale.x === "height") {
+                            if (!parent || !parent.height) {
+                                throw("Error: relative scale used but parent height not set!");
+                            }
+                            widget.scale.x = parent.height / widget.height;
+                        }
+                        if (config.scale.x === "width") {
+                            if (!parent || !parent.width) {
+                                throw("Error: relative scale used but parent width not set!");
+                            }
+                            widget.scale.x = parent.width / widget.width;
+                        }
+                    }
+                    else {
+                        widget.scale.x = config.scale.x;
+                    }
                 }
                 if (config.scale.y) {
-                    widget.scale.y = config.scale.y;
+                    if (typeof config.scale.y == "string") {
+                        if (config.scale.y === "height") {
+                            if (!parent || !parent.height) {
+                                throw("Error: relative scale used but parent height not set!");
+                            }
+                            widget.scale.y = parent.height / widget.height;
+                        }
+                        if (config.scale.y === "width") {
+                            if (!parent || !parent.width) {
+                                throw("Error: relative scale used but parent width not set!");
+                            }
+                            widget.scale.y = parent.width / widget.width;
+                        }
+                    }
+                    else {
+                        widget.scale.y = config.scale.y;
+                    }
                 }
             }
         },
