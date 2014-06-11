@@ -16,6 +16,10 @@ define (['proton'], function (Proton) {
 
         update: function () {
             this.proton.update();
+        },
+
+        addEmitter: function (emitter) {
+            this.proton.addEmitter(emitter);
         }
     };
 

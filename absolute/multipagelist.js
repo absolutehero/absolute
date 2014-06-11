@@ -311,6 +311,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             this.width = options.pageWidth;
             this.height = options.pageHeight;
             this.gapX = options.gap;
+            this.gapY = options.gap;
             this.cellWidth = options.itemWidth;
             this.cellHeight = options.itemHeight;
             this.colsPerPage = Math.floor(this.width / this.cellWidth);

@@ -27,6 +27,7 @@ function (
         Analytics.init(defaultConfig.config.analytics);
         Analytics.setGameVersion(defaultConfig.versionString);
         this.ui = null;
+        this.config = defaultConfig.config;
         this.initVisibilityChangeHandlers();
     };
 

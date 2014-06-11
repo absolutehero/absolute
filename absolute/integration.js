@@ -4,7 +4,7 @@
  *
  */
 
-define(['absolute/debug'],function(Debug) {
+define(['absolute/debug','absolute/gameconfig'],function(Debug, GameConfig) {
 
     var integration = {
 
@@ -111,7 +111,41 @@ define(['absolute/debug'],function(Debug) {
                 } else {
                     callback.call(this);
                 }
+            },
+            getGameData: function(callback, localStorageKey) {
+
+                if(window.iConsole) {
+                    window.iConsole.game.getGameData().result(
+                        function(resultData) {
+                            var storedData = {};
+                            if(typeof resultData !== 'undefined' && resultData !== null && resultData !== '') {
+                                try {
+                                    storedData = JSON.parse(resultData);
+                                } catch(e) {}
+                            } else {
+                                storedData.data = {};
+                            }
+
+                            callback.call(this,storedData.data);
+                        }.bind(this)
+                    );
+                } else {
+
+                    callback.call(this, GameConfig.getVal(localStorageKey));
+
+                }
+
+            },
+            setGameData: function(data, localStorageKey) {
+
+                if(window.iConsole) {
+                    window.iConsole.game.setGameData({'data':data});
+                } else {
+                    GameConfig.setVal(localStorageKey, data);
+                }
+
             }
+
 
         }
 
