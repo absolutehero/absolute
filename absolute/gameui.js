@@ -113,13 +113,16 @@ function (
     };
 
     GameUI.prototype.resize = function() {
+        var fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
 
-        if (this.container.style.width !== "" && this.container.style.height !== "") {
+        if (this.container.style.width !== "" && this.container.style.height !== "" && !fullscreenElement) {
             this.buildRenderers(this.width, this.height);
 
             this.renderer[1].view.style.width = this.renderer[0].view.style.width = this.container.style.width;
             this.renderer[1].view.style.height = this.renderer[0].view.style.height = this.container.style.height;
             this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
+            this.renderer[1].view.style.left = this.renderer[0].view.style.left = "";
+            this.renderer[1].view.style.top = this.renderer[0].view.style.top = "";
         }
         else {
 
