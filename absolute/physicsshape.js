@@ -19,8 +19,8 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         this.config = config;
         this.anchor.x = 0.5;
         this.anchor.y = 0.5;
-        this.scale.x = 1;
-        this.scale.y = -1;
+        //this.scale.x = 1;
+        //this.scale.y = -1;
         //this.pivot.x = 0.5;//this.width / 2;
         //this.pivot.y = 0.5;//this.height / 2;
 
@@ -66,26 +66,51 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         return this.attachments.indexOf(fixture) !== -1;
     };
 
-    PhysicsShape.prototype.letsGetPhysical = function () {
+    PhysicsShape.prototype.letsGetPhysical = function (skipShapeBuilding, isSensor) {
         if (this.body) {
             return;
         }
 
         var bd = new Box2D.b2BodyDef();
-        bd.set_type(Box2D.b2_dynamicBody);
+        if(isSensor) {
+            bd.set_type(Box2D.b2_kinematicBody);
+        } else {
+            bd.set_type(Box2D.b2_dynamicBody);
+        }
+
         bd.set_position(new Box2D.b2Vec2(0, 0));
 
         this.body = Physics.world.CreateBody(bd);
 
-        for (var s = 0; s < this.config.length; s += 1) {
+        if(skipShapeBuilding) {
+
+            //var fixture = Box2D.CreateFixture(this.config, 2);
             var fixture = new Box2D.b2FixtureDef();
-            fixture.set_shape(this.buildShapeFromVertices(this.config[s].shape));
-            fixture.set_density(1/*this.config[s].density*/);
-            fixture.set_friction(1/*this.config[s].friction*/);
-            fixture.set_restitution(0.0001/*this.config[s].bounce*/);
+
+            fixture.set_density(2);
+            fixture.set_friction(1);
+            fixture.set_restitution(0);
+            fixture.set_shape(this.config); // this.config needs to be a box2d shape object
+
+            if(isSensor) {
+                fixture.set_isSensor(isSensor);
+            }
 
             this.body.CreateFixture(fixture);
+
+        } else {
+            for (var s = 0; s < this.config.length; s += 1) {
+                var fixture = new Box2D.b2FixtureDef();
+                fixture.set_shape(this.buildShapeFromVertices(this.config[s].shape));
+                fixture.set_density(this.config[s].density);
+                fixture.set_friction(this.config[s].friction);
+                fixture.set_restitution(this.config[s].bounce);
+
+                this.body.CreateFixture(fixture);
+            }
         }
+
+
 
         var temp = new Box2D.b2Vec2(0, 0);
         temp.Set(Physics.screenToWorldX(this.position.x), Physics.screenToWorldY(this.position.y));
@@ -112,7 +137,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         for (var i = 0; i < vertices.length; i += 2) {
             //console.log("Adding vertex at (" + vertices[i] / Physics.pixelsPerMeter + ", " + vertices[i + 1] / Physics.pixelsPerMeter  + ")");
             Box2D.setValue(buffer+(offset),   (ScreenMetrics.getResScale() * vertices[i] - this.width / 2) / Physics.pixelsPerMeter, 'float'); // x
-            Box2D.setValue(buffer+(offset+4), (ScreenMetrics.getResScale() * vertices[i + 1] + this.height / 2) / Physics.pixelsPerMeter, 'float'); // y
+            Box2D.setValue(buffer+(offset+4), (ScreenMetrics.getResScale() * vertices[i + 1] - this.height / 2) / Physics.pixelsPerMeter, 'float'); // y
             offset += 8;
         }
         var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);

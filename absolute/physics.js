@@ -25,7 +25,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             this.renderCanvas = ui.renderer[0].view;
 
             this.debugRenderer = this.getCanvasDebugDraw();
-            this.debugRenderer.SetFlags(this.e_shapeBit);
+            this.debugRenderer.SetFlags(this.e_shapeBit | this.e_jointBit);
             //this.debugRenderer.SetFlags(this.e_jointBit);
             //this.debugRenderer.SetFlags(this.e_aabbBit);
 
@@ -38,7 +38,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             this.setWorldXOffset(worldOffset.x);
             this.setWorldYOffset(worldOffset.y);
 
-            this.contactListener = new Box2D.b2ContactListener();
+            //this.contactListener = new Box2D.b2ContactListener();
 
             var self = this;
 /*
@@ -83,7 +83,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
                     }
             }]);
  */
-            this.world.SetContactListener( this.contactListener );
+            //this.world.SetContactListener( this.contactListener );
 
             this.myQueryCallback = new Box2D.b2QueryCallback();
 
@@ -169,7 +169,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
         },
 
         step: function () {
-            this.world.Step(1/60, 3, 2);
+            //this.world.Step(1/60, 3, 2);
+            this.world.Step(1/120, 8, 3);
         },
 
         worldToScreenX: function (x) {
@@ -241,7 +242,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
         //to replace original C++ operator *= (float)
         scaledVec2: function(vec, scale) {
-            return new b2Vec2(scale * vec.get_x(), scale * vec.get_y());
+            return new Box2D.b2Vec2(scale * vec.get_x(), scale * vec.get_y());
         },
 
         drawAxes: function (ctx) {
@@ -295,7 +296,6 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
         drawCircle: function (center, radius, axis, fill) {
             var centerV = Box2D.wrapPointer(center, Box2D.b2Vec2);
             var axisV = Box2D.wrapPointer(axis, Box2D.b2Vec2);
-
             this.renderContext.beginPath();
             this.renderContext.arc(centerV.get_x(),centerV.get_y(), radius, 0, 2 * Math.PI, false);
             if (fill)

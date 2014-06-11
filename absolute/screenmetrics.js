@@ -209,7 +209,7 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             }
 
             var size = Math.min(this.getHeight(true) , this.getWidth(true)),
-                resClassIndex = "";
+                resClassIndex = 0;
 
             for( var i = this.resClasses.length - 1 ; i > 0 ; i-- ) {
                 if(size > this.resClasses[i].resfloor) {

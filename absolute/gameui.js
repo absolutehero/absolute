@@ -209,6 +209,7 @@ function (
 
             this.buildRenderers(this.width, this.height);
 
+            this.clientWidth = clientWidth;
             this.renderer[1].view.style.width = this.renderer[0].view.style.width = clientWidth  + "px";
             this.renderer[1].view.style.height = this.renderer[0].view.style.height = clientHeight + "px";
             this.renderer[1].view.style.position = this.renderer[0].view.style.position = "absolute";
