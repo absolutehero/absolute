@@ -55,6 +55,7 @@ define(function (require) {
         UIBuilder: require('absolute/uibuilder'),
         StringManager: require('absolute/stringmanager'),
         AnimatedButton: require('absolute/animatedbutton'),
-        AnimatedTextButton: require('absolute/animatedtextbutton')
+        AnimatedTextButton: require('absolute/animatedtextbutton'),
+        LazyLoadedSprite: require('absolute/lazyloadedsprite')
     };
 });

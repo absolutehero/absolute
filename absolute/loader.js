@@ -34,31 +34,35 @@ function (
 
     };
 
-    Loader.prototype.loadArt = function(assets, onProgress, onComplete) {
+    Loader.prototype.loadArt = function(assets, onProgress, onComplete, forceLoad) {
         var total = assets.length;
 
         var paths = [];
         for (var i = 0; i < total; ++i) {
             var asset = assets[i],
-                assetType = "image";
+                assetType = "image",
+                skip = typeof asset.lazyload !== "undefined" ? asset.lazyload : false;
 
-            if (typeof asset !== "string") {
-                if (asset.type) {
-                    assetType = asset.type;
+            if (!skip) {
+                if (typeof asset !== "string") {
+                    if (asset.type) {
+                        assetType = asset.type;
+                    }
+                    asset = asset.name;
                 }
-                asset = asset.name;
-            }
-            if (assetType === "image") {
-                if (asset.indexOf('.json') === -1) {
-                    asset += ".json";
+                if (assetType === "image") {
+                    if (asset.indexOf('.json') === -1) {
+                        asset += ".json";
+                    }
                 }
-            }
-            else if (assetType === "font") {
-                if (asset.indexOf('.fnt') === -1) {
-                    asset += ".fnt";
+                else if (assetType === "font") {
+                    if (asset.indexOf('.fnt') === -1) {
+                        asset += ".fnt";
+                    }
                 }
+
+                paths.push(Platform.artPathPrefix + '/' + ScreenMetrics.getResClass() + '/' + asset);
             }
-            paths.push(Platform.artPathPrefix + '/' + ScreenMetrics.getResClass() + '/' + asset);
         }
 
         this.assetLoader = new PIXI.AssetLoader(paths);

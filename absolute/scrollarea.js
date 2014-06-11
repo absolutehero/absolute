@@ -7,14 +7,14 @@
 define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
 
-    var ScrollArea = function(width, height, constraints, scrollArrowTexture) {
-        this._initScrollArea(width, height, constraints, scrollArrowTexture);
+    var ScrollArea = function(width, height, constraints, scrollArrowTexture, moveCompleteCallback) {
+        this._initScrollArea(width, height, constraints, scrollArrowTexture, moveCompleteCallback);
     };
 
     ScrollArea.constructor = ScrollArea;
     ScrollArea.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-    ScrollArea.prototype._initScrollArea = function(width, height, constraints, scrollArrowTexture) {
+    ScrollArea.prototype._initScrollArea = function(width, height, constraints, scrollArrowTexture, moveCompleteCallback) {
         PIXI.DisplayObjectContainer.call(this);
 
         if (constraints) {
@@ -35,6 +35,8 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.scrollArrow = new PIXI.Sprite(scrollArrowTexture);
             this.scrollArrow.anchor.x = this.scrollArrow.anchor.y = 0.5;
         }
+
+        this.moveCompleteCallback = moveCompleteCallback;
 
         this.moving = false;
 
@@ -279,6 +281,25 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         if (this.scrollArrow) {
             this.removeChild(this.scrollArrow);
         }
+
+        if (this.moveCompleteCallback) {
+            this.moveCompleteCallback();
+        }
+    };
+
+    /**
+     * Returns true if any part of the child is visible within the clipping area.
+     * @param child
+     */
+    ScrollArea.prototype.isChildVisible = function (child) {
+        var childRect = new PIXI.Rectangle(child.worldTransform.tx, child.worldTransform.ty, child.width, child.height);
+        var parentRect = new PIXI.Rectangle(this.worldTransform.tx, this.worldTransform.ty, this.width, this.height);
+
+        return ((parentRect.contains(childRect.x + childRect.width / 2, childRect.y + childRect.height / 2)) ||
+            parentRect.contains(childRect.x, childRect.y) ||
+            parentRect.contains(childRect.x + childRect.width, childRect.y) ||
+            parentRect.contains(childRect.x + childRect.width, childRect.y + childRect.height) ||
+            parentRect.contains(childRect.x + childRect.width, childRect.y + childRect.height));
     };
 
 
