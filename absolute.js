@@ -56,6 +56,7 @@ define(function (require) {
         StringManager: require('absolute/stringmanager'),
         AnimatedButton: require('absolute/animatedbutton'),
         AnimatedTextButton: require('absolute/animatedtextbutton'),
-        LazyLoadedSprite: require('absolute/lazyloadedsprite')
+        LazyLoadedSprite: require('absolute/lazyloadedsprite'),
+        Utils: require('absolute/utils')
     };
 });

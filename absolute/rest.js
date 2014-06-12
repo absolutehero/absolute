@@ -12,11 +12,11 @@ define(['pixi'], function (PIXI) {
             this.request('GET', url, success, error);
         },
 
-        post: function (url, success, error, data) {
-            this.request('POST', url, success, error, data);
+        post: function (url, success, error, data, headers) {
+            this.request('POST', url, success, error, data, headers);
         },
 
-        request: function(method, url, success, error, data) {
+        request: function(method, url, success, error, data, headers) {
             var params = null;
             this.ajaxRequest = new PIXI.AjaxRequest(true);
 
@@ -45,20 +45,35 @@ define(['pixi'], function (PIXI) {
             this.ajaxRequest.open(method, url, true);
 
             if (data) {
-                params = "";
-                for (var field in data) {
-                    var sep = "";
-                    if (data.hasOwnProperty(field)) {
-                        params += sep + field + "=" + data[field];
-                        sep = "&";
-                    }
+                if (typeof data == "string") {
+                    params = data;
+                    this.ajaxRequest.setRequestHeader("Content-Type", "text/plain");
                 }
-                this.ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                else {
+                    params = "";
+                    for (var field in data) {
+                        var sep = "";
+                        if (data.hasOwnProperty(field)) {
+                            params += sep + field + "=" + data[field];
+                            sep = "&";
+                        }
+                    }
+                    this.ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                }
             }
 
             if (this.ajaxRequest.overrideMimeType) {
                 this.ajaxRequest.overrideMimeType('application/json');
             }
+
+            if (headers) {
+                for (var header in headers) {
+                    if (headers.hasOwnProperty(header)) {
+                        this.ajaxRequest.setRequestHeader(header, headers[header]);
+                    }
+                }
+            }
+
             this.ajaxRequest.send(params);
         }
 
