@@ -22,7 +22,7 @@ define(['pixi'], function(PIXI) {
         this.previousRotation = (-180) * Math.PI / 180;
 
         this.fillMask = new PIXI.Graphics();
-        this.fillMask.beginFill();
+        this.fillMask.beginFill(0x0, 0);
         this.fillMask.drawRect(-this.fillSprite.width * 1.1 / 2, -this.fillSprite.height * 1.1, this.fillSprite.width * 1.1, this.fillSprite.height * 1.1);
         this.fillMask.position.x = this.fillSprite.width / 2;
         this.fillMask.position.y = this.fillSprite.height;

@@ -66,45 +66,45 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             bottomRight.position.y = this.height - bottomRight.height;
 
             // Tile middle left
-            var middleLeftSprite = new PIXI.Sprite.fromFrame(this.options.images.middleLeft),
-                middleLeftTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleLeftSprite),
-                    middleLeftSprite.width,
+            var middleLeftTexture = PIXI.Texture.fromFrame(this.options.images.middleLeft),
+                middleLeftTile = new PIXI.TilingSprite(middleLeftTexture,
+                    middleLeftTexture.width,
                         this.height - topLeft.height - bottomLeft.height
                 );
             middleLeftTile.position.x = 0;
             middleLeftTile.position.y = topLeft.height;
 
             // Tile middle right
-            var middleRightSprite = new PIXI.Sprite.fromFrame(this.options.images.middleRight),
-                middleRightTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleRightSprite),
-                    middleRightSprite.width,
+            var middleRightTexture = PIXI.Texture.fromFrame(this.options.images.middleRight),
+                middleRightTile = new PIXI.TilingSprite(middleRightTexture,
+                    middleRightTexture.width,
                         this.height - topLeft.height - bottomLeft.height
                 );
             middleRightTile.position.x = this.width - topRight.width;
             middleRightTile.position.y = topRight.height;
 
             // Tile top center
-            var topCenterSprite = new PIXI.Sprite.fromFrame(this.options.images.topCenter),
-                topCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(topCenterSprite),
+            var topCenterTexture = PIXI.Texture.fromFrame(this.options.images.topCenter),
+                topCenterTile = new PIXI.TilingSprite(topCenterTexture,
                         this.width - topLeft.width - topRight.width,
-                    topCenterSprite.height
+                    topCenterTexture.height
                 );
             topCenterTile.position.x = topLeft.width;
             topCenterTile.position.y = 0;
 
             // Tile bottom center
-            var bottomCenterSprite = new PIXI.Sprite.fromFrame(this.options.images.bottomCenter),
-                bottomCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(bottomCenterSprite),
+            var bottomCenterTexture = PIXI.Texture.fromFrame(this.options.images.bottomCenter),
+                bottomCenterTile = new PIXI.TilingSprite(bottomCenterTexture,
                         this.width - bottomLeft.width - bottomRight.width,
-                    bottomCenterSprite.height
+                    bottomCenterTexture.height
                 );
             bottomCenterTile.position.x = bottomLeft.width;
             bottomCenterTile.position.y = this.height - bottomLeft.height;
 
 
             // Tile middle center
-            var middleCenterSprite = new PIXI.Sprite.fromFrame(this.options.images.middleCenter),
-                middleCenterTile = new PIXI.TilingSprite(this.getTextureFromSpriteSheet(middleCenterSprite),
+            var middleCenterTexture = PIXI.Texture.fromFrame(this.options.images.middleCenter),
+                middleCenterTile = new PIXI.TilingSprite(middleCenterTexture,
                         this.width - topLeft.width - topRight.width,
                     Math.ceil(this.height - bottomRight.height - topRight.height)
                 );
@@ -123,7 +123,9 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             this.container.addChild(bottomCenterTile);
             this.container.addChild(bottomRight);
 
-            this.addChild(this.container);
+            this.addChild(new PIXI.Sprite(this.container.generateTexture()));
+
+            this.container = null;
 
         };
 
