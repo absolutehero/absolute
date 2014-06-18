@@ -122,6 +122,20 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
         return this.active;
     };
 
+    Button.prototype.disable = function (show) {
+        if (show) {
+            this.setActive(false);
+        }
+        else {
+            this.active = false;
+            this.interactive = false;
+        }
+    };
+
+    Button.prototype.enable = function () {
+        this.setActive(true);
+    };
+
     Button.prototype.setActive = function(active) {
 
         if(this.active === active) {
