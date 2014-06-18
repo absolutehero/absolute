@@ -52,6 +52,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.contents.mousedown = this.onMoveStart.bind(this);
             this.contents.mousemove = this.onMove.bind(this);
             this.contents.mouseup = this.onMoveEnd.bind(this);
+            this.contents.mouseupoutside = this.onMoveEnd.bind(this);
         }
         this.addChild(this.contents);
 
