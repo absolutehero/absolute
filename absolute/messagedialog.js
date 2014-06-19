@@ -84,5 +84,13 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
             sprite.position.y = Coords.y(y);
         };
 
+        MessageDialog.prototype.setMessage = function (message) {
+            this.text.setText(message);
+            // XXXCBR - the textWidth is not computed synchronously!?!
+            setTimeout(function () {
+                this.text.position.x = (this.width - this.text.textWidth) / 2;
+            }.bind(this), 10);
+        };
+
         return MessageDialog;
     });
