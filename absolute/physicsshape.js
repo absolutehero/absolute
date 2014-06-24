@@ -66,13 +66,13 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         return this.attachments.indexOf(fixture) !== -1;
     };
 
-    PhysicsShape.prototype.letsGetPhysical = function (skipShapeBuilding, isSensor) {
+    PhysicsShape.prototype.letsGetPhysical = function (skipShapeBuilding, isSensor, isKinematic) {
         if (this.body) {
             return;
         }
 
         var bd = new Box2D.b2BodyDef();
-        if(isSensor) {
+        if(isSensor || isKinematic) {
             bd.set_type(Box2D.b2_kinematicBody);
         } else {
             bd.set_type(Box2D.b2_dynamicBody);
@@ -88,7 +88,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
             var fixture = new Box2D.b2FixtureDef();
 
             fixture.set_density(2);
-            fixture.set_friction(1);
+            fixture.set_friction(0.25);
             fixture.set_restitution(0);
             fixture.set_shape(this.config); // this.config needs to be a box2d shape object
 
