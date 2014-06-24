@@ -184,6 +184,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         }
         else if (dob instanceof PIXI.DisplayObjectContainer) {
 
+            // if a container has a width and height set, use those rather than computing
+            if (dob.width && dob.height) {
+                return new PIXI.Rectangle(dob.position.x, dob.position.y, dob.width, dob.height);
+            }
             if (dob.children.length > 0) {
 
                 var minX = Number.MAX_VALUE,
@@ -293,14 +297,17 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
      * @param child
      */
     ScrollArea.prototype.isChildVisible = function (child) {
+        this.contents.updateTransform();
         var childRect = new PIXI.Rectangle(child.worldTransform.tx, child.worldTransform.ty, child.width, child.height);
         var parentRect = new PIXI.Rectangle(this.worldTransform.tx, this.worldTransform.ty, this.width, this.height);
 
-        return ((parentRect.contains(childRect.x + childRect.width / 2, childRect.y + childRect.height / 2)) ||
-            parentRect.contains(childRect.x, childRect.y) ||
-            parentRect.contains(childRect.x + childRect.width, childRect.y) ||
-            parentRect.contains(childRect.x + childRect.width, childRect.y + childRect.height) ||
-            parentRect.contains(childRect.x + childRect.width, childRect.y + childRect.height));
+        var a = parentRect.contains(childRect.x + childRect.width / 2, childRect.y + childRect.height / 2),
+            b = parentRect.contains(childRect.x, childRect.y),
+            c = parentRect.contains(childRect.x + childRect.width, childRect.y),
+            d = parentRect.contains(childRect.x + childRect.width, childRect.y + childRect.height),
+            e = parentRect.contains(childRect.x + childRect.width, childRect.y + childRect.height);
+
+        return a || b || c || d || e;
     };
 
 
