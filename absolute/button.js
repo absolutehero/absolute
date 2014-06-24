@@ -95,7 +95,8 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
             }.bind(this);
 
             this.mousemove = function(evt) {
-                this.clickCanceled = true;
+                // XXXCBR - experiment to see if this fixes Andy's button problem on Windows
+                //this.clickCanceled = true;
             }.bind(this);
 
             this.mouseup = function(evt) {

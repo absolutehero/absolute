@@ -20,19 +20,21 @@ define(['pixi', 'absolute/loader'], function(PIXI, Loader) {
         this.assetName = assetName;
         this.placeholder = placeholder;
         this.isLoaded = false;
+        this.isLoading = false;
 
         this.addChild(this.placeholder);
-
-        this.width = placeholder.width;
-        this.height = placeholder.height
     };
 
-    LazyLoadedSprite.prototype.load = function () {
+    LazyLoadedSprite.prototype.load = function (onLoaded) {
         if (!PIXI.TextureCache[this.assetName]) {
             var loader = new Loader();
-            this.isLoaded = true;
+            this.isLoading = true;
             loader.loadArt([{name: this.atlasName}], function () {}, function () {
                 this._replaceAsset();
+                this.isLoaded = true;
+                if (typeof onLoaded === "function") {
+                    onLoaded(this);
+                }
             }.bind(this));
         }
         else {
@@ -41,18 +43,31 @@ define(['pixi', 'absolute/loader'], function(PIXI, Loader) {
     };
 
     LazyLoadedSprite.prototype._replaceAsset = function () {
-        if (this.placeHolder) {
-            this.removeChild(this.placeHolder);
-        }
-        this.placeHolder = null;
-
         this.asset = PIXI.Sprite.fromFrame(this.assetName);
-        this.addChild(this.asset);
+        this.placeholder.addChild(this.asset);
     };
 
     Object.defineProperty(LazyLoadedSprite.prototype, 'loaded', {
         get: function() {
             return this.isLoaded;
+        }
+    });
+
+    Object.defineProperty(LazyLoadedSprite.prototype, 'loading', {
+        get: function() {
+            return this.isLoading;
+        }
+    });
+
+    Object.defineProperty(LazyLoadedSprite.prototype, 'width', {
+        get: function() {
+            return this.placeholder.width * this.placeholder.scale.x;
+        }
+    });
+
+    Object.defineProperty(LazyLoadedSprite.prototype, 'height', {
+        get: function() {
+            return this.placeholder.height * this.placeholder.scale.y;
         }
     });
 
