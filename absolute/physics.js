@@ -170,7 +170,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
         step: function () {
             //this.world.Step(1/60, 3, 2);
-            this.world.Step(1/120, 8, 3);
+            this.world.Step(1/60, 3, 2);
         },
 
         worldToScreenX: function (x) {
