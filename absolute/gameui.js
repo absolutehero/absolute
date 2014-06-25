@@ -51,7 +51,7 @@ function (
         this.backGroundColor = backgroundColor;
         this.supportsOrientationChange = !!supportsOrientationChange;
         this.supportsLiquidLayout = !!supportsLiquidLayout;
-        this.supportsWebGL = !!supportsWebGL;
+        this.supportsWebGL = false;//!!supportsWebGL;
         this.modalStack = [];
         this.modalBgStack = [];
 
@@ -108,10 +108,8 @@ function (
             this.container.appendChild(this.renderer[0].view);
         }
         else {
-            this.renderer[0].width = this.renderer[0].view.width = width;
-            this.renderer[0].height = this.renderer[0].view.height = height;
-            this.renderer[1].width = this.renderer[1].view.width = width;
-            this.renderer[1].height = this.renderer[1].view.height = height;
+            this.renderer[0].resize(width, height);
+            this.renderer[1].resize(width, height);
             this.refreshBackground = true;
         }
     };
