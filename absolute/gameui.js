@@ -51,7 +51,7 @@ function (
         this.backGroundColor = backgroundColor;
         this.supportsOrientationChange = !!supportsOrientationChange;
         this.supportsLiquidLayout = !!supportsLiquidLayout;
-        this.supportsWebGL = false;//!!supportsWebGL;
+        this.supportsWebGL = !!supportsWebGL;
         this.modalStack = [];
         this.modalBgStack = [];
 
