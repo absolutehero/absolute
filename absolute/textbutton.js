@@ -16,8 +16,9 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
         if (threeSliceOptions && typeof threeSliceOptions === 'object' ) {
             this.container = new PIXI.DisplayObjectContainer();
-            defaultImage = this._createThreeSliceImage(threeSliceOptions);
-            hoverImage = this._createThreeSliceImage(threeSliceOptions);
+            this.texture = this._createThreeSliceImage(threeSliceOptions);
+            defaultImage = this.texture;
+            hoverImage = this.texture;
         }
 
         this._initTextButton(defaultImage, hoverImage, action, replaceOnHover, useTap, _.extend(defaultTextStyleOptions, options));
@@ -50,13 +51,7 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
         var threeSlice = new ThreeSlice(options);
 
-        var canvasRenderer = new PIXI.CanvasRenderer(threeSlice.width, threeSlice.height, null, true);
-
-        this.container.addChild(threeSlice);
-        canvasRenderer.render(threeSlice);
-        this.container.removeChild(threeSlice);
-
-        return PIXI.Texture.fromCanvas(canvasRenderer.view);
+        return threeSlice.generateTexture();
     };
 
     return TextButton;

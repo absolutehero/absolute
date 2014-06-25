@@ -89,14 +89,14 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
             if (this.options.tween.type !== 'none') {
                 var self = this,
-                    endY = this.position.y;
+                    endX = this.position.x;
 
-                this.position.y = this.ui.height;
-                new TWEEN.Tween({ y: this.position.y })
-                    .to({y: endY }, 500)
-                    .easing(TWEEN.Easing.Elastic.Out)
+                this.position.x = this.ui.width;
+                new TWEEN.Tween({ x: this.position.x })
+                    .to({x: endX }, 500)
+                    .easing(TWEEN.Easing.Cubic.InOut)
                     .onUpdate(function () {
-                        self.position.y = this.y;
+                        self.position.x = this.x;
                     })
                     .onComplete(function () {
                         self.onOpenComplete();
@@ -298,25 +298,11 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
             var background = new NineSlice(this.options);
 
-            this.container.addChild(background);
-
-        };
-
-        Dialog.prototype.getTextureFromSpriteSheet = function(tempSprite) {
-
-            var canvasRenderer = new PIXI.CanvasRenderer(tempSprite.width, tempSprite.height, null, true);
-
-            this.container.addChild(tempSprite);
-            canvasRenderer.render(tempSprite);
-            this.container.removeChild(tempSprite);
-
-            return PIXI.Texture.fromCanvas(canvasRenderer.view);
+            this.container.addChildAt(background, 0);
 
         };
 
         Dialog.prototype._setContent = function(content) {
-
-            //var content = content || this.cachedContent;
 
             if(typeof content !== 'undefined') {
                 try{
@@ -331,6 +317,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             }
 
             this.container.addChild(this.cachedContent);
+            this.container.getChildAt(0).cacheAsBitmap = true; // cache dialog background as bitmap
 
         };
 

@@ -91,8 +91,10 @@ function (
         }
 
         if (this.renderer.length === 0) {
-            this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
-            this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
+            this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
+            this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
+            //this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
+            //this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
             //this.renderer = PIXI.autoDetectRenderer(width, height);
             //this.renderer[0].transparent = true;
             //this.renderer[1].transparent = true;
@@ -245,30 +247,19 @@ function (
     GameUI.prototype.refreshModal = function () {
 
         if (this.supportsOrientationChange &&  this.modalStack.length > 0) {
+            var modal = this.modalStack[this.modalStack.length - 1];
 
-            // remove the current background and modal
-            var modalBG = this.modalBgStack.pop();
-            if(typeof modalBG !== 'undefined' && modalBG !== null) {
-                this.stage[0].removeChild(modalBG);
-            }
-            this.stage[0].removeChild(this.modalStack[this.modalStack.length - 1]);
+            // remove the current modal
+            this.stage[0].removeChild(modal);
 
             // refresh the background snapshot
-            this.showCurrent();
-            var modalBackground = this.buildModalBackground(modalBG.alpha || 0.5);
-            modalBackground.alpha = modalBG.alpha;
-            this.modalBgStack.push(modalBackground);
-            var oldScreen = this.stage[0].getChildAt(0);
-            this.stage[0].removeChild(oldScreen);
-            this.stage[0].addChild(modalBackground);
-
-            if (typeof this.modalStack[this.modalStack.length - 1].handleOrientationChange !== 'undefined') {
-                this.modalStack[this.modalStack.length - 1].handleOrientationChange(this.portrait);
+            if (typeof modal.handleOrientationChange !== 'undefined') {
+               modal.handleOrientationChange(this.portrait);
             }
 
             // refresh the modal content
-            this.stage[0].addChild(this.modalStack[this.modalStack.length-1]);
-            this.modalStack[this.modalStack.length-1].onShow();
+            this.stage[0].addChild(modal);
+            modal.onShow();
         }
 
     };
@@ -391,22 +382,16 @@ function (
     */
 
     GameUI.prototype.showModal = function (screen, alpha) {
-        var modalBackground = this.buildModalBackground(alpha || 0.5);
-        modalBackground.alpha = alpha;
-
-        if (this.modalBgStack.length > 0) {
-            this.stage[0].removeChild(this.modalBgStack[this.modalBgStack.length - 1]);
-        }
-        else {
-            this.hideCurrent();
-        }
 
         if (this.modalStack.length > 0) {
             this.stage[0].removeChild(this.modalStack[this.modalStack.length - 1]);
         }
-
-        this.modalBgStack.push(modalBackground);
-        this.stage[0].addChild(modalBackground);
+        else {
+            if(this.stage[0].children.length > 0) {
+                var oldScreen = this.stage[0].getChildAt(0);
+                this.stage[0].removeChild(oldScreen);
+            }
+        }
 
         this.modalStack.push(screen);
         this.stage[0].addChild(screen);
@@ -424,27 +409,14 @@ function (
             modal.onHide();
             this.stage[0].removeChild(modal);
 
-            // remove the background
-            var modalBG = this.modalBgStack.pop();
-            if(typeof modalBG !== 'undefined' && modalBG !== null) {
-                this.stage[0].removeChild(modalBG);
-            } /*else if (this.stage[1].children.length > 0) {
-                var oldBackground = this.stage[1].getChildAt(0);
-                this.stage[1].removeChild(oldBackground);
-            }*/
-
             // restore the last modal or screen
             var l = this.modalStack.length;
             if (l === 0) {
                 this.showCurrent();
             }
             else {
-
-                this.stage[0].addChild(this.modalBgStack[l - 1]);
                 this.stage[0].addChild(this.modalStack[l - 1]);
-
                 this.refreshModal();
-
             }
         }
     };
@@ -464,16 +436,22 @@ function (
     };
 
     GameUI.prototype.buildModalBackground = function (alpha) {
-        var osr = new PIXI.CanvasRenderer(this.width, this.height, null, true);
+        //var osr = new PIXI.CanvasRenderer(this.width, this.height, null, true);
         var graphics = new PIXI.Graphics();
         graphics.beginFill(0x010101, alpha); // PIXI has a bug - won't render pure black
         graphics.drawRect(0, 0, this.width, this.height);
         graphics.endFill();
-        this.stage[0].addChild(graphics);
-        osr.render(this.stage[0]);
-        this.stage[0].removeChild(graphics);
+        //this.stage[0].addChild(graphics);
+        //osr.render(this.stage[0]);
+        //this.stage[0].removeChild(graphics);
 
-        return new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
+        var container = new PIXI.DisplayObjectContainer();
+        //container.addChild(this.currentScreen);
+        //container.addChild(graphics);
+
+        return new PIXI.Sprite(container.generateTexture());
+
+        //return new PIXI.Sprite(this.stage[0].generateTexture());
     };
 
     GameUI.prototype.showCurrent = function () {

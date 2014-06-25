@@ -39,9 +39,6 @@ define(['pixi', 'lodash'],
         };
 
         ThreeSlice.prototype._createBackground = function() {
-
-            this.container = new PIXI.DisplayObjectContainer();
-
             var left = PIXI.Sprite.fromFrame(this.options.images.left);
             left.position.x = 0;
             left.position.y = 0;
@@ -50,19 +47,15 @@ define(['pixi', 'lodash'],
             right.position.x = this.width - right.width;
             right.position.y = 0;
 
-
             var center = PIXI.Texture.fromFrame(this.options.images.center),
-                centerTile = new PIXI.TilingSprite(center, this.width - left.width - right.width, center.height);
+                centerTile = new PIXI.Sprite(center);
+            centerTile.width = this.width - left.width - right.width;
             centerTile.position.x = left.width;
             centerTile.position.y = 0;
 
-            this.container.addChild(left);
-            this.container.addChild(centerTile);
-            this.container.addChild(right);
-
-            this.addChild(new PIXI.Sprite(this.container.generateTexture()));
-            this.container = null;
-
+            this.addChild(centerTile);
+            this.addChild(left);
+            this.addChild(right);
         };
 
         return ThreeSlice;

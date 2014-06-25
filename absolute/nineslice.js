@@ -123,16 +123,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             this.container.addChild(bottomCenterTile);
             this.container.addChild(bottomRight);
 
-            this.addChild(new PIXI.Sprite(this.container.generateTexture()));
-
-            this.container = null;
-
+            this.addChild(this.container);
         };
-
-        NineSlice.prototype.getTextureFromSpriteSheet = function(tempSprite) {
-            return tempSprite.generateTexture();
-        };
-
 
 
         return NineSlice;

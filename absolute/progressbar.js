@@ -35,7 +35,7 @@ define(['pixi', 'absolute/coords', 'absolute/tweenutils'], function(PIXI, Coords
         }
 
         this.fillMask = new PIXI.Graphics();
-        this.fillMask.beginFill();
+        this.fillMask.beginFill(0x0, 0);
         this.fillMask.drawRect(this.start, 0, 0, this.height);
         this.fillMask.endFill();
         this.addChild(this.fillMask);
@@ -66,9 +66,11 @@ define(['pixi', 'absolute/coords', 'absolute/tweenutils'], function(PIXI, Coords
                 .onUpdate(function () {
 
                     self.fillMask.clear();
+                    self.fillMask.beginFill(0x0, 0);
                     self.fillMask.drawRect(self.start, 0, this.width, self.height);
-                    self.previousWidth = this.width;
+                    self.fillMask.endFill();
 
+                    self.previousWidth = this.width;
                     })
                 .onComplete(function () {
                     if(typeof tweenCallback === 'function') {
@@ -78,10 +80,10 @@ define(['pixi', 'absolute/coords', 'absolute/tweenutils'], function(PIXI, Coords
                 .start();
 
         } else  {
-
             this.fillMask.clear();
+            this.fillMask.beginFill(0x0, 0);
             this.fillMask.drawRect(this.start, 0, targetWidth, this.height);
-
+            this.fillMask.endFill();
         }
 
         if (this.waitContainer) {
