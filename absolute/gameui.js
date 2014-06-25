@@ -25,12 +25,12 @@ function (
     )
 {
 
-    var GameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout) {
+    var GameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL) {
         backgroundColor = backgroundColor || 0xFFFFFF;
-        this._initGameUI(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout);
+        this._initGameUI(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL);
     };
 
-    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout) {
+    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL) {
 
         this.currentScreen = null;
         this.modal = null;
@@ -51,6 +51,7 @@ function (
         this.backGroundColor = backgroundColor;
         this.supportsOrientationChange = !!supportsOrientationChange;
         this.supportsLiquidLayout = !!supportsLiquidLayout;
+        this.supportsWebGL = !!supportsWebGL;
         this.modalStack = [];
         this.modalBgStack = [];
 
@@ -91,13 +92,14 @@ function (
         }
 
         if (this.renderer.length === 0) {
-            this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
-            this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
-            //this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
-            //this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
-            //this.renderer = PIXI.autoDetectRenderer(width, height);
-            //this.renderer[0].transparent = true;
-            //this.renderer[1].transparent = true;
+            if (this.supportsWebGL) {
+                this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
+                this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
+            }
+            else {
+                this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
+                this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
+            }
 
             this.offScreenRenderer = new PIXI.CanvasRenderer(width, height, null, true);
             //this.offScreenRenderer.transparent = true;
