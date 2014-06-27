@@ -375,7 +375,7 @@ function (
             }
             else {
                 this.modalOverlay = this.buildModalOverlay(alpha);
-                this.currentScreen.addChild(this.modalOverlay);
+                this.stage[0].addChildAt(this.modalOverlay, this.stage[0].children.indexOf(this.currentScreen) + 1);
                 this.renderer[2].view.style.display = "block";
             }
         }
@@ -411,7 +411,7 @@ function (
                     this.stage[0].addChildAt(this.currentScreen, 0);
                 }
                 else {
-                    this.currentScreen.removeChild(this.modalOverlay);
+                    this.stage[0].removeChild(this.modalOverlay);
                     this.renderer[2].view.style.display = "none";
                 }
             }
