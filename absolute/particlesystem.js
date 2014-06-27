@@ -20,6 +20,14 @@ define (['proton'], function (Proton) {
 
         addEmitter: function (emitter) {
             this.proton.addEmitter(emitter);
+        },
+
+        removeEmitter: function (emitter) {
+            this.proton.removeEmitter(emitter);
+        },
+
+        _getEmitterCount: function () {
+            return this.proton.emitters.length;
         }
     };
 

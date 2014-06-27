@@ -191,6 +191,10 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
         this.emitter.stopEmit();
     };
 
+    ParticleEmitter.prototype.destroy = function () {
+        this.emitter.destroy();
+    };
+
     return ParticleEmitter;
     
 });
