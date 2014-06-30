@@ -543,11 +543,13 @@ function (
             }
         });
 
-        console.log("Active Atlases");
-        for (var atlas in activeAtlases) {
-            if (activeAtlases.hasOwnProperty(atlas)) {
-                var shortName = atlas.substr(atlas.lastIndexOf("/") + 1);
-                console.log(shortName + " has " + activeAtlases[atlas] + " sprites active");
+        if (Debug.enabled) {
+            Debug.log("Active Atlases");
+            for (var atlas in activeAtlases) {
+                if (activeAtlases.hasOwnProperty(atlas)) {
+                    var shortName = atlas.substr(atlas.lastIndexOf("/") + 1);
+                    Debug.log(shortName + " has " + activeAtlases[atlas] + " sprites active");
+                }
             }
         }
     };
