@@ -304,7 +304,7 @@ function (
             // watchdog
             if (Date.now() - this.lastRender > 200) {
                 cancelAnimationFrame(this.frameRequest);
-                this.frameRequest = requestAnimFrame(_animate); // restart
+                this.frameRequest = requestAnimFrame(this._animate.bind(this)); // restart
             }
             setTimeout(watchdog, 100);
         }.bind(this);
@@ -313,32 +313,32 @@ function (
             cancelAnimationFrame(this.frameRequest);
         }
 
-        var self = this,
-            _animate = function () {
-                if (Debug.enabled) {
-                    self.meter.tick();
-                }
-
-                self.beforeRender();
-                TWEEN.update();
-
-                self.renderer[0].render(self.stage[0]);
-                if (self.refreshBackground) {
-                    self.refreshBackground = false;
-                    self.renderer[1].render(self.stage[1]);
-                }
-
-                if (self.hasModal() && self.renderer.length > 2) {
-                    self.renderer[2].render(self.stage[2]);
-                }
-
-                self.afterRender();
-                self.lastRender = Date.now();
-                self.frameRequest = requestAnimFrame(_animate);
-            };
-        this.frameRequest = requestAnimFrame(_animate);
+        this.frameRequest = requestAnimFrame(this._animate.bind(this));
         setTimeout(watchdog, 100);
 
+    };
+
+    GameUI.prototype._animate = function () {
+        if (Debug.enabled) {
+            this.meter.tick();
+        }
+
+        this.beforeRender();
+        TWEEN.update();
+
+        this.renderer[0].render(this.stage[0]);
+        if (this.refreshBackground) {
+            this.refreshBackground = false;
+            this.renderer[1].render(this.stage[1]);
+        }
+
+        if (this.hasModal() && this.renderer.length > 2) {
+            this.renderer[2].render(this.stage[2]);
+        }
+
+        this.afterRender();
+        this.lastRender = Date.now();
+        this.frameRequest = requestAnimFrame(this._animate.bind(this));
     };
 
     GameUI.prototype.beforeRender = function() {
