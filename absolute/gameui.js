@@ -449,16 +449,31 @@ function (
     };
 
     GameUI.prototype.buildModalBackground = function (alpha) {
-        var osr = new PIXI.CanvasRenderer(this.width, this.height, null, true);
-        var graphics = new PIXI.Graphics();
-        graphics.beginFill(0x010101, alpha); // PIXI has a bug - won't render pure black
-        graphics.drawRect(0, 0, this.width, this.height);
+        var scale = 0.5,
+            swidth = Math.ceil(this.width * scale),
+            sheight = Math.ceil(this.height * scale),
+            osr = new PIXI.CanvasRenderer(swidth, sheight, null, true),
+            graphics = new PIXI.Graphics(),
+            mb;
+
+        osr.clearBeforeRender = false;
+        osr.roundPixels = true;
+
+        graphics.beginFill(0x0, alpha);
+        graphics.drawRect(0, 0, swidth, sheight);
         graphics.endFill();
+
         this.stage[0].addChild(graphics);
+        this.currentScreen.scale.x = this.currentScreen.scale.y = scale;
         osr.render(this.stage[0]);
+        this.currentScreen.scale.x = this.currentScreen.scale.y = 1;
         this.stage[0].removeChild(graphics);
 
-        return new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
+        mb = new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
+        mb.scale.x = mb.scale.y = 1/scale;
+
+        return mb;
+
     };
 
 
