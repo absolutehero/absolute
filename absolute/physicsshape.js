@@ -4,21 +4,22 @@
  * Time: 5:11 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function (PIXI, Box2D, Physics, ScreenMetrics) {
+define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/platform'], function (PIXI, Box2D, Physics, ScreenMetrics, Platform) {
 
-    var PhysicsShape = function(id, config) {
-        this._initPhysicsShape(id, config);
+    var PhysicsShape = function(id, config, parentScale) {
+        this._initPhysicsShape(id, config, parentScale);
     };
 
     PhysicsShape.constructor = PhysicsShape;
     PhysicsShape.prototype = Object.create(PIXI.Sprite.prototype);
 
-    PhysicsShape.prototype._initPhysicsShape = function(id, config) {
+    PhysicsShape.prototype._initPhysicsShape = function(id, config, parentScale) {
         var textureName = id + '.png';
         PIXI.Sprite.call(this, PIXI.Texture.fromFrame(textureName));
         this.config = config;
         this.anchor.x = 0.5;
         this.anchor.y = 0.5;
+        this.parentScale = parentScale || 1;
         //this.scale.x = 1;
         //this.scale.y = -1;
         //this.pivot.x = 0.5;//this.width / 2;
@@ -26,36 +27,47 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
 
         this.collided = false;
 
-        this.setInteractive(true);
+        this.interactive = true;
         this.buttonMode = true;
 
         this.dragging = false;
 
-        this.mousedown = this.touchstart = function (data) {
-            data.originalEvent.preventDefault();
-
-            this.dragging = true;
-            if (!this.body) {
-                this.letsGetPhysical();
-            }
-            Physics.startMouseJoint(new PIXI.Point(Physics.screenToWorldX(data.global.x), Physics.screenToWorldY(data.global.y)));
-        };
-
-        this.mousemove = this.touchmove = function (data) {
-            if (this.dragging) {
-                data.originalEvent.preventDefault();
-                Physics.moveMouseJoint(new PIXI.Point(Physics.screenToWorldX(data.global.x), Physics.screenToWorldY(data.global.y)));
-            }
-        };
-
-        this.mouseup = this.mouseupoutside = this.touchend = function (data) {
-            if (this.dragging){
-                data.originalEvent.preventDefault();
-                Physics.stopMouseJoint();
-            }
-        };
+        if (Platform.supportsTouch()) {
+            this.touchstart = this._onGrab;
+            this.touchend = this.touchendoutside = this._onDrop;
+            this.touchmove = this._onMove;
+        }
+        else {
+            this.mousedown = this._onGrab;
+            this.mouseup = this.mouseupoutside = this._onDrop;
+            this.mousemove = this._onMove;
+        }
 
         this.attachments = [];
+    };
+
+    PhysicsShape.prototype._onGrab = function(data) {
+        data.originalEvent.preventDefault();
+
+        this.dragging = true;
+        if (!this.body) {
+            this.letsGetPhysical();
+        }
+        Physics.startMouseJoint(new PIXI.Point(Physics.screenToWorldX(data.global.x), Physics.screenToWorldY(data.global.y)));
+    };
+
+    PhysicsShape.prototype._onMove = function(data) {
+        if (this.dragging) {
+            data.originalEvent.preventDefault();
+            Physics.moveMouseJoint(new PIXI.Point(Physics.screenToWorldX(data.global.x), Physics.screenToWorldY(data.global.y)));
+        }
+    };
+
+    PhysicsShape.prototype._onDrop = function(data) {
+        if (this.dragging){
+            data.originalEvent.preventDefault();
+            Physics.stopMouseJoint();
+        }
     };
 
     PhysicsShape.prototype.addAttachment = function (fixture) {
@@ -66,12 +78,14 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         return this.attachments.indexOf(fixture) !== -1;
     };
 
-    PhysicsShape.prototype.letsGetPhysical = function (skipShapeBuilding, isSensor, isKinematic) {
+    PhysicsShape.prototype.letsGetPhysical = function (skipShapeBuilding, isSensor, isKinematic, fixtureOptions) {
+
         if (this.body) {
             return;
         }
 
         var bd = new Box2D.b2BodyDef();
+
         if(isSensor || isKinematic) {
             bd.set_type(Box2D.b2_kinematicBody);
         } else {
@@ -87,9 +101,11 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
             //var fixture = Box2D.CreateFixture(this.config, 2);
             var fixture = new Box2D.b2FixtureDef();
 
-            fixture.set_density(2);
-            fixture.set_friction(0.25);
-            fixture.set_restitution(0);
+            fixtureOptions = fixtureOptions || {density: 2, friction: 0.25, bounce: 0};
+
+            fixture.set_density(fixtureOptions.density);
+            fixture.set_friction(fixtureOptions.friction);
+            fixture.set_restitution(fixtureOptions.bounce);
             fixture.set_shape(this.config); // this.config needs to be a box2d shape object
 
             if(isSensor) {
@@ -101,7 +117,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         } else {
             for (var s = 0; s < this.config.length; s += 1) {
                 var fixture = new Box2D.b2FixtureDef();
-                fixture.set_shape(this.buildShapeFromVertices(this.config[s].shape));
+                fixture.set_shape(this.buildShapeFromVertices(this.config[s].shape, this.parentScale));
                 fixture.set_density(this.config[s].density);
                 fixture.set_friction(this.config[s].friction);
                 fixture.set_restitution(this.config[s].bounce);
@@ -113,7 +129,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
 
 
         var temp = new Box2D.b2Vec2(0, 0);
-        temp.Set(Physics.screenToWorldX(this.position.x), Physics.screenToWorldY(this.position.y));
+        temp.Set(Physics.screenToWorldX(this.position.x * this.parentScale), Physics.screenToWorldY(this.position.y * this.parentScale));
         this.body.SetTransform(temp, -this.rotation);
 
         this.body.SetAwake(1);
@@ -130,14 +146,16 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         return this.body ? this.body.IsActive() : false;
     };
 
-    PhysicsShape.prototype.buildShapeFromVertices = function (vertices) {
+    PhysicsShape.prototype.buildShapeFromVertices = function (vertices, parentScale) {
+
+        //ScreenMetrics.getResScale()
         var shape = new Box2D.b2PolygonShape();
         var buffer = Box2D.allocate(vertices.length * 4, 'float', Box2D.ALLOC_STACK);
         var offset = 0;
         for (var i = 0; i < vertices.length; i += 2) {
             //console.log("Adding vertex at (" + vertices[i] / Physics.pixelsPerMeter + ", " + vertices[i + 1] / Physics.pixelsPerMeter  + ")");
-            Box2D.setValue(buffer+(offset),   (ScreenMetrics.getResScale() * vertices[i] - this.width / 2) / Physics.pixelsPerMeter, 'float'); // x
-            Box2D.setValue(buffer+(offset+4), (ScreenMetrics.getResScale() * vertices[i + 1] - this.height / 2) / Physics.pixelsPerMeter, 'float'); // y
+            Box2D.setValue(buffer+(offset),   (ScreenMetrics.getResScale() * this.parentScale * vertices[i] - ((this.width * this.parentScale ) / 2)) / Physics.pixelsPerMeter, 'float'); // x
+            Box2D.setValue(buffer+(offset+4), (ScreenMetrics.getResScale() * this.parentScale * vertices[i + 1] - ((this.height * this.parentScale ) / 2)) / Physics.pixelsPerMeter, 'float'); // y
             offset += 8;
         }
         var ptr_wrapped = Box2D.wrapPointer(buffer, Box2D.b2Vec2);
@@ -151,8 +169,8 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
             var pos = this.body.GetPosition();
             var angle = this.body.GetAngle();
 
-            this.position.x = Physics.worldToScreenX(pos.get_x());
-            this.position.y = Physics.worldToScreenY(pos.get_y());
+            this.position.x = Physics.worldToScreenX(pos.get_x()) / this.parentScale;
+            this.position.y = Physics.worldToScreenY(pos.get_y()) / this.parentScale;
             this.rotation = -angle;
         }
     };
@@ -161,7 +179,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         x = Math.floor(x);
         if (this.body) {
             var xform = this.body.GetTransform();
-            this.body.SetTransform(new Box2D.b2Vec2(Physics.screenToWorldX(x), xform.get_p().get_y()), xform.get_q());
+            this.body.SetTransform(new Box2D.b2Vec2(Physics.screenToWorldX(x * this.parentScale), xform.get_p().get_y()), xform.get_q());
         }
         this.position.x = x;
     };
@@ -170,7 +188,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics'], function 
         y = Math.floor(y);
         if (this.body) {
             var xform = this.body.GetTransform();
-            this.body.SetTransform(new Box2D.b2Vec2(xform.get_p().get_x(), Physics.screenToWorldY(y)), xform.get_q());
+            this.body.SetTransform(new Box2D.b2Vec2(xform.get_p().get_x(), Physics.screenToWorldY(y * this.parentScale)), xform.get_q());
         }
         this.position.y = y;
     };
