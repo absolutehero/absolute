@@ -44,6 +44,9 @@ var AudioManager = {
             this.format = 'mp3';
         }
 
+        // need to force ogg for Chromium/node-webkit
+        //this.format = 'ogg';
+
         Debug.log('Audio format ' + this.format);
 
         if (onReady && typeof onReady === "function") {
