@@ -110,7 +110,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             this.pixelsPerMeter = pixelsPerMeter * ScreenMetrics.getResScale();
         },
 
-        buildGround: function (start, end) {
+        buildGround: function (start, end, type) {
+            type = type || 'Ground';
             var bd_ground = new Box2D.b2BodyDef();
             this.groundBody = this.world.CreateBody(bd_ground);
             //ground edges
@@ -122,6 +123,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             fixture.set_friction(1);
             fixture.set_restitution(0);
             this.groundBody.CreateFixture(fixture);
+            this.groundBody.userData = {'type': type};
         },
 
         startMouseJoint: function(mousePosWorld) {
@@ -147,7 +149,7 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
                 md.set_bodyA(this.mouseJointGroundBody);
                 md.set_bodyB(body);
                 md.set_target( new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y) );
-                md.set_maxForce( 1000 * body.GetMass() );
+                md.set_maxForce( 5000 * body.GetMass() );
                 md.set_collideConnected(true);
 
                 this.mouseJoint = Box2D.castObject( this.world.CreateJoint(md), Box2D.b2MouseJoint );
@@ -170,7 +172,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
         step: function () {
             //this.world.Step(1/60, 3, 2);
-            this.world.Step(1/60, 3, 2);
+            //this.world.Step(1/60, 3, 2);
+            this.world.Step(1/60, 5, 2);
         },
 
         worldToScreenX: function (x) {
