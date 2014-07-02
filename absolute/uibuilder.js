@@ -114,7 +114,12 @@ define ([
 
                 case "Sprite":
                     this.checkParams({"texture": "string"}, config.params);
-                    widget = PIXI.Sprite.fromFrame(_a(config.params.texture));
+                    try {
+                        widget = PIXI.Sprite.fromFrame(_a(config.params.texture));
+                    }
+                    catch (e) {
+                        alert (e);
+                    }
                     break;
 
                 case "Container":
