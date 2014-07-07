@@ -4,19 +4,21 @@
 
 define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
-    var Draggable = function(child, limit, onGrab, onMove, onDrop) {
-        this._initDraggable(child, limit, onGrab, onMove, onDrop);
+    var Draggable = function(child, limit, onGrab, onMove, onDrop, positionChild) {
+        this._initDraggable(child, limit, onGrab, onMove, onDrop, positionChild);
     };
 
     Draggable.constructor = Draggable;
     Draggable.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-    Draggable.prototype._initDraggable = function(child, limit, onGrab, onMove, onDrop) {
+    Draggable.prototype._initDraggable = function(child, limit, onGrab, onMove, onDrop, positionChild) {
         PIXI.DisplayObjectContainer.call(this);
 
         this.addChild(child);
+        this.child = child;
+        this.positionChild = typeof positionChild !== 'undefined' ? positionChild : false;
 
-        this.limit = limit || new PIXI.Rectangle(0, 0, 0, 0);;
+        this.limit = limit || new PIXI.Rectangle(0, 0, 0, 0);
         this.onGrab = onGrab;
         this.onMove = onMove;
         this.onDrop = onDrop;
@@ -75,8 +77,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             if (this.limit) {
                 if (newPosition.x > this.limit.x && newPosition.x < (this.limit.x + this.limit.width) &&
                     newPosition.y > this.limit.y && newPosition.y < (this.limit.y + this.limit.height)) {
-                    this.position.x = Math.round(newPosition.x);
-                    this.position.y = Math.round(newPosition.y);
+
+                    var objectRef = this.positionChild ? this.child : this;
+                    objectRef.position.x = Math.round(newPosition.x);
+                    objectRef.position.y = Math.round(newPosition.y);
                 }
             }
 
