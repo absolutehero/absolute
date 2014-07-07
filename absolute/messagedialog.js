@@ -35,7 +35,6 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
             Dialog.call(this, ui, options);
 
             this.ui = ui;
-            this.game = game;
             this.message = message;
 
             this.content = this.initContent();
