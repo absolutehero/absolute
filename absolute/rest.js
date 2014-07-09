@@ -8,8 +8,8 @@ define(['pixi'], function (PIXI) {
 
     var REST = {
 
-        get: function (url, success, error) {
-            this.request('GET', url, success, error);
+        get: function (url, success, error, data) {
+            this.request('GET', url, success, error, data);
         },
 
         post: function (url, success, error, data, headers) {
@@ -42,22 +42,25 @@ define(['pixi'], function (PIXI) {
                 }
             }.bind(this);
 
+            if (method === "GET" && data) {
+                if (typeof data == "string") {
+                    params = data;
+                }
+                else {
+                    params = this._formatQuery(data);
+                }
+                url += "?" + params;
+            }
+
             this.ajaxRequest.open(method, url, true);
 
-            if (data) {
+            if (method === "POST" && data) {
                 if (typeof data == "string") {
                     params = data;
                     this.ajaxRequest.setRequestHeader("Content-Type", "text/plain");
                 }
                 else {
-                    params = "";
-                    var sep = "";
-                    for (var field in data) {
-                        if (data.hasOwnProperty(field)) {
-                            params += sep + field + "=" + data[field];
-                            sep = "&";
-                        }
-                    }
+                    params = this._formatQuery(data);
                     this.ajaxRequest.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
                 }
             }
@@ -75,10 +78,22 @@ define(['pixi'], function (PIXI) {
             }
 
             this.ajaxRequest.send(params);
+        },
+
+        _formatQuery: function (data) {
+            var params = "";
+            var sep = "";
+            for (var field in data) {
+                if (data.hasOwnProperty(field)) {
+                    params += sep + field + "=" + data[field];
+                    sep = "&";
+                }
+            }
+            return params;
         }
 
-
     };
+
 
     return REST;
 });
