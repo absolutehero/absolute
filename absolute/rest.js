@@ -51,8 +51,8 @@ define(['pixi'], function (PIXI) {
                 }
                 else {
                     params = "";
+                    var sep = "";
                     for (var field in data) {
-                        var sep = "";
                         if (data.hasOwnProperty(field)) {
                             params += sep + field + "=" + data[field];
                             sep = "&";
