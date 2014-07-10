@@ -176,10 +176,12 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/
     };
 
     PhysicsShape.prototype.setX = function (x) {
-        x = Math.floor(x);
+        //x = Math.floor(x);
         if (this.body) {
-            var xform = this.body.GetTransform();
-            this.body.SetTransform(new Box2D.b2Vec2(Physics.screenToWorldX(x * this.parentScale), xform.get_p().get_y()), xform.get_q());
+            //var xform = this.body.GetTransform();
+            //this.body.SetTransform(new Box2D.b2Vec2(Physics.screenToWorldX(x * this.parentScale), xform.get_p().get_y()), xform.get_q());
+
+            this.body.GetPosition().set_x(Physics.screenToWorldX(x * this.parentScale));
         }
         this.position.x = x;
     };

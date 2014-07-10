@@ -42,5 +42,44 @@ define(['pixi'], function(PIXI) {
         this.ajaxRequest.send();
     };
 
+    // touch move broken in 1.5.3
+    if(PIXI.VERSION = "v1.5.3") {
+
+        PIXI.InteractionManager.prototype.onTouchMove = function(event)
+        {
+            var rect = this.interactionDOMElement.getBoundingClientRect();
+            var changedTouches = event.changedTouches;
+            var touchData;
+            var i = 0;
+
+
+
+            for (i = 0; i < changedTouches.length; i++)
+            {
+                var touchEvent = changedTouches[i];
+                touchData = this.touchs[touchEvent.identifier];
+                touchData.originalEvent =  event || window.event;
+
+                // update the touch position
+                touchData.global.x = (touchEvent.clientX - rect.left) * (this.target.width / rect.width);
+                touchData.global.y = (touchEvent.clientY - rect.top)  * (this.target.height / rect.height);
+                if(navigator.isCocoonJS) {
+                    touchData.global.x = touchEvent.clientX;
+                    touchData.global.y = touchEvent.clientY;
+                }
+
+                for (var j = 0; j < this.interactiveItems.length; j++)
+                {
+                    var item = this.interactiveItems[j];
+
+                    // this is the line that is broken in 1.5.3
+                    //if(item.touchmove && item.__touchData[touchEvent.identifier]) item.touchmove(touchData);
+                    if(item.touchmove && item.__touchData && item.__touchData[touchEvent.identifier]) item.touchmove(touchData);
+                }
+            }
+        };
+
+    }
+
 
 });
