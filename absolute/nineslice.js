@@ -34,7 +34,6 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
 
             this._setSize();
             this._createBackground();
-
         };
 
 
@@ -124,6 +123,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             this.container.addChild(bottomRight);
 
             this.addChild(this.container);
+
+            this.container.cacheAsBitmap = true;
         };
 
 
