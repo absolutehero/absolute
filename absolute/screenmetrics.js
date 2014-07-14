@@ -19,23 +19,26 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             (function() {
 
                 var windowRef,
-                    isInIframe = (parent !== window);
+                    isInIframe;
 
-                if(isInIframe) {
-                    try {
+                try {
 
-                        windowRef= parent.window;
+                    isInIframe = window.self !== window.top;
 
-                        var crossOriginTest = windowRef.devicePixelRatio;
+                    if(isInIframe && typeof parent.window.devicePixelRatio !== 'undefined') {
 
-                    } catch (e) {
-                        // crossOriginTest failure
+                        windowRef = parent.window;
+
+                    } else {
                         windowRef = window;
                     }
-                } else {
-                    windowRef = window;
-                }
 
+                } catch (e) {
+
+                    // catch cross origin iframe error
+                    windowRef = window;
+
+                }
 
                 return windowRef;
 
