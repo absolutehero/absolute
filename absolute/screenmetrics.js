@@ -25,7 +25,7 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
 
                     isInIframe = window.self !== window.top;
 
-                    if(isInIframe && typeof parent.window.devicePixelRatio !== 'undefined') {
+                    if(isInIframe && parent.window.devicePixelRatio && typeof parent.window.devicePixelRatio !== 'undefined') {
 
                         windowRef = parent.window;
 
