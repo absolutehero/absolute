@@ -39,12 +39,14 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     };
 
-    Draggable.prototype._onGrab = function (data) {
+    Draggable.prototype._onGrab = function (data, alpha) {
 
         data.originalEvent.preventDefault();
 
+        alpha = typeof alpha !== 'undefined' ? alpha : 0.8;
+
         this.data = data;
-        this.alpha = 0.8;
+        this.alpha = alpha;
         this.dragging = true;
 
         if (typeof this.onGrab === "function") {
