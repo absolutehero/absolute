@@ -124,6 +124,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             fixture.set_restitution(0);
             this.groundBody.CreateFixture(fixture);
             this.groundBody.userData = {'type': type};
+
+            return this.groundBody;
         },
 
         startMouseJoint: function(mousePosWorld) {

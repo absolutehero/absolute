@@ -112,6 +112,12 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/
                 fixture.set_isSensor(isSensor);
             }
 
+            if(typeof fixtureOptions.category !== 'undefined') {
+                var filter = fixture.get_filter();
+                filter.set_categoryBits(fixtureOptions.category);
+                fixture.set_filter(filter);
+            }
+
             this.body.CreateFixture(fixture);
 
         } else {
@@ -121,6 +127,13 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/
                 fixture.set_density(this.config[s].density);
                 fixture.set_friction(this.config[s].friction);
                 fixture.set_restitution(this.config[s].bounce);
+
+                if(fixtureOptions && typeof fixtureOptions.category !== 'undefined') {
+                    var filter = fixture.get_filter();
+                    filter.set_categoryBits(fixtureOptions.category);
+                    fixture.set_filter(filter);
+                }
+
 
                 this.body.CreateFixture(fixture);
             }
@@ -176,21 +189,15 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/
     };
 
     PhysicsShape.prototype.setX = function (x) {
-        //x = Math.floor(x);
         if (this.body) {
-            //var xform = this.body.GetTransform();
-            //this.body.SetTransform(new Box2D.b2Vec2(Physics.screenToWorldX(x * this.parentScale), xform.get_p().get_y()), xform.get_q());
-
             this.body.GetPosition().set_x(Physics.screenToWorldX(x * this.parentScale));
         }
         this.position.x = x;
     };
 
     PhysicsShape.prototype.setY = function (y) {
-        y = Math.floor(y);
         if (this.body) {
-            var xform = this.body.GetTransform();
-            this.body.SetTransform(new Box2D.b2Vec2(xform.get_p().get_x(), Physics.screenToWorldY(y * this.parentScale)), xform.get_q());
+            this.body.GetPosition().set_y(Physics.screenToWorldX(y * this.parentScale));
         }
         this.position.y = y;
     };
