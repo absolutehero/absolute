@@ -51,11 +51,12 @@ function (
         this.backGroundColor = backgroundColor;
         this.supportsOrientationChange = !!supportsOrientationChange;
         this.supportsLiquidLayout = !!supportsLiquidLayout;
-        this.supportsWebGL = !!supportsWebGL;
+        this.supportsWebGL = !!supportsWebGL && Platform.supportsWebGL();
         this.usingWebGL = false;
         this.DIALOG_LAYER = 0;
         this.modalStack = [];
         this.modalBgStack = [];
+
 
         this.stage.push(new PIXI.Stage(0x0, true));
         this.stage.push(new PIXI.Stage(0x0, true));

@@ -76,6 +76,14 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return navigator.userAgent.indexOf("Android") >= 0 && navigator.userAgent.indexOf("CrMo") >= 0;
         },
 
+        _isIE: function () {
+            return navigator.userAgent.indexOf("Trident") >= 0 || navigator.userAgent.indexOf("MSIE") >= 0;
+        },
+
+        supportsWebGL: function () {
+            return !(this._isIE());
+        },
+
         supportsTouch: function () {
 
             try {
