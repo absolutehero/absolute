@@ -155,17 +155,37 @@ define ([
                     break;
                 case "AnimatedButton":
                     this.checkParams({"action": "string"}, config.params);
-                    this.checkParams({"defaultTexture": "string", "hoverTexture": "string"}, config.params);
+
+                    var threeSlice = config.params.threeSlice || null;
+                    if (threeSlice) {
+                        this.checkParams({"width": "number", "height": "number", "imageBase": "string"}, config.params.threeSlice);
+                    }
+
+                    var defaultTexture = (config.params.defaultTexture && (typeof config.params.defaultTexture === 'string')) ? config.params.defaultTexture : null;
+                    var hoverTexture = (config.params.hoverTexture && (typeof config.params.hoverTexture === 'string')) ? config.params.hoverTexture : null;
+
+                    var defaultImage = (defaultTexture !== null ? PIXI.Texture.fromFrame(_a(defaultTexture)) : null);
+                    var hoverImage = (hoverTexture !== null ? PIXI.Texture.fromFrame(_a(hoverTexture)) : null);
 
                     var action = (handler && handler[config.params.action] && handler[config.params.action].bind(handler) || null);
 
                     var replaceOnHover = (config.params.replaceOnHover || null);
                     var useTap = (config.params.replaceOnHover || null);
 
-                    widget = new AnimatedButton(
-                        PIXI.Texture.fromFrame(_a(config.params.defaultTexture)),
-                        PIXI.Texture.fromFrame(_a(config.params.hoverTexture)),
-                        action, replaceOnHover, useTap);
+                    var threeSliceOptions = null;
+                    if (threeSlice) {
+                        threeSliceOptions = {
+                            width: Coords.x(config.params.threeSlice.width),
+                            height: Coords.y(config.params.threeSlice.height),
+                            images: {
+                                'left': _a(config.params.threeSlice.imageBase + '.left'),
+                                'center': _a(config.params.threeSlice.imageBase + '.center'),
+                                'right': _a(config.params.threeSlice.imageBase + '.right')
+                            }
+                        };
+                    }
+
+                    widget = new AnimatedButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
 
                     break;
 
@@ -223,7 +243,7 @@ define ([
             if (widget) {
                 // add children if appropriate
                 if (widget instanceof PIXI.DisplayObjectContainer && config.children) {
-                    widget.widgets = [];
+                    widget.widgets = {};
                     for (var c in config.children) {
                         if (config.children.hasOwnProperty(c)) {
                             widget.widgets[c] = this.buildLayout(config.children[c], widget, handler);

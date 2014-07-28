@@ -44,6 +44,7 @@ define(function (require) {
         RandomUtils:require('absolute/randomutils'),
         PageIndicator:require('absolute/pageindicator'),
         MultiPageDialog:require('absolute/multipagedialog'),
+        MultiPageGenerator:require('absolute/multipagegenerator'),
         //ParticleEmitter: require('absolute/particleemitter'),
         GraphSerializer: require('absolute/graphserializer'),
         ScrollArea: require('absolute/scrollarea'),

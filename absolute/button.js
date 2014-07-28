@@ -4,22 +4,28 @@
  * Time: 9:17 PM
  * Copyright (c) 2013 Absolute Hero Games LLC
  */
-define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils'], function (PIXI, Coords, AudioManager, Platform, SpriteUtils) {
+define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils', 'absolute/threeslice'], function (PIXI, Coords, AudioManager, Platform, SpriteUtils, ThreeSlice) {
 
-    var Button = function(defaultImage, hoverImage, action, replaceOnHover, useTap) {
-        this._initButton(defaultImage, hoverImage, action, replaceOnHover, useTap);
+    var Button = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions) {
+        this._initButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
     };
 
     Button.constructor = Button;
     Button.prototype = Object.create(PIXI.Sprite.prototype);
 
-    Button.prototype._initButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap) {
+    Button.prototype._initButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions) {
 
         this.replaceOnHover = !!replaceOnHover;
         useTap = typeof useTap !== 'undefined' ? useTap : false;
 
         if (!this.replaceOnHover) {
             this.replaceOnHover = true;
+        }
+
+        if (threeSliceOptions && typeof threeSliceOptions === 'object' ) {
+            this.container = new PIXI.DisplayObjectContainer();
+            this.texture = this._createThreeSliceImage(threeSliceOptions);
+            defaultImage = this.texture;
         }
 
         PIXI.Sprite.call(this, defaultImage);
@@ -160,6 +166,13 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
 
     Button.prototype.getHeight = function() {
         return this.defaultImage.height;
+    };
+
+    Button.prototype._createThreeSliceImage = function(options) {
+
+        var threeSlice = new ThreeSlice(options);
+
+        return threeSlice.generateTexture();
     };
 
     return Button;

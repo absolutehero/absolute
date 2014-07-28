@@ -4,16 +4,16 @@
 define(['pixi','absolute/button', 'lodash', 'absolute/screenmetrics', 'absolute/platform'],
     function (PIXI, Button, _, ScreenMetrics, Platform) {
 
-        var AnimatedButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap) {
-            this._initAnimatedButton(defaultImage, hoverImage, action, replaceOnHover, useTap);
+        var AnimatedButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions) {
+            this._initAnimatedButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
         };
 
         AnimatedButton.constructor = AnimatedButton;
         AnimatedButton.prototype = Object.create(Button.prototype);
 
-        AnimatedButton.prototype._initAnimatedButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap) {
+        AnimatedButton.prototype._initAnimatedButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions) {
 
-            Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap);
+            Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
 
             if (!Platform.supportsTouch()) {
                 this.mouseover = function(evt) {

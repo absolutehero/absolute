@@ -14,23 +14,16 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
         var options = textStyleOptions || defaultTextStyleOptions;
 
-        if (threeSliceOptions && typeof threeSliceOptions === 'object' ) {
-            this.container = new PIXI.DisplayObjectContainer();
-            this.texture = this._createThreeSliceImage(threeSliceOptions);
-            defaultImage = this.texture;
-            hoverImage = this.texture;
-        }
-
-        this._initTextButton(defaultImage, hoverImage, action, replaceOnHover, useTap, _.extend(defaultTextStyleOptions, options));
+        this._initTextButton(defaultImage, hoverImage, action, replaceOnHover, useTap, _.extend(defaultTextStyleOptions, options), threeSliceOptions);
     };
 
     TextButton.constructor = TextButton;
     TextButton.prototype = Object.create(Button.prototype);
 
-    TextButton.prototype._initTextButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions) {
+    TextButton.prototype._initTextButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions) {
 
 
-        Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap);
+        Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
 
         var label = new PIXI.BitmapText(textStyleOptions.text, textStyleOptions),
             labelTextureSprite = new PIXI.Sprite(label.generateTexture());
@@ -45,13 +38,6 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
         labelContainer.addChild(labelTextureSprite);
 
         this.addChild(labelContainer);
-    };
-
-    TextButton.prototype._createThreeSliceImage = function(options) {
-
-        var threeSlice = new ThreeSlice(options);
-
-        return threeSlice.generateTexture();
     };
 
     return TextButton;

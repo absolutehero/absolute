@@ -69,7 +69,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
 
         var mask = new PIXI.Graphics();
         mask.beginFill(0xFFFFFF, 1.0);
-        mask.drawRect(this.position.x + this.options.borderThickness.left, 0,
+        mask.drawRect(this.position.x + this.options.borderThickness.left, this.position.y,
             this.width - this.options.borderThickness.right, this.height);
         mask.endFill();
         this.pageTray.mask = mask;
