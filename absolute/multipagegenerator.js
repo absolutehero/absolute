@@ -3,7 +3,7 @@
  */
 define(['pixi','absolute/coords','lodash'],
     function (PIXI, Coords, _) {
-        var MultiPageGenerator = function (items, settings) {
+        var MultiPageGenerator = function (settings) {
 
             var defaultSettings = {
                 width: 0,
@@ -14,22 +14,22 @@ define(['pixi','absolute/coords','lodash'],
                 itemHeight: 0
             };
 
-            this.initMultiPageGenerator(items, _.extend(defaultSettings, settings));
+            this.initMultiPageGenerator(_.extend(defaultSettings, settings));
 
         };
 
-        MultiPageGenerator.prototype.initMultiPageGenerator = function (items, settings) {
+        MultiPageGenerator.prototype.initMultiPageGenerator = function (settings) {
 
-            this.items = items;
             this.settings = settings;
-            this.pages = [];
             this.width = this.settings.width;
             this.height = this.settings.height;
-            this.makePages(this.items);
 
         };
 
-        MultiPageGenerator.prototype.makePages = function () {
+        MultiPageGenerator.prototype.getPages = function (items) {
+
+            this.items = items;
+            this.pages = [];
 
             this.cellWidth = ( this.settings.itemWidth * this.settings.cardScale ) + (this.settings.padding.x );
             this.cellHeight = ( this.settings.itemHeight * this.settings.cardScale ) + (this.settings.padding.y);
@@ -52,6 +52,7 @@ define(['pixi','absolute/coords','lodash'],
 
             }
 
+            return this.pages;
         };
 
         MultiPageGenerator.prototype.makePage = function (items) {
@@ -73,7 +74,7 @@ define(['pixi','absolute/coords','lodash'],
                 }
             }
 
-            page.width = (item.width + this.settings.padding.x) * this.colsPerPage;
+            page.width = (item.width + this.settings.padding.x) * Math.min(this.colsPerPage,items.length);
 
             return page;
 

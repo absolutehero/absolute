@@ -32,7 +32,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
 
     };
 
-    MultiPageDialog.prototype.reset = function (cleanUp, startPage) {
+    MultiPageDialog.prototype.reset = function (cleanUp, startPage, newPages) {
 
         if(cleanUp) {
             try {
@@ -41,6 +41,11 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
                 this.removeChild(this.nextpageButton);
                 this.removeChild(this.prevpageButton);
             } catch (e) {}
+        }
+
+        if(newPages) {
+            this.options.pages = newPages;
+            this.pages = newPages;
         }
 
         this.initContent();

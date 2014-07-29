@@ -352,6 +352,20 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         };
 
+        Dialog.prototype.resetContent = function(content) {
+
+            this.options.content = content;
+
+            try{
+                this.container.removeChild(this.cachedContent);
+            } catch(e) {}
+
+            this.cachedContent = content;
+
+            this.container.addChild(this.cachedContent);
+
+        };
+
         Dialog.prototype.handleOrientationChange = function(isPortrait) {
 
             //this.ui.hideModal();
