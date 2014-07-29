@@ -212,8 +212,19 @@ define ([
                         text: _s(config.params.textStyle.text),
                         font : (Math.floor(config.params.textStyle.fontSize * ScreenMetrics.getResScale()) + "px " + config.params.textStyle.fontFamily),
                         align : config.params.textStyle.align,
-                        fontSize : config.params.textStyle.fontSize
+                        fontSize : config.params.textStyle.fontSize,
+                        useBitmapFont: typeof config.params.textStyle.useBitmapFont !== 'undefined' ? config.params.textStyle.useBitmapFont : true
                     };
+
+                    if(config.params.textStyle.fill) {
+                        textStyleOptions.fill = config.params.textStyle.fill;
+                    }
+                    if(config.params.textStyle.stroke) {
+                        textStyleOptions.stroke = config.params.textStyle.stroke;
+                    }
+                    if(config.params.textStyle.strokeThickness) {
+                        textStyleOptions.strokeThickness = Coords.x(config.params.textStyle.strokeThickness);
+                    }
 
                     var threeSliceOptions = null;
                     if (threeSlice) {

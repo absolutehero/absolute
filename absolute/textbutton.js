@@ -9,7 +9,8 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
         var defaultTextStyleOptions = {
             text : "",
-            textStyle : { font: Math.floor(90 * ScreenMetrics.getResScale()) + "px Ganache", align: "center" }
+            textStyle : { font: Math.floor(90 * ScreenMetrics.getResScale()) + "px Ganache", align: "center" },
+            useBitmapFont : true
         };
 
         var options = textStyleOptions || defaultTextStyleOptions;
@@ -25,10 +26,17 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
         Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
 
-        var label = new PIXI.BitmapText(textStyleOptions.text, textStyleOptions),
-            labelTextureSprite = new PIXI.Sprite(label.generateTexture());
+        var label, labelTextureSprite, labelContainer = new PIXI.DisplayObjectContainer();
 
-        var labelContainer = new PIXI.DisplayObjectContainer();
+
+        if(textStyleOptions.useBitmapFont) {
+            label = new PIXI.BitmapText(textStyleOptions.text, textStyleOptions);
+        } else {
+            label = new PIXI.Text(textStyleOptions.text, textStyleOptions);
+        }
+
+        labelTextureSprite = new PIXI.Sprite(label.generateTexture());
+
         labelContainer.width = labelTextureSprite.width;
         labelContainer.height = labelTextureSprite.height;
         labelContainer.pivot.x = labelContainer.width / 2;
