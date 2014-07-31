@@ -207,6 +207,14 @@ var AudioManager = {
         }
      },
 
+    unmuteAllSfx: function () {
+        for (s in this.sounds) {
+            if (!this.isMusic(s)) {
+                this.unmuteSound(s);
+            }
+        }
+    },
+
     usingWebAudio: function () {
         return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio();
     },
