@@ -25,12 +25,12 @@ function (
     )
 {
 
-    var GameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL) {
+    var GameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL, lockAspectRatio) {
         backgroundColor = backgroundColor || 0xFFFFFF;
-        this._initGameUI(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL);
+        this._initGameUI(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL, lockAspectRatio);
     };
 
-    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL) {
+    GameUI.prototype._initGameUI = function(container, width, height, backgroundColor, supportsOrientationChange, supportsLiquidLayout, supportsWebGL, lockAspectRatio) {
 
         this.currentScreen = null;
         this.modal = null;
@@ -53,6 +53,7 @@ function (
         this.supportsLiquidLayout = !!supportsLiquidLayout;
         this.supportsWebGL = !!supportsWebGL && Platform.supportsWebGL();
         this.usingWebGL = false;
+        this.lockAspectRatio = !!lockAspectRatio;
         this.DIALOG_LAYER = 0;
         this.modalStack = [];
         this.modalBgStack = [];
@@ -169,6 +170,26 @@ function (
 
             var aspectRatio = windowWidth / windowHeight;
 
+            function scaleToAspectRatio () {
+                var trueAspectRatio = this.baseWidth / this.baseHeight;
+
+                if(clientWidth > clientHeight) {
+                    clientHeight = clientWidth / trueAspectRatio;
+                    if(clientHeight > windowHeight) {
+                        clientWidth = clientWidth * (windowHeight / clientHeight);
+                        clientHeight = clientWidth / trueAspectRatio;
+                    }
+
+                } else {
+                    clientWidth = clientHeight * trueAspectRatio;
+                    if(clientWidth > windowHeight) {
+                        clientHeight = clientHeight * (windowWidth / clientWidth);
+                        clientWidth = clientHeight * trueAspectRatio;
+                    }
+
+                }
+            }
+
             if (!this.supportsLiquidLayout) {
                 if (this.portrait) {
 
@@ -181,7 +202,11 @@ function (
 
                     }
 
-                    if (aspectRatio > 0.85) {
+                    if(this.lockAspectRatio) {
+
+                        scaleToAspectRatio.call(this);
+
+                    } else if (aspectRatio > 0.85) {
                         clientWidth = 0.85 * windowHeight;
                     }
                     else if (aspectRatio < 0.56) {
@@ -204,9 +229,14 @@ function (
 
                     }
 
+
                     aspectRatio = 1 / aspectRatio;
 
-                    if (aspectRatio > 0.80) {
+                    if(this.lockAspectRatio) {
+
+                        scaleToAspectRatio.call(this);
+
+                    } else if (aspectRatio > 0.80) {
                         clientHeight = 0.80 * windowWidth;
                     }
                     else if (aspectRatio < 0.56) {

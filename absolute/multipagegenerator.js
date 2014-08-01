@@ -74,7 +74,7 @@ define(['pixi','absolute/coords','lodash'],
                 }
             }
 
-            page.width = (item.width + this.settings.padding.x) * Math.min(this.colsPerPage,items.length);
+            page.width = (item.width + this.settings.padding.x) * Math.min(this.colsPerPage,items.length) - this.settings.padding.x;
 
             return page;
 
