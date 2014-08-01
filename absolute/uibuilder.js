@@ -98,10 +98,15 @@ define ([
                     break;
 
                 case "BitmapText":
+                    var tint = '0xFFFFFF';
                     this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string"}, config.params);
-                    widget = new PIXI.BitmapText(_s(config.params.text), {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily});
+                    if (config.params.tint) {
+                        tint = config.params.tint;
+                    }
+                    widget = new PIXI.BitmapText(_s(config.params.text), {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, tint: tint});
                     widget.width = widget.textWidth;
                     widget.height = widget.textHeight;
+                    widget.tint = parseInt(tint, 16);
                     widget._setText = widget.setText;
                     widget.setText = function (text) {
                         this._setText(text);
@@ -224,6 +229,9 @@ define ([
                     }
                     if(config.params.textStyle.strokeThickness) {
                         textStyleOptions.strokeThickness = Coords.x(config.params.textStyle.strokeThickness);
+                    }
+                    if (config.params.textStyle.tint) {
+                        textStyleOptions.tint = parseInt(config.params.textStyle.tint, 16);
                     }
 
                     var threeSliceOptions = null;
