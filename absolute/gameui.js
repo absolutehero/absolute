@@ -86,7 +86,7 @@ function (
     };
 
     GameUI.prototype.buildRenderers = function (width, height) {
-        console.log('buildRenderers (' + width + ', ' + height + ')');
+
         if(Platform._isOldAndroid()) {
             // fixes https://github.com/absolutehero/puppy/issues/56
             // for reasons I don't comprehend rounding the canvas width/height on old anroid browsers causes complete
