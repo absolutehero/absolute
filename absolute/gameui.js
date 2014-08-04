@@ -86,7 +86,7 @@ function (
     };
 
     GameUI.prototype.buildRenderers = function (width, height) {
-
+        console.log('buildRenderers (' + width + ', ' + height + ')');
         if(Platform._isOldAndroid()) {
             // fixes https://github.com/absolutehero/puppy/issues/56
             // for reasons I don't comprehend rounding the canvas width/height on old anroid browsers causes complete
@@ -123,14 +123,8 @@ function (
             }
         }
         else {
-            for (var i = 0; i < this.renderer.size; i += 1) {
-                if (this.usingWebGL) {
-                    this.renderer[i].resize(width, height);
-                }
-                else {
-                    this.renderer[i].width = this.renderer[i].view.width = width;
-                    this.renderer[i].height = this.renderer[i].view.height = height;
-                }
+            for (var i = 0; i < this.renderer.length; i += 1) {
+                this.renderer[i].resize(width, height);
             }
 
             this.refreshBackground = true;
@@ -141,6 +135,8 @@ function (
         var i, fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
 
         if (this.container.style.width !== "" && this.container.style.height !== "" && !fullscreenElement) {
+            this.width = this.origWidth;
+            this.height = this.origHeight;
             this.buildRenderers(this.width, this.height);
 
             for (i = 0; i < this.renderer.length; i += 1) {
@@ -149,6 +145,10 @@ function (
                 this.renderer[i].view.style.position = "absolute";
                 this.renderer[i].view.style.left = "";
                 this.renderer[i].view.style.top = "";
+            }
+
+            if (this.supportsOrientationChange && this.currentScreen) {
+                this.currentScreen.handleOrientationChange(this.portrait);
             }
         }
         else {
