@@ -18,7 +18,7 @@ define(['pixi'], function (PIXI) {
 
         request: function(method, url, success, error, data, headers) {
             var params = null;
-            this.ajaxRequest = new PIXI.AjaxRequest(true);
+            this.ajaxRequest = new window.XMLHttpRequest();
 
 
             this.ajaxRequest.onreadystatechange = function () {
