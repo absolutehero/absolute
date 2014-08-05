@@ -80,8 +80,16 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return navigator.userAgent.indexOf("Trident") >= 0 || navigator.userAgent.indexOf("MSIE") >= 0;
         },
 
+        _isFirefox: function () {
+            return navigator.userAgent.indexOf("Firefox") >= 0;
+        },
+
+        _isWindows: function () {
+            return navigator.userAgent.indexOf("Windows NT") >= 0;
+        },
+
         supportsWebGL: function () {
-            return !(this._isIE());
+            return !(this._isIE() || (this._isWindows() && this._isFirefox()));
         },
 
         supportsTouch: function () {
