@@ -49,6 +49,10 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
         this.buttonMode = true;
         this.setInteractive(true);
 
+        this.startPos = new PIXI.Point();
+        this.moveThreshold = Coords.x(5);
+        this.down = false;
+
         var self = this;
 
         if (!Platform.supportsTouch()) {
@@ -70,10 +74,17 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
             if(useTap) {
                 this.touchstart = function(evt) {
                     this.clickCanceled = false;
+                    this.startPos = evt.global;
+                    this.down = true;
                 }.bind(this);
 
                 this.touchmove = function(evt) {
-                    this.clickCanceled = true;
+                    if (this.down) {
+
+                        if (Math.abs(this.startPos.x - evt.global.x) > this.moveThreshold || Math.abs(this.startPos.y - evt.global.y) > this.moveThreshold) {
+                            this.clickCanceled = true;
+                        }
+                    }
                 }.bind(this);
 
                 this.touchend = function(evt) {
@@ -82,6 +93,7 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
                         triggerAction();
                     }
                     this.clickCancelled = false;
+                    this.down = false;
                 }.bind(this);
 
             } else {
@@ -98,11 +110,16 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
 
             this.mousedown = function(evt) {
                 this.clickCanceled = false;
+                this.startPos = evt.global.clone();
+                this.down = true;
             }.bind(this);
 
             this.mousemove = function(evt) {
-                // XXXCBR - experiment to see if this fixes Andy's button problem on Windows
-                //this.clickCanceled = true;
+                if (this.down) {
+                    if (Math.abs(this.startPos.x - evt.global.x) > this.moveThreshold || Math.abs(this.startPos.y - evt.global.y) > this.moveThreshold) {
+                        this.clickCanceled = true;
+                    }
+                }
             }.bind(this);
 
             this.mouseup = function(evt) {
@@ -111,6 +128,7 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
                     triggerAction();
                 }
                 this.clickCancelled = false;
+                this.down = false;
             }.bind(this);
 
         }
