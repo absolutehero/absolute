@@ -4,7 +4,7 @@
  * Time: 5:11 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/platform'], function (PIXI, Box2D, Physics, ScreenMetrics, Platform) {
+define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/platform', 'absolute/debug'], function (PIXI, Box2D, Physics, ScreenMetrics, Platform, Debug) {
 
     var PhysicsShape = function(id, config, parentScale) {
         this._initPhysicsShape(id, config, parentScale);
@@ -32,12 +32,12 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/
 
         this.dragging = false;
 
-        if (Platform.supportsTouch()) {
+        if (Platform.supportsTouch() && Debug.enabled) {
             this.touchstart = this._onGrab;
             this.touchend = this.touchendoutside = this._onDrop;
             this.touchmove = this._onMove;
         }
-        else {
+        else if(Debug.enabled){
             this.mousedown = this._onGrab;
             this.mouseup = this.mouseupoutside = this._onDrop;
             this.mousemove = this._onMove;

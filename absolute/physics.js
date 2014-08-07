@@ -16,6 +16,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
 
         debugRenderer: null,
 
+        initialized: false,
+
         init: function (ui, gravityX, gravityY, worldOffset, pixelsPerMeter) {
             this.ZERO = new Box2D.b2Vec2(0, 0);
 
@@ -103,6 +105,8 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             }]);
 
             this.mouseJointGroundBody = this.world.CreateBody( new Box2D.b2BodyDef() );
+
+            this.initialized = true;
 
         },
 
