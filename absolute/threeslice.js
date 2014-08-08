@@ -47,9 +47,12 @@ define(['pixi', 'lodash'],
             right.position.x = this.width - right.width;
             right.position.y = 0;
 
-            var center = PIXI.Texture.fromFrame(this.options.images.center),
-                centerTile = new PIXI.Sprite(center);
-            centerTile.width = this.width - left.width - right.width;
+            var centerTexture = PIXI.Texture.fromFrame(this.options.images.center),
+                centerTile = new PIXI.TilingSprite(centerTexture,
+                        this.width - left.width - right.width,
+                        centerTexture.height);
+
+
             centerTile.position.x = left.width;
             centerTile.position.y = 0;
 
