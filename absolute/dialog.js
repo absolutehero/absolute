@@ -38,7 +38,8 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     'open': 'show_details_window'
                 },
                 'tween': {
-                    'type': 'none'
+                    'type': 'none',
+                    'onClose': false
                 },
                 'buttons': [],
                 'buttonSpacing': Coords.x(20),
@@ -114,14 +115,38 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
         // Override this
         Dialog.prototype.onOpenComplete = function() {};
 
-        Dialog.prototype.close = function() {
-            //this.visible = false;
+        Dialog.prototype.close = function(onCloseComplete) {
+
             if(this.options.audio.close && this.options.audio.close !== '') {
                 AudioManager.playSound(this.options.audio.close);
             }
-            this.ui.hideModal(this);
+
+            if (this.options.tween.onClose) {
+                var self = this,
+                    endX = this.ui.width;
+
+                new TWEEN.Tween({ x: this.position.x })
+                    .to({x: endX }, 500)
+                    .easing(TWEEN.Easing.Cubic.InOut)
+                    .onUpdate(function () {
+                        self.position.x = this.x;
+                    })
+                    .onComplete(function () {
+                        self.ui.hideModal(this);
+                        if(onCloseComplete) {
+                            onCloseComplete();
+                        }
+                    })
+                    .start();
+
+            } else {
+                this.ui.hideModal(this);
+            }
+
+
 
             this.isOpen = false;
+
         };
 
         Dialog.prototype._setSize = function() {
