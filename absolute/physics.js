@@ -4,7 +4,7 @@
  * Time: 3:37 PM
  * Copyright (c) 2014 Absolute Hero, Inc.
  */
-define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
+define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMetrics, _) {
 
     var Physics = {
 
@@ -127,7 +127,12 @@ define(['box2d', 'absolute/screenmetrics'], function (Box2D, ScreenMetrics) {
             fixture.set_friction(1);
             fixture.set_restitution(0);
             this.groundBody.CreateFixture(fixture);
-            this.groundBody.userData = {'type': type};
+            if(_.isString(type)){
+                this.groundBody.userData = {'type': type};
+            } else {
+                this.groundBody.userData = type;
+            }
+
 
             return this.groundBody;
         },
