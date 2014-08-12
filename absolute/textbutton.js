@@ -39,7 +39,7 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
         this.labelContainer = new PIXI.DisplayObjectContainer();
 
         if (this.textStyleOptions.useBitmapFont) {
-            label = new PIXI.BitmapText(text, this.textStyleOptions.textStyle);
+            label = new PIXI.BitmapText(text, this.textStyleOptions);
         } else {
             label = new PIXI.Text(text, this.textStyleOptions);
         }
