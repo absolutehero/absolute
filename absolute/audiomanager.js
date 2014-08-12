@@ -40,7 +40,7 @@ var AudioManager = {
         }
 
         // force mp3 for IE
-        if (navigator.userAgent.match(/MSIE/i)) {
+        if (Platform._isIE()) {
             this.format = 'mp3';
         }
 
@@ -216,7 +216,7 @@ var AudioManager = {
     },
 
     usingWebAudio: function () {
-        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio();
+        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || AbsoluteAudio.context.usingSoundManagerAudio();
     },
 
     isMusic: function (id) {
@@ -232,7 +232,7 @@ var AudioManager = {
     },
 
     simulSoundSupport: function () {
-        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || !GameConfig.getVal("musicEnabled");
+        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || AbsoluteAudio.context.usingSoundManagerAudio() || !GameConfig.getVal("musicEnabled");
     },
 
     primeClips: function () {
