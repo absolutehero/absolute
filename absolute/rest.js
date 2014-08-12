@@ -21,6 +21,19 @@ define(['pixi'], function (PIXI) {
             this.ajaxRequest = new window.XMLHttpRequest();
 
 
+
+            if (method === "GET" && data) {
+                if (typeof data == "string") {
+                    params = data;
+                }
+                else {
+                    params = this._formatQuery(data);
+                }
+                url += "?" + params;
+            }
+
+            this.ajaxRequest.open(method, url, true);
+
             this.ajaxRequest.onreadystatechange = function () {
                 if (this.ajaxRequest.readyState === 4) {
                     if (this.ajaxRequest.status === 200 || window.location.protocol.indexOf('http') === -1) {
@@ -42,17 +55,6 @@ define(['pixi'], function (PIXI) {
                 }
             }.bind(this);
 
-            if (method === "GET" && data) {
-                if (typeof data == "string") {
-                    params = data;
-                }
-                else {
-                    params = this._formatQuery(data);
-                }
-                url += "?" + params;
-            }
-
-            this.ajaxRequest.open(method, url, true);
 
             if (method === "POST" && data) {
                 if (typeof data == "string") {
