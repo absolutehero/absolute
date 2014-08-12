@@ -23,29 +23,38 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
     TextButton.prototype._initTextButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions) {
 
+        this.textStyleOptions = textStyleOptions;
 
         Button.call(this, defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
 
-        var label, labelTextureSprite, labelContainer = new PIXI.DisplayObjectContainer();
+        this.setText(this.textStyleOptions.text);
+    };
 
+    TextButton.prototype.setText = function (text) {
 
-        if(textStyleOptions.useBitmapFont) {
-            label = new PIXI.BitmapText(textStyleOptions.text, textStyleOptions);
+        var label, labelTextureSprite = new PIXI.DisplayObjectContainer();
+        if (this.labelContainer) {
+            this.removeChild(this.labelContainer);
+        }
+        this.labelContainer = new PIXI.DisplayObjectContainer();
+
+        if (this.textStyleOptions.useBitmapFont) {
+            label = new PIXI.BitmapText(text, this.textStyleOptions);
         } else {
-            label = new PIXI.Text(textStyleOptions.text, textStyleOptions);
+            label = new PIXI.Text(text, this.textStyleOptions);
         }
 
         labelTextureSprite = new PIXI.Sprite(label.generateTexture());
 
-        labelContainer.width = labelTextureSprite.width;
-        labelContainer.height = labelTextureSprite.height;
-        labelContainer.pivot.x = labelContainer.width / 2;
-        labelContainer.pivot.y = labelContainer.height / 2;
-        labelContainer.x = this.width / 2;
-        labelContainer.y = this.height / 2;
-        labelContainer.addChild(labelTextureSprite);
+        this.labelContainer.width = labelTextureSprite.width;
+        this.labelContainer.height = labelTextureSprite.height;
+        this.labelContainer.pivot.x = this.labelContainer.width / 2;
+        this.labelContainer.pivot.y = this.labelContainer.height / 2;
+        this.labelContainer.x = this.width / 2;
+        this.labelContainer.y = this.height / 2;
+        this.labelContainer.addChild(labelTextureSprite);
 
-        this.addChild(labelContainer);
+        this.addChild(this.labelContainer);
     };
 
     return TextButton;

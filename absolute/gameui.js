@@ -171,6 +171,10 @@ function (
             var aspectRatio = windowWidth / windowHeight;
 
             function scaleToAspectRatio () {
+
+                if (Platform._isiPad && !this.isPortrait) {
+                    windowHeight = windowHeight - Coords.y(10) * ScreenMetrics.devicePixelRatio;
+                }
                 var trueAspectRatio = this.baseWidth / this.baseHeight;
 
                 if(clientWidth > clientHeight) {
