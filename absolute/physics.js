@@ -18,6 +18,8 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
 
         initialized: false,
 
+        groundBodies: {},
+
         init: function (ui, gravityX, gravityY, worldOffset, pixelsPerMeter) {
             this.ZERO = new Box2D.b2Vec2(0, 0);
 
@@ -114,27 +116,34 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
             this.pixelsPerMeter = pixelsPerMeter * ScreenMetrics.getResScale();
         },
 
-        buildGround: function (start, end, type) {
+        buildGround: function (start, end, type, name) {
+            
             type = type || 'Ground';
-            var bd_ground = new Box2D.b2BodyDef();
-            this.groundBody = this.world.CreateBody(bd_ground);
-            //ground edges
-            var shape0 = new Box2D.b2EdgeShape();
+            name = name || type + '_' + (Math.random() * 1000).toString();
+
+
+            var bd_ground = new Box2D.b2BodyDef(),
+                groundBody = this.world.CreateBody(bd_ground),
+                shape0 = new Box2D.b2EdgeShape(),
+                fixture = new Box2D.b2FixtureDef();
+
             shape0.Set(new Box2D.b2Vec2(start.x, start.y), new Box2D.b2Vec2(end.x, end.y));
-            var fixture = new Box2D.b2FixtureDef();
             fixture.set_shape(shape0);
             fixture.set_density(1);
             fixture.set_friction(1);
             fixture.set_restitution(0);
-            this.groundBody.CreateFixture(fixture);
+            groundBody.CreateFixture(fixture);
+
             if(_.isString(type)){
-                this.groundBody.userData = {'type': type};
+                groundBody.userData = {'type': type, 'name': name};
             } else {
-                this.groundBody.userData = type;
+                groundBody.userData = type;
+                groundBody.userData.name = name;
             }
 
+            this.groundBodies[name] = groundBody;
 
-            return this.groundBody;
+            return groundBody;
         },
 
         startMouseJoint: function(mousePosWorld) {

@@ -161,6 +161,12 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
         this.setActive(true);
     };
 
+    Button.prototype.updateHover = function(texture) {
+        this.defaultImage = texture;
+        this.hoverImage = SpriteUtils.brightness(this, 0.2);
+
+    };
+
     Button.prototype.setActive = function(active) {
 
         if(this.active === active) {
