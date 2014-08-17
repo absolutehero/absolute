@@ -273,6 +273,7 @@ define ([
 
                 this.anchorWidget(widget, config);
                 this.scaleWidget(widget, config, parent);
+                this.rotateWidget(widget, config, parent);
                 this.positionWidget(widget, config, parent);
             }
 
@@ -343,6 +344,12 @@ define ([
                         widget.scale.y = config.scale.y;
                     }
                 }
+            }
+        },
+
+        rotateWidget: function (widget, config, parent) {
+            if (config.rotation) {
+                widget.rotation = config.rotation;
             }
         },
 
