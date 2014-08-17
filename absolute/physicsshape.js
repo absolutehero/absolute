@@ -14,6 +14,7 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/
     PhysicsShape.prototype = Object.create(PIXI.Sprite.prototype);
 
     PhysicsShape.prototype._initPhysicsShape = function(id, config, parentScale) {
+        this.id = id;
         var textureName = id + '.png';
         PIXI.Sprite.call(this, PIXI.Texture.fromFrame(textureName));
         this.config = config;

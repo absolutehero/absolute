@@ -21,6 +21,8 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
         groundBodies: {},
 
         init: function (ui, gravityX, gravityY, worldOffset, pixelsPerMeter) {
+            this.gravityX = gravityX;
+            this.gravityY = gravityY;
             this.ZERO = new Box2D.b2Vec2(0, 0);
 
             this.pixelsPerMeter = pixelsPerMeter * ScreenMetrics.getResScale();
@@ -144,6 +146,15 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
             this.groundBodies[name] = groundBody;
 
             return groundBody;
+        },
+
+        resetWorld: function() {
+
+            Box2D.destroy(this.world);
+
+            this.world = new Box2D.b2World( new Box2D.b2Vec2(this.gravityX, this.gravityY) );
+            this.world.SetDebugDraw(this.debugRenderer);
+
         },
 
         startMouseJoint: function(mousePosWorld) {
