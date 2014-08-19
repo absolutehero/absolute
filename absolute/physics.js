@@ -204,7 +204,7 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
         step: function () {
             //this.world.Step(1/60, 3, 2);
             //this.world.Step(1/60, 3, 2);
-            this.world.Step(1/60, 10, 3);
+            this.world.Step(1/60, 10, 6);
         },
 
         worldToScreenX: function (x) {
