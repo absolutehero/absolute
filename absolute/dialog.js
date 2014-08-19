@@ -89,20 +89,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             }
 
             if (this.options.tween.type !== 'none') {
-                var self = this,
-                    endX = this.position.x;
-
-                this.position.x = this.ui.width;
-                new TWEEN.Tween({ x: this.position.x })
-                    .to({x: endX }, 500)
-                    .easing(TWEEN.Easing.Cubic.InOut)
-                    .onUpdate(function () {
-                        self.position.x = this.x;
-                    })
-                    .onComplete(function () {
-                        self.onOpenComplete();
-                    })
-                    .start();
+                this.tweenIn();
             } else {
                 this.onOpenComplete();
             }
@@ -110,6 +97,23 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
             this.isOpen = true;
 
+        };
+
+        Dialog.prototype.tweenIn = function() {
+            var self = this,
+                endX = this.position.x;
+
+            this.position.x = this.ui.width;
+            new TWEEN.Tween({ x: this.position.x })
+                .to({x: endX }, 500)
+                .easing(TWEEN.Easing.Cubic.InOut)
+                .onUpdate(function () {
+                    self.position.x = this.x;
+                })
+                .onComplete(function () {
+                    self.onOpenComplete();
+                })
+                .start();
         };
 
         // Override this
