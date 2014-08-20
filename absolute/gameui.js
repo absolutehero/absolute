@@ -399,7 +399,7 @@ function (
 
 
     GameUI.prototype.showModal = function (screen, alpha) {
-        alpha = alpha || 0.5;
+        alpha = typeof alpha === 'undefined' ? 0.5 : alpha;
 
         if (this.modalStack.length === 0) {
 

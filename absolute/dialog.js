@@ -43,7 +43,8 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 },
                 'buttons': [],
                 'buttonSpacing': Coords.x(20),
-                'layout': ''
+                'layout': '',
+                'backgroundAlpha': 0.5
             };
 
             this._initDialog(ui, _.extend(defaultOptions, options));
@@ -106,7 +107,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             } else {
                 this.onOpenComplete();
             }
-            this.ui.showModal(this);
+            this.ui.showModal(this, this.options.backgroundAlpha);
 
             this.isOpen = true;
 
