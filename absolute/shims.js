@@ -88,19 +88,13 @@ define(['pixi'], function(PIXI) {
         {
             if(this.imageUrl)
             {
-                console.log('Destroy atlas texture.');
                 delete PIXI.BaseTextureCache[this.imageUrl];
                 this.imageUrl = null;
                 this.source.src = null;
             }
             else if (this.source && this.source._pixiId)
             {
-                console.log('Destroy canvas texture.');
                 delete PIXI.BaseTextureCache[this.source._pixiId];
-            }
-            else
-            {
-                console.log('Cannot destroy canvas texture.');
             }
 
             this.source = null;
