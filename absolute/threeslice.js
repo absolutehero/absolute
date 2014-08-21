@@ -47,18 +47,24 @@ define(['pixi', 'lodash'],
             right.position.x = this.width - right.width;
             right.position.y = 0;
 
-            var centerTexture = PIXI.Texture.fromFrame(this.options.images.center),
-                centerTile = new PIXI.TilingSprite(centerTexture,
+            var centerTexture = PIXI.Texture.fromFrame(this.options.images.center);
+
+            this.centerTile = new PIXI.TilingSprite(centerTexture,
                         this.width - left.width - right.width,
                         centerTexture.height);
 
+            this.centerTile.position.x = left.width;
+            this.centerTile.position.y = 0;
 
-            centerTile.position.x = left.width;
-            centerTile.position.y = 0;
-
-            this.addChild(centerTile);
+            this.addChild(this.centerTile);
             this.addChild(left);
             this.addChild(right);
+        };
+
+        ThreeSlice.prototype.destroy = function() {
+
+            this.centerTile.tilingTexture.destroy(true);
+
         };
 
         return ThreeSlice;

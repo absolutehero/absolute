@@ -443,6 +443,7 @@ function (
 
                 if (!this.usingWebGL) {
                     this.stage[0].removeChild(this.modalBG);
+                    this.modalBG.texture.destroy(true);
                     this.stage[0].addChildAt(this.currentScreen, 0);
                 }
                 else {
@@ -582,18 +583,20 @@ function (
     };
 
     GameUI.prototype.showActiveAtlases = function () {
-        var activeAtlases = {};
-        this.walkSprites(this.stage[0], function (dob) {
-            if (dob instanceof PIXI.Sprite) {
-                if (dob.texture && dob.texture.baseTexture) {
-                    //console.log(dob.texture.baseTexture.source.src);
-                    var atlasName = dob.texture.baseTexture.source.src || "/offscreen"
-                    activeAtlases[atlasName] = (activeAtlases[atlasName] || 0) + 1;
-                }
-            }
-        });
-
         if (Debug.enabled) {
+
+            var activeAtlases = {};
+            this.walkSprites(this.stage[0], function (dob) {
+                if (dob instanceof PIXI.Sprite) {
+                    if (dob.texture && dob.texture.baseTexture) {
+                        //console.log(dob.texture.baseTexture.source.src);
+                        var atlasName = dob.texture.baseTexture.source.src || "/offscreen"
+                        activeAtlases[atlasName] = (activeAtlases[atlasName] || 0) + 1;
+                    }
+                }
+            });
+
+
             Debug.log("Active Atlases");
             for (var atlas in activeAtlases) {
                 if (activeAtlases.hasOwnProperty(atlas)) {

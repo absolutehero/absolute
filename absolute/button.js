@@ -4,7 +4,7 @@
  * Time: 9:17 PM
  * Copyright (c) 2013 Absolute Hero Games LLC
  */
-define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils', 'absolute/threeslice'], function (PIXI, Coords, AudioManager, Platform, SpriteUtils, ThreeSlice) {
+define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils', 'absolute/threeslice', 'lodash'], function (PIXI, Coords, AudioManager, Platform, SpriteUtils, ThreeSlice, _) {
 
     var Button = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions) {
         this._initButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
@@ -194,9 +194,15 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
 
     Button.prototype._createThreeSliceImage = function(options) {
 
-        var threeSlice = new ThreeSlice(options);
+        this.threeSlice = new ThreeSlice(options);
 
-        return threeSlice.generateTexture();
+        return this.threeSlice.generateTexture();
+    };
+
+    Button.prototype.destroy = function() {
+        if (this.threeSlice) {
+           this.threeSlice.destroy();
+        }
     };
 
     return Button;

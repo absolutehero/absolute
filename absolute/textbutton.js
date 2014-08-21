@@ -32,29 +32,35 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
     TextButton.prototype.setText = function (text) {
 
-        var label, labelTextureSprite = new PIXI.DisplayObjectContainer();
         if (this.labelContainer) {
             this.removeChild(this.labelContainer);
         }
         this.labelContainer = new PIXI.DisplayObjectContainer();
 
         if (this.textStyleOptions.useBitmapFont) {
-            label = new PIXI.BitmapText(text, this.textStyleOptions);
+            var labelBitmapText = new PIXI.BitmapText(text, this.textStyleOptions);
+            this.label = new PIXI.Sprite(labelBitmapText.generateTexture());
         } else {
-            label = new PIXI.Text(text, this.textStyleOptions);
+            this.label = new PIXI.Text(text, this.textStyleOptions);
         }
 
-        labelTextureSprite = new PIXI.Sprite(label.generateTexture());
-
-        this.labelContainer.width = labelTextureSprite.width;
-        this.labelContainer.height = labelTextureSprite.height;
+        this.labelContainer.width = this.label.width;
+        this.labelContainer.height = this.label.height;
         this.labelContainer.pivot.x = this.labelContainer.width / 2;
         this.labelContainer.pivot.y = this.labelContainer.height / 2;
         this.labelContainer.x = this.width / 2;
         this.labelContainer.y = this.height / 2;
-        this.labelContainer.addChild(labelTextureSprite);
+        this.labelContainer.addChild(this.label);
 
         this.addChild(this.labelContainer);
+    };
+
+    TextButton.prototype.destroy = function() {
+
+        this.label.destroy(true);
+
+        Button.prototype.destroy.call(this);
+
     };
 
     return TextButton;

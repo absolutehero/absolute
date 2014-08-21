@@ -80,7 +80,12 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
         };
 
         Dialog.prototype.open = function(closeCallback, openCompleteCallback) {
-            //this.visible = true;
+
+            if(!this.nineSlice || this.nineSlice === null) {
+                this._createBackground();
+            }
+
+
             if(typeof closeCallback === 'function') {
                 this.options.callbacks.onClose = closeCallback;
             }
@@ -94,6 +99,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             } else {
                 this.onOpenComplete();
             }
+
             this.ui.showModal(this, this.options.backgroundAlpha);
 
             this.isOpen = true;
@@ -138,6 +144,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     })
                     .onComplete(function () {
                         self.ui.hideModal(this);
+                        self.destroy();
                         if(onCloseComplete) {
                             onCloseComplete();
                         }
@@ -145,6 +152,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     .start();
 
             } else {
+                this.destroy();
                 this.ui.hideModal(this);
             }
 
@@ -326,9 +334,9 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 this.options.images = images;
             }
 
-            var background = new NineSlice(this.options);
+            this.nineSlice = new NineSlice(this.options);
 
-            this.container.addChildAt(background, 0);
+            this.container.addChildAt(this.nineSlice, 0);
 
         };
 
@@ -414,6 +422,16 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             }
 
         });
+
+        Dialog.prototype.destroy = function() {
+
+            if(this.nineSlice) {
+                this.nineSlice.destroy();
+                this.nineSlice = null;
+            }
+
+
+        };
 
         return Dialog;
     }
