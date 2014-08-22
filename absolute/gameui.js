@@ -12,7 +12,8 @@ define(
     'absolute/screenmetrics',
     'absolute/platform',
     'absolute/coords',
-    'fpsmeter'
+    'fpsmeter',
+    'lodash'
 ],
 function (
     PIXI,
@@ -21,7 +22,8 @@ function (
     ScreenMetrics,
     Platform,
     Coords,
-    FPSMeter
+    FPSMeter,
+    _
     )
 {
 
@@ -604,6 +606,9 @@ function (
                     Debug.log(shortName + " has " + activeAtlases[atlas] + " sprites active");
                 }
             }
+
+            Debug.log("There are " + _.size(PIXI.BaseTextureCache) +  " textures in the PIXI.BaseTextureCache.")
+
         }
     };
 

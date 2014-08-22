@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-define(['absolute/snapshot','pixi'], function (Snapshot, PIXI) {
+define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
 
     var SpriteUtils = {
 
@@ -127,6 +127,21 @@ define(['absolute/snapshot','pixi'], function (Snapshot, PIXI) {
 
         hitTest: function(x1, y1, w1, h1, x2, y2, w2, h2) {
             return (x1 + w1 > x2) && (x1 < x2 + w2) && (y1 + h1 > y2) && (y1 < y2 + h2)
+        },
+
+        // crawls a displayobject looking for any children that have a destroy method.
+        destroyAllChildren: function(child) {
+
+            if(child && child.children && child.children.length > 0) {
+                _.each(child.children, function(subchild) {
+                    this.destroyAllChildren.call(this, subchild);
+                }, this);
+            }
+
+            if(child && typeof child.destroy === 'function') {
+                child.destroy(true);
+            }
+
         }
 
 
