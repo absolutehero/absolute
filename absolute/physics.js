@@ -38,8 +38,7 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
             if ( this.world != null )
                 Box2D.destroy(this.world);
 
-            this.world = new Box2D.b2World( new Box2D.b2Vec2(gravityX, gravityY) );
-            this.world.SetDebugDraw(this.debugRenderer);
+            this.createWorld();
 
             this.setWorldXOffset(worldOffset.x);
             this.setWorldYOffset(worldOffset.y);
@@ -150,10 +149,23 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
 
         resetWorld: function() {
 
+            _.each(this.groundBodies, function(groundBody) {
+                this.world.DestroyBody(groundBody);
+            }, this);
+
+            this.groundBodies = {};
+
             Box2D.destroy(this.world);
+
+            this.createWorld();
+
+        },
+
+        createWorld: function() {
 
             this.world = new Box2D.b2World( new Box2D.b2Vec2(this.gravityX, this.gravityY) );
             this.world.SetDebugDraw(this.debugRenderer);
+            this.world.SetContinuousPhysics(true);
 
         },
 
@@ -204,7 +216,7 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
         step: function () {
             //this.world.Step(1/60, 3, 2);
             //this.world.Step(1/60, 3, 2);
-            this.world.Step(1/60, 10, 6);
+            this.world.Step(1/60, 8, 3);
         },
 
         worldToScreenX: function (x) {
