@@ -13,9 +13,14 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash', 'absolute/sprit
                 'scaleWithY':true,
                 'minScale': 0.3,
                 'maxScale': 1,
+                'lockScale': false,
                 'minAlpha': 0.2,
                 'lockY': null,
                 'lockX': null,
+                'anchor': {
+                    x: 0,
+                    y: 0
+                },
                 'shade': 0
             }, options);
             this.ui = ui;
@@ -27,7 +32,7 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash', 'absolute/sprit
                     tmpTexture = new PIXI.Texture.fromFrame(randomItem.url);
 
                 randomItem.area = tmpTexture.width * tmpTexture.height;
-                randomItem.count = Math.round(( randomItem.fillDensity * areaRect.area ) / randomItem.area);
+                randomItem.count = Math.ceil(( randomItem.fillDensity * areaRect.area ) / randomItem.area);
 
                 for(var i = 0; i < randomItem.count; i ++ ) {
 
@@ -49,6 +54,8 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash', 'absolute/sprit
 
                         }
                         randomItem.sprite = new PIXI.Sprite.fromFrame(randomItem.url);
+                        randomItem.sprite.anchor.x = options.anchor.x;
+                        randomItem.sprite.anchor.y = options.anchor.y;
 
                         if(options.shade > 0) {
                             var shadedSprite = new PIXI.Sprite(SpriteUtils.greyscale(PIXI.Sprite.fromFrame(randomItem.url), 0.5));
@@ -58,12 +65,12 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash', 'absolute/sprit
 
 
                         if(options.lockX !== null) {
-                            randomItem.sprite.position.x = 0;
+                            randomItem.sprite.position.x = options.lockX;
                         } else {
                             randomItem.sprite.position.x = x;
                         }
                         if(options.lockY !== null) {
-                            randomItem.sprite.position.y = 0;
+                            randomItem.sprite.position.y = options.lockY;
                         } else {
                             randomItem.sprite.position.y = y;
                         }
@@ -88,7 +95,7 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash', 'absolute/sprit
 
                             randomItem.sprite.scale.x = randomItem.sprite.scale.y = randomScale;
 
-                            if(Math.random() > 0.5) {
+                            if(Math.random() > 0.5 && !options.lockScale) {
                                 randomItem.sprite.scale.x = -randomItem.sprite.scale.x;
                             }
 
