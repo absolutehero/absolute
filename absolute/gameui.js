@@ -312,17 +312,11 @@ function (
         if (this.supportsOrientationChange && this.modalStack.length > 0) {
             var modal = this.modalStack[this.modalStack.length - 1];
 
-            // remove the current modal
-            this.stage[this.DIALOG_LAYER].removeChild(modal);
-
-            // refresh the background snapshot
+            this.hideModal();
             if (typeof modal.handleOrientationChange !== 'undefined') {
-               modal.handleOrientationChange(this.portrait);
+                modal.handleOrientationChange(this.portrait);
             }
-
-            // refresh the modal content
-            this.stage[this.DIALOG_LAYER].addChild(modal);
-            modal.onShow();
+            this.showModal(modal);
         }
 
     };
