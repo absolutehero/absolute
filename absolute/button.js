@@ -74,13 +74,12 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
             if(useTap) {
                 this.touchstart = function(evt) {
                     this.clickCanceled = false;
-                    this.startPos = evt.global;
+                    this.startPos = evt.global.clone();
                     this.down = true;
                 }.bind(this);
 
                 this.touchmove = function(evt) {
                     if (this.down) {
-
                         if (Math.abs(this.startPos.x - evt.global.x) > this.moveThreshold || Math.abs(this.startPos.y - evt.global.y) > this.moveThreshold) {
                             this.clickCanceled = true;
                         }
