@@ -216,7 +216,13 @@ var AudioManager = {
     },
 
     usingWebAudio: function () {
-        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || AbsoluteAudio.context.usingSoundManagerAudio();
+
+        try {
+            return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || AbsoluteAudio.context.usingSoundManagerAudio();
+        } catch (e) {
+            return false;
+        }
+
     },
 
     isMusic: function (id) {
@@ -232,7 +238,10 @@ var AudioManager = {
     },
 
     simulSoundSupport: function () {
-        return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || AbsoluteAudio.context.usingSoundManagerAudio() || !GameConfig.getVal("musicEnabled");
+        try {
+            return AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingCordovaAudio() || AbsoluteAudio.context.usingSoundManagerAudio() || !GameConfig.getVal("musicEnabled");       } catch (e) {
+            return false;
+        }
     },
 
     primeClips: function () {

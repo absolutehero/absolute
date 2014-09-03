@@ -166,6 +166,7 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
             this.world = new Box2D.b2World( new Box2D.b2Vec2(this.gravityX, this.gravityY) );
             this.world.SetDebugDraw(this.debugRenderer);
             this.world.SetContinuousPhysics(true);
+            this.mouseJointGroundBody = this.world.CreateBody( new Box2D.b2BodyDef() );
 
         },
 
