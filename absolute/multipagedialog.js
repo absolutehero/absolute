@@ -1,7 +1,7 @@
-define(['pixi', 'absolute/dialog','hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
-    'absolute/pageindicator', 'absolute/coords'],
+define(['pixi', 'absolute/dialog', 'absolute/button', 'absolute/screenmetrics', 'lodash',
+    'absolute/pageindicator', 'absolute/coords', 'absolute/platform'],
 
-function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords) {
+function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platform) {
 
     var MultiPageDialog = function (ui, options) {
 
@@ -49,8 +49,10 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         }
 
         this.initContent();
-        this.initTouchInterface();
         this.initNonTouchInterface();
+        if(!Platform._isOldAndroid()) {
+            this.initTouchInterface();
+        }
         this.initPagePips();
 
         this.scrollToPage(startPage);
@@ -79,19 +81,28 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         mask.endFill();
         this.pageTray.mask = mask;
 
-        this.addChild(this.pageTray);
+        this.container.addChild(this.pageTray);
 
     };
 
     MultiPageDialog.prototype.initTouchInterface = function() {
 
         // Dragging and panning
+        var yOffset = 0;
+        if(this.closeButton) {
+            yOffset = this.closeButton.height;
+        }
         this.lastDeltaX = 0;
         this.startX = 0;
-
-        Hammer(this.ui.container).on("dragstart", this.handleDragStart.bind(this));
-        Hammer(this.ui.container).on("drag", this.handleDrag.bind(this));
-        Hammer(this.ui.container).on("dragend", this.handleDragEnd.bind(this));
+        var hitArea = new PIXI.Rectangle(0, yOffset, this.options.width, this.options.height - yOffset - this.nextpageButton.height);
+        this.touchContainer = new PIXI.DisplayObjectContainer();
+        this.touchContainer.interactive = true;
+        this.touchContainer.hitArea = hitArea;
+        this.touchContainer.addChild(this.pageTray);
+        this.touchContainer.touchstart = this.handleDragStart.bind(this);
+        this.touchContainer.touchmove = this.handleDrag.bind(this);
+        this.touchContainer.touchend = this.touchContainer.touchendoutside= this.handleDragEnd.bind(this);
+        this.addChild(this.touchContainer);
 
     };
 
@@ -113,7 +124,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         this.nextpageButton.position.x = this.width - this.options.interfacePadding.arrows.x;
         this.nextpageButton.position.y = buttonY;
         this.nextpageButton.setActive(false);
-        this.addChild(this.nextpageButton);
+        this.container.addChild(this.nextpageButton);
 
         this.prevpageButton = new Button(
             PIXI.Texture.fromFrame(this.options.pageButtonImage),
@@ -129,7 +140,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         this.prevpageButton.scale.x = this.prevpageButton.scale.y = this.options.buttonScale;
         this.prevpageButton.position.x = this.options.interfacePadding.arrows.x;
         this.prevpageButton.setActive(false);
-        this.addChild(this.prevpageButton);
+        this.container.addChild(this.prevpageButton);
 
     };
 
@@ -139,7 +150,7 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
             this.pips = new PageIndicator(this.pages.length, 0, {clickCallback: this.scrollToPage.bind(this)});
             this.pips.position.x = (this.width - this.pips.width) / 2;
             this.pips.position.y = this.height - this.pips.height - this.options.interfacePadding.pips;
-            this.addChild(this.pips);
+            this.container.addChild(this.pips);
         }
 
     };
@@ -153,28 +164,41 @@ function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords
         }
     };
 
-    MultiPageDialog.prototype.handleDragStart = function (event) {
+    MultiPageDialog.prototype.handleDragStart = function (data) {
 
+        this.dragging = true;
         this.lastDeltaX = 0;
-        this.startX = - (this.currentPage * this.pages[this.currentPage].width) + this.centerOffset;
+        this.startX = data.getLocalPosition(this.parent).x;
+        console.log('startx ', this.startX);
         this.enableButtons(false);
 
     };
 
-    MultiPageDialog.prototype.handleDrag = function (event) {
-        this.pageTray.position.x += ((event.gesture.deltaX - this.lastDeltaX) * ScreenMetrics.devicePixelRatio) / 2;
-        this.lastDeltaX = event.gesture.deltaX;
+    MultiPageDialog.prototype.handleDrag = function (data) {
+
+        var pos = data.getLocalPosition(this.parent),
+            delta = pos.x - this.startX;
+
+        this.pageTray.x += ((delta - this.lastDeltaX) * ScreenMetrics.devicePixelRatio) * 0.7;
+
+        this.lastDeltaX = delta;
     };
 
-    MultiPageDialog.prototype.handleDragEnd = function (event) {
+    MultiPageDialog.prototype.handleDragEnd = function (data) {
 
         this.lastDeltaX = 0;
 
-        var pageIndex = this.currentPage;
+        if(typeof this.parent == 'undefined') {
+            return;
+        }
 
-        if (event.gesture.deltaX <= -this.kPanThreshold) {
+        var pageIndex = this.currentPage,
+            pos = data.getLocalPosition(this.parent),
+            delta = pos.x - this.startX;
+
+        if (delta <= -this.kPanThreshold) {
             pageIndex += 1;
-        } else if (event.gesture.deltaX >= this.kPanThreshold) {
+        } else if (delta >= this.kPanThreshold) {
             pageIndex -= 1;
         }
 

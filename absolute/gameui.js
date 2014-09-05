@@ -459,13 +459,7 @@ function (
                     this.modalBG = null;
                     this.stage[0].addChildAt(this.currentScreen, 0);
 
-                    if(Platform._isOldAndroid()) {
-                        this.buildRenderers(this.width, this.height);
-                        this.resetStage(200);
-                    }
-
-                }
-                else {
+                } else {
                     this.stage[0].removeChild(this.modalOverlay);
                     this.renderer[2].view.style.display = "none";
                 }
