@@ -1,7 +1,7 @@
-define(['pixi', 'absolute/dialog','hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
+define(['pixi', 'absolute/dialog', 'absolute/button', 'absolute/screenmetrics', 'lodash',
     'absolute/pageindicator', 'absolute/coords'],
 
-function (PIXI, Dialog, Hammer, Button, ScreenMetrics,  _, PageIndicator, Coords) {
+function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords) {
 
     var MultiPageDialog = function (ui, options) {
 
