@@ -133,6 +133,22 @@ function (
         }
     };
 
+    GameUI.prototype.isFullScreen = function () {
+        return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+    };
+
+    GameUI.prototype.exitFullScreen = function () {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.msExitFullscreen) {
+            document.msExitFullscreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitExitFullscreen) {
+            document.webkitExitFullscreen();
+        }
+    };
+
     GameUI.prototype.resize = function() {
         var i, fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
 

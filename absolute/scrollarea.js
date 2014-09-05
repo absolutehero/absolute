@@ -128,13 +128,13 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
     };
 
     ScrollArea.prototype.scrollLeft = function () {
-        if (!this.constrainY) {
+        if (!this.constrainX) {
             this.contents.position.x = 0;
         }
     };
 
     ScrollArea.prototype.scrollRight = function () {
-        if (!this.constrainY) {
+        if (!this.constrainX) {
             this.contents.position.x = this.width - this.contents.width;
         }
     };

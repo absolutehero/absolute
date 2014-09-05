@@ -196,6 +196,16 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return uaObject;
         },
 
+        isSilk: function() {
+
+            if (/\bSilk\b/.test(navigator.userAgent)) {
+                return true;
+            } else {
+                return false;
+            }
+
+        },
+
         _isOldAndroid: function() {
 
             var minMajorVersion = 4,
