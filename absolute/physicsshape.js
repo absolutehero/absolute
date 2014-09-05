@@ -119,6 +119,12 @@ define(['pixi','box2d', 'absolute/physics', 'absolute/screenmetrics', 'absolute/
                 fixture.set_filter(filter);
             }
 
+            if(typeof fixtureOptions.maskBits !== 'undefined') {
+                var filter = fixture.get_filter();
+                filter.set_maskBits(fixtureOptions.maskBits);
+                fixture.set_filter(filter);
+            }
+
             this.body.CreateFixture(fixture);
 
         } else {

@@ -133,6 +133,9 @@ define(['box2d', 'absolute/screenmetrics', 'lodash'], function (Box2D, ScreenMet
             fixture.set_density(1);
             fixture.set_friction(1);
             fixture.set_restitution(0);
+            var filter = fixture.get_filter();
+            filter.set_categoryBits(0x0010);
+            fixture.set_filter(filter);
             groundBody.CreateFixture(fixture);
 
             if(_.isString(type)){
