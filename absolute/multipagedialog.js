@@ -1,7 +1,7 @@
 define(['pixi', 'absolute/dialog', 'absolute/button', 'absolute/screenmetrics', 'lodash',
-    'absolute/pageindicator', 'absolute/coords'],
+    'absolute/pageindicator', 'absolute/coords', 'absolute/platform'],
 
-function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords) {
+function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platform) {
 
     var MultiPageDialog = function (ui, options) {
 
@@ -50,7 +50,9 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords) {
 
         this.initContent();
         this.initNonTouchInterface();
-        this.initTouchInterface();
+        if(!Platform._isOldAndroid()) {
+            this.initTouchInterface();
+        }
         this.initPagePips();
 
         this.scrollToPage(startPage);
