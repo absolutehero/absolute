@@ -91,5 +91,9 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
             }.bind(this), 10);
         };
 
+        MessageDialog.prototype.setMessageY = function (y) {
+            this.text.position.y = y;
+        };
+
         return MessageDialog;
     });
