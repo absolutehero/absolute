@@ -38,7 +38,7 @@ define ([
         load: function (layoutJSON) {
             try {
                 var l = JSON.parse(layoutJSON);
-                _.merge(_layouts, l);
+                _.extend(_layouts, l);
             }
             catch (e) {
                 alert("UIBuilder: error in layout.json");
