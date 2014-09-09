@@ -190,7 +190,7 @@ function (
 
             function scaleToAspectRatio () {
 
-                if (Platform._isiPad && !this.isPortrait) {
+                if (Platform._isiPad && !this.isPortrait && !Platform.isCordova()) {
                     windowHeight = windowHeight - Coords.y(30);
                 }
                 var trueAspectRatio = this.baseWidth / this.baseHeight;
@@ -237,7 +237,7 @@ function (
                 }
                 else {
                     // fix for a bug on iPad where bottom of screen is chopped off
-                    if (Platform._isiPad) {
+                    if (Platform._isiPad && !Platform.isCordova()) {
                         //windowHeight -=  Coords.y(18);
                         clientHeight -= Coords.y(18);
                     }
@@ -277,7 +277,7 @@ function (
                     }
                     else {
                         // fix for a bug on iPad where bottom of screen is chopped off
-                        if (Platform._isiPad) {
+                        if (Platform._isiPad && !Platform.isCordova()) {
                             windowHeight -=  Coords.y(18);
                             clientHeight -= Coords.y(18);
                         }
