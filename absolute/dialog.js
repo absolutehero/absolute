@@ -169,10 +169,10 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 var layoutConfig = UIBuilder.getConfigData(this.options.layout);
                 if (layoutConfig) {
                     if (layoutConfig.width) {
-                        this.options.width = layoutConfig.width;
+                        this.options.width = Coords.x(layoutConfig.width);
                     }
                     if (layoutConfig.height) {
-                        this.options.height = layoutConfig.height;
+                        this.options.height = Coords.y(layoutConfig.height);
                     }
                 }
             }
