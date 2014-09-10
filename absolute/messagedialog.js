@@ -23,7 +23,8 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                     align: "center",
                     wordWrap: true,
                     wordWrapWidth: this.width - Coords.x(200)
-                }
+                },
+                textImage: null
             };
 
             this.initMessageDialog(ui, message, _.extend(defaultOptions, options));
@@ -68,10 +69,15 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
             contentContainer.width = this.width;
             contentContainer.height = this.height;
 
-            this.text = new PIXI.BitmapText(this.message, this.options.textStyle);
+            if (this.options.textImage == null) {
+                this.text = new PIXI.BitmapText(this.message, this.options.textStyle);
+                this.text.position.y = Coords.y(120);
+            } else {
+                this.text = this.options.textImage;
+                this.text.setText(this.message);
+            }
 
             this.text.position.x = (contentContainer.width - this.text.textWidth) / 2;
-            this.text.position.y = Coords.y(120);
             contentContainer.addChild(this.text);
 
             return contentContainer;
