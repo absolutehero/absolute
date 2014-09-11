@@ -88,7 +88,8 @@ define ([
 
                 case "Text":
                     this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string", "fill": "string", "align": "string"}, config.params);
-                    widget = new PIXI.Text(_s(config.params.text), {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, fill: config.params.fill, align: config.params.align});
+                    var fontWeight = config.params.fontWeight || 'normal';
+                    widget = new PIXI.Text(_s(config.params.text), {font: fontWeight + " " + (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, fill: config.params.fill, align: config.params.align});
                     widget._setText = widget.setText;
                     widget.setText = function (text) {
                         this._setText(text);
