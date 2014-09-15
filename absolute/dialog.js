@@ -27,6 +27,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     'bottomRight':_a("dialogNineSlice.bottomRight"),
                     'close': _a("dialogNineSlice.close")
                 },
+                closeButtonPosition: null, // set to {x: 0, y:0} to customize
                 'fillOpacity': 0.95,
                 'content': '',
                 'displayCloseButton': true,
@@ -285,9 +286,13 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
             // if we have a background for the close button, assume the button itself is positioned
             // relative to the top-right corner of the dialog
-            if (this.options.images.topRight_closeBackground) {
+            if (this.options.images.topRight_closeBackground && !this.options.closeButtonPosition) {
                 this.closeButton.position.x = this.width - this.closeButton.width;
                 this.closeButton.position.y = 0;
+            }
+            else if(this.options.closeButtonPosition) {
+                this.closeButton.position.x = this.options.closeButtonPosition.x;
+                this.closeButton.position.y = this.options.closeButtonPosition.y;
             }
             else {
                 this.closeButton.position.x = this.width - ( this.closeButton.width / 1.5 );
