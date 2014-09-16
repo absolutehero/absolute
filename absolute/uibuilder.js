@@ -88,8 +88,19 @@ define ([
 
                 case "Text":
                     this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string", "fill": "string", "align": "string"}, config.params);
-                    var fontWeight = config.params.fontWeight || 'normal';
-                    widget = new PIXI.Text(_s(config.params.text), {font: fontWeight + " " + (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, fill: config.params.fill, align: config.params.align});
+                    var fontWeight = config.params.fontWeight || 'normal',
+                        wordWrap = config.params.wordWrap || 'false',
+                        wordWrapWidth = config.params.wordWrapWidth || '0';
+
+                    widget = new PIXI.Text(_s(config.params.text),
+                        {
+                            'font': fontWeight + ' ' + (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + 'px ' + config.params.fontFamily,
+                            'fill': config.params.fill,
+                            'align': config.params.align,
+                            'wordWrap': wordWrap,
+                            'wordWrapWidth': wordWrapWidth
+                        });
+
                     widget._setText = widget.setText;
                     widget.setText = function (text) {
                         this._setText(text);
@@ -120,8 +131,18 @@ define ([
 
                 case "Sprite":
                     this.checkParams({"texture": "string"}, config.params);
+                    var scaleX = 1,
+                        scaleY = 1;
+
+                    if(config.params.scale) {
+                        scaleX = config.params.scale.x,
+                        scaleY = config.params.scale.y;
+                    }
+
                     try {
                         widget = PIXI.Sprite.fromFrame(_a(config.params.texture));
+                        widget.scale.x = scaleX;
+                        widget.scale.y = scaleY;
                     }
                     catch (e) {
                         alert (e);
