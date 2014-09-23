@@ -57,7 +57,9 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
     TextButton.prototype.destroy = function() {
 
-        this.label.destroy(true);
+        if(typeof this.label.destroy === 'function') {
+            this.label.destroy(true);
+        }
 
         Button.prototype.destroy.call(this);
 
