@@ -256,6 +256,16 @@ define ([
                         textStyleOptions.tint = parseInt(config.params.textStyle.tint, 16);
                     }
 
+                    if(config.params.textStyle.position) {
+                        textStyleOptions.position = {};
+                        if (config.params.textStyle.position.x) {
+                            textStyleOptions.position.x = Coords.x(config.params.textStyle.position.x);
+                        }
+                        if (config.params.textStyle.position.y) {
+                            textStyleOptions.position.y = Coords.x(config.params.textStyle.position.y);
+                        }
+                    }
+
                     var threeSliceOptions = null;
                     if (threeSlice) {
                         threeSliceOptions = {
