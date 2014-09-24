@@ -49,6 +49,7 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
         this.labelContainer.pivot.x = this.labelContainer.width / 2;
         this.labelContainer.pivot.y = this.labelContainer.height / 2;
         this.labelContainer.x = this.width / 2;
+        this.labelContainer.y = this.height / 2;
         if (typeof this.textStyleOptions.position !== 'undefined') {
             if (typeof this.textStyleOptions.position.x === 'number') {
                 this.labelContainer.x = this.textStyleOptions.position.x;
@@ -57,7 +58,6 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
                 this.labelContainer.y = this.textStyleOptions.position.y;
             }
         }
-        this.labelContainer.y = this.height / 2;
         this.labelContainer.addChild(this.label);
 
         this.addChild(this.labelContainer);
