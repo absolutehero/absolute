@@ -90,7 +90,7 @@ define ([
                     this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string", "fill": "string", "align": "string"}, config.params);
                     var fontWeight = config.params.fontWeight || 'normal',
                         wordWrap = config.params.wordWrap || 'false',
-                        wordWrapWidth = config.params.wordWrapWidth || '0';
+                        wordWrapWidth = Coords.x(config.params.wordWrapWidth) || '0';
 
                     widget = new PIXI.Text(_s(config.params.text),
                         {
