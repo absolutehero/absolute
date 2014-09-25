@@ -245,7 +245,7 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
                 Debug.log('Lowering resClass because this is a phone.');
                 steps ++;
             } else if(stepDownResClassAggressively && this._isiPad && resClassIndex >= 3) {
-                Debug.log('Lowering resClass because this is an ipad that can\'t handle big textures.');
+                Debug.log('Lowering resClass because this is an ipad device that can\'t handle big textures.');
                 steps ++;
             }
 
@@ -263,6 +263,14 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             if(this._isOldAndroid() && resClassIndex >= 3) {
                 Debug.log('Lowering resClass because this is an older android device and it is enormous.');
                 steps ++;
+            }
+
+            /**
+             * Galaxy Tab 3 10.1 has limited memory it seems, crashes in chrome unless stepped down more
+             */
+            if(stepDownResClassAggressively && resClassIndex >= 3 && this._isAndroid()) {
+                Debug.log('Lowering resClass because this is a hires android device and probably lacks memory.');
+                steps = 2;
             }
 
             if(stepDownResClassAggressively && steps == 0) {
