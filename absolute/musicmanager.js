@@ -5,7 +5,7 @@
  * Time: 8:32 PM
  * To change this template use File | Settings | File Templates.
  */
-define(['absolute/gameconfig', 'absolute/audiomanager'], function(GameConfig, AudioManager) {
+define(['absolute/gameconfig', 'absolute/audiomanager', 'absoluteaudio'], function(GameConfig, AudioManager, AbsoluteAudio) {
 
     var MusicManager = {
 
@@ -29,7 +29,14 @@ define(['absolute/gameconfig', 'absolute/audiomanager'], function(GameConfig, Au
                 }
 
                 if (AudioManager.simulSoundSupport() || !AudioManager.isSfxEnabled()) {
-                    AudioManager.playSound(this.currentTrack);
+
+                    if(AbsoluteAudio.context.usingWebAudio() || AbsoluteAudio.context.usingSoundManagerAudio()) {
+                        AudioManager.playSound(this.currentTrack);
+                    } else {
+                        window.setTimeout(function () {
+                            AudioManager.playSound(this.currentTrack);
+                        }.bind(this), 500);
+                    }
                 }
             }
         },
