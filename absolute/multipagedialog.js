@@ -169,7 +169,6 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
         this.dragging = true;
         this.lastDeltaX = 0;
         this.startX = data.getLocalPosition(this.parent).x;
-        console.log('startx ', this.startX);
         this.enableButtons(false);
 
     };

@@ -142,6 +142,14 @@ define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
                 child.destroy(true);
             }
 
+        },
+
+        removeAllChildren: function(displayObject) {
+
+            while(displayObject.children[0]) {
+                displayObject.removeChild(displayObject.children[0]);
+            }
+
         }
 
 
