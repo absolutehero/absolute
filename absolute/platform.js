@@ -118,6 +118,26 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             }
         },
 
+        hasPutImageDataBug: function() {
+            var canvas = document.createElement('canvas');
+            var ctx = canvas.getContext('2d');
+            var imageData;
+            var pixelArray;
+
+            canvas.width = canvas.height = 1;
+            imageData = ctx.createImageData(1, 1);
+            pixelArray = imageData.data;
+
+            pixelArray[0] = pixelArray[3] = 128;
+
+            ctx.putImageData(imageData, 0, 0);
+            imageData = ctx.getImageData(0, 0, 1, 1);
+            pixelArray = imageData.data;
+
+            return (pixelArray[0] === 255);
+
+        },
+
         supportsLayeredDivs: function() {
             //
             // Older android browsers have a problem with input controls and layered divs

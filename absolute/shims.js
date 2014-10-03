@@ -1,7 +1,7 @@
 /**
  * This is a dumping ground for browser fixes and shims.
  */
-define(['pixi'], function(PIXI) {
+define(['pixi','absolute/platform'], function(PIXI, Platform) {
 
     // Some versions of V8 on ARM (like the one in the stock Android 4 browser) are affected by
     // this nasty bug: https://code.google.com/p/v8/issues/detail?id=2234
@@ -125,6 +125,60 @@ define(['pixi'], function(PIXI) {
                 return false;
             }
         };
+
+    }
+
+    if(Platform.hasPutImageDataBug() || true) {
+
+        PIXI.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
+        {
+            var context = canvas.getContext( "2d" );
+
+            var frame = texture.frame;
+
+            canvas.width = frame.width;
+            canvas.height = frame.height;
+
+            context.globalCompositeOperation = "copy";
+            context.drawImage(texture.baseTexture.source,
+                frame.x,
+                frame.y,
+                frame.width,
+                frame.height,
+                0,
+                0,
+                frame.width,
+                frame.height);
+
+            var rgbValues = PIXI.hex2rgb(color);
+            var r = rgbValues[0], g = rgbValues[1], b = rgbValues[2];
+
+            var pixelData = context.getImageData(0, 0, frame.width, frame.height);
+
+            var pixels = pixelData.data;
+
+            for (var i = 0; i < pixels.length; i += 4)
+            {
+                pixels[i+0] *= r;
+                pixels[i+1] *= g;
+                pixels[i+2] *= b;
+
+                // START PATCH
+                // apply a fix for android native browser bug
+                var alpha = pixels[i+3];
+                pixels[i] /= 255/alpha;
+                pixels[i+1] /= 255/alpha;
+                pixels[i+2] /= 255/alpha;
+                // END PATCH
+
+            }
+
+            context.putImageData(pixelData, 0, 0);
+        };
+
+        PIXI.CanvasTinter.tintMethod = PIXI.CanvasTinter.tintWithPerPixel;
+
+
 
     }
 
