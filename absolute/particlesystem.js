@@ -28,6 +28,10 @@ define (['proton'], function (Proton) {
 
         _getEmitterCount: function () {
             return this.proton.emitters.length;
+        },
+
+        cleanUp: function () {
+            Proton.prototype.destory.call(this.proton);
         }
     };
 
