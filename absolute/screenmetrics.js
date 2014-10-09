@@ -14,7 +14,7 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
         resClass: "",
         stepDownResClass: false,
         stepDownResClassAggressively: true,
-
+        stepDownStockAndroidOnly: false,
         realWindow:
             (function() {
 
@@ -223,7 +223,7 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
 
             // lower the res for older/low performing devices
             if(this.stepDownResClass) {
-                resClassIndex = resClassIndex - Platform.getResStepsDown(resClassIndex, this.stepDownResClassAggressively);
+                resClassIndex = resClassIndex - Platform.getResStepsDown(resClassIndex, this.stepDownResClassAggressively, this.stepDownStockAndroidOnly);
                 if(resClassIndex < 0) {
                     resClassIndex = 0;
                 }

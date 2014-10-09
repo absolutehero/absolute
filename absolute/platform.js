@@ -89,7 +89,7 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
         },
 
         supportsWebGL: function () {
-            return !(this._isIE() || (this._isWindows() && this._isFirefox()));
+            return !(this._isStockAndroid() || this._isIE() || (this._isWindows() && this._isFirefox()));
         },
 
         supportsTouch: function () {
@@ -250,10 +250,23 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
 
         },
 
-        getResStepsDown: function(resClassIndex, stepDownResClassAggressively) {
+        _isStockAndroid: function() {
+            return this._isAndroid() && navigator.userAgent.indexOf('Chrome') == -1;
+        },
 
+        getResStepsDown: function(resClassIndex, stepDownResClassAggressively, stepDownStockAndroidOnly) {
 
             var steps = 0;
+
+            /**
+             * Only step down if this is the default/stock android browser and return
+             */
+            if(stepDownStockAndroidOnly) {
+                if(this._isStockAndroid()) {
+                    steps = 2;
+                }
+                return steps;
+            }
 
             /**
              * Detect devices which may have some problems with large textures.

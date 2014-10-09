@@ -458,7 +458,7 @@ function (
                     this.modalBG.texture.destroy(true);
                     this.modalBG = null;
                     this.stage[0].addChildAt(this.currentScreen, 0);
-                    if(Platform._isAndroid()) {
+                    if(Platform._isStockAndroid()) {
                         this.resetStage(800);
                     }
                 } else {
@@ -576,7 +576,8 @@ function (
 
         window.setTimeout(function() {
 
-            this.stage[1].removeChildAt(0);
+            try{this.stage[1].removeChildAt(0);} catch(e){}
+
 
             if(this.stage[0].children.length > 0) {
                 var oldScreen = this.stage[0].getChildAt(0);
