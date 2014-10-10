@@ -18,6 +18,9 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                     wordWrap: true,
                     wordWrapWidth: this.width - Coords.x(200)
                 },
+                okButtonLabelPosition: {
+                    x:"center", y:Coords.y(-20)
+                },
                 textStyle: {
                     font: Math.floor(80 * ScreenMetrics.getResScale()) + "px Ganache",
                     align: "center",
@@ -57,8 +60,12 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                 this.addChild(this.okButton);
 
                 var okLabel = new PIXI.BitmapText(this.options.okButtonText, this.options.okButtonTextStyle);
-                okLabel.position.x = (this.okButton.width - okLabel.textWidth) / 2;
-                okLabel.position.y = Coords.y(-20);
+                if (this.options.okButtonLabelPosition.x === "center") {
+                    okLabel.position.x = (this.okButton.width - okLabel.textWidth) / 2;
+                } else {
+                    okLabel.position.x = this.options.okButtonLabelPosition.x;
+                }
+                okLabel.position.y = this.options.okButtonLabelPosition.y;
                 this.okButton.addChild(okLabel);
             }
 
