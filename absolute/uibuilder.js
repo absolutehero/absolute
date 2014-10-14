@@ -288,6 +288,10 @@ define ([
                             }
                         }
 
+                        if(typeof config.params.textStyle.scaleToFit !== 'undefined') {
+                            textStyleOptions.scaleToFit = config.params.textStyle.scaleToFit;
+                        }
+
                         var threeSliceOptions = null;
                         if (threeSlice) {
                             threeSliceOptions = {

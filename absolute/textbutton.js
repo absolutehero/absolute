@@ -1,8 +1,8 @@
 /**
  * Created by lisawick on 4/9/14.
  */
-define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/screenmetrics'],
-    function (PIXI, Button, ThreeSlice, _, ScreenMetrics) {
+define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/screenmetrics', 'absolute/coords'],
+    function (PIXI, Button, ThreeSlice, _, ScreenMetrics, Coords) {
 
 
     var TextButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, textStyleOptions, threeSliceOptions) {
@@ -10,7 +10,8 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
         var defaultTextStyleOptions = {
             text : "",
             textStyle : { font: Math.floor(90 * ScreenMetrics.getResScale()) + "px Ganache", align: "center" },
-            useBitmapFont : true
+            useBitmapFont : true,
+            buttonPadding : Coords.x(80)
         };
 
         var options = textStyleOptions || defaultTextStyleOptions;
@@ -32,35 +33,48 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
 
     TextButton.prototype.setText = function (text) {
 
-        if (this.labelContainer) {
-            this.removeChild(this.labelContainer);
+        var textTexture;
+
+        if (this.label) {
+            this.removeChild(this.label);
+            if(typeof this.label.destroy === 'function') {
+                this.label.destroy(true);
+            }
         }
-        this.labelContainer = new PIXI.DisplayObjectContainer();
 
         if (this.textStyleOptions.useBitmapFont) {
             var labelBitmapText = new PIXI.BitmapText(text, this.textStyleOptions);
-            this.label = new PIXI.Sprite(labelBitmapText.generateTexture());
+            textTexture = labelBitmapText.generateTexture();
+
         } else {
-            this.label = new PIXI.Text(text, this.textStyleOptions);
+            var labelPixiText = new PIXI.Text(text, this.textStyleOptions),
+                tempContainer = new PIXI.DisplayObjectContainer();
+            tempContainer.addChild(labelPixiText);
+            textTexture = tempContainer.generateTexture();
+            labelPixiText.destroy(true);
         }
 
-        this.labelContainer.width = this.label.width;
-        this.labelContainer.height = this.label.height;
-        this.labelContainer.pivot.x = this.labelContainer.width / 2;
-        this.labelContainer.pivot.y = this.labelContainer.height / 2;
-        this.labelContainer.x = this.width / 2;
-        this.labelContainer.y = this.height / 2;
+        this.label = new PIXI.Sprite(textTexture);
+        this.label.anchor.x = this.label.anchor.y = 0.5;
+
+        if(this.textStyleOptions.scaleToFit && this.label.width > this.width - this.textStyleOptions.buttonPadding) {
+            this.label.scale.x = this.label.scale.y = (this.width - this.textStyleOptions.buttonPadding) / this.label.width;
+        }
+
         if (typeof this.textStyleOptions.position !== 'undefined') {
             if (typeof this.textStyleOptions.position.x === 'number') {
-                this.labelContainer.x = this.textStyleOptions.position.x;
+                this.label.x = this.textStyleOptions.position.x;
             }
             if (typeof this.textStyleOptions.position.y === 'number') {
-                this.labelContainer.y = this.textStyleOptions.position.y;
+                this.label.y = this.textStyleOptions.position.y;
             }
+        } else {
+            this.label.x = this.width / 2;
+            this.label.y = this.height / 2;
         }
-        this.labelContainer.addChild(this.label);
 
-        this.addChild(this.labelContainer);
+        this.addChild(this.label);
+
     };
 
     TextButton.prototype.destroy = function() {
