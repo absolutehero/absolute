@@ -153,6 +153,10 @@ define ([
                         catch (e) {
                             alert (e);
                         }
+
+                        widget.configWidth = widget.width;
+                        widget.configHeight = widget.width;
+
                         break;
 
                     case "Container":
@@ -194,6 +198,7 @@ define ([
                             }
                         };
                         widget = new NineSlice(options);
+
                         break;
                     case "AnimatedButton":
                         this.checkParams({"action": "string"}, config.params);
