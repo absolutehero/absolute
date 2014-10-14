@@ -314,8 +314,19 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             this.gapY = options.gap;
             this.cellWidth = options.itemWidth;
             this.cellHeight = options.itemHeight;
-            this.colsPerPage = Math.floor(this.width / this.cellWidth);
-            this.rowsPerPage = Math.floor(this.height / this.cellHeight);
+
+            if (typeof options.colsPerPage === 'number') {
+                this.colsPerPage = options.colsPerPage;
+            } else {
+                this.colsPerPage = Math.floor(this.width / this.cellWidth);
+            }
+
+            if (typeof options.rowsPerPage === 'number') {
+                this.rowsPerPage = options.rowsPerPage;
+            } else {
+                this.rowsPerPage = Math.floor(this.height / this.cellHeight);
+            }
+
             this.maskRect = options.maskRect;
             this.lockLayout = options.lockLayout || "none";
         };
