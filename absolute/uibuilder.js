@@ -165,13 +165,6 @@ define ([
                             }
                         }
 
-                        if(config.params && config.params.width) {
-                            widget.configWidth = Coords.x(config.params.width);
-                        }
-                        if(config.params && config.params.height) {
-                            widget.configHeight = Coords.x(config.params.height);
-                        }
-
                         // width cannot be set on displayobjects after pixi 1.5.3 so these settings will be ignored in pixi > 1.6
                         if (config.params) {
                             widget.width = Coords.x(config.params.width) || parent.width;
@@ -315,6 +308,13 @@ define ([
 
                         widget = new ToggleButton(config.params.baseName, action, config.params.enabled, useOverlay);
                         break;
+                }
+
+                if(config.params && config.params.width) {
+                    widget.configWidth = Coords.x(config.params.width);
+                }
+                if(config.params && config.params.height) {
+                    widget.configHeight = Coords.x(config.params.height);
                 }
 
                 if (widget) {
