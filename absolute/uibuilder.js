@@ -155,7 +155,7 @@ define ([
                         }
 
                         widget.configWidth = widget.width;
-                        widget.configHeight = widget.width;
+                        widget.configHeight = widget.height;
 
                         break;
 
