@@ -126,12 +126,18 @@ define ([
                         widget.height = widget.textHeight;
                         widget.tint = parseInt(tint, 16);
                         widget._setText = widget.setText;
-                        widget.setText = function (text) {
+                        widget.setText = function (text, reposition) {
+
+                            reposition = typeof reposition !== 'undefined' ? reposition : true;
+
                             this._setText(text);
-                            this.updateText();
-                            widget.width = widget.textWidth;
-                            widget.height = widget.textHeight;
-                            self.positionWidget(this, config, this.parent);
+
+                            if(reposition) {
+                                this.updateText();
+                                widget.width = widget.textWidth;
+                                widget.height = widget.textHeight;
+                                self.positionWidget(this, config, this.parent);
+                            }
                         };
                         break;
 
