@@ -40,8 +40,8 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
         NineSlice.prototype._setSize = function() {
 
             /* this does not work in pixi 1.6 */
-            this.options.width = this.options.width;
-            this.options.height = this.options.height;
+            this.width = this.options.width;
+            this.height = this.options.height;
 
         };
 
