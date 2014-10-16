@@ -170,10 +170,10 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 var layoutConfig = UIBuilder.getConfigData(this.options.layout);
                 if (layoutConfig) {
                     if (layoutConfig.width) {
-                        this.options.width = Coords.x(layoutConfig.width);
+                        this.width = this.options.width = Coords.x(layoutConfig.width);
                     }
                     if (layoutConfig.height) {
-                        this.options.height = Coords.y(layoutConfig.height);
+                        this.height = this.options.height = Coords.y(layoutConfig.height);
                     }
                 }
             }
@@ -184,11 +184,11 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             }
 
             if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
-                this.options.width = getPercentageSize(this.ui.width, this.options.width);
+                this.width = this.options.width = getPercentageSize(this.ui.width, this.options.width);
             }
 
             if(typeof this.options.height === 'string' && this.options.height.indexOf('%') > -1) {
-                this.options.height = getPercentageSize(this.ui.height, this.options.height);
+                this.height = this.options.height = getPercentageSize(this.ui.height, this.options.height);
             }
 
         };
