@@ -39,8 +39,9 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
 
         NineSlice.prototype._setSize = function() {
 
-            this.width = this.options.width;
-            this.height = this.options.height;
+            /* this does not work in pixi 1.6 */
+            this.options.width = this.options.width;
+            this.options.height = this.options.height;
 
         };
 
@@ -53,22 +54,22 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             topLeft.position.y = 0;
 
             var topRight = PIXI.Sprite.fromFrame(this.options.images.topRight);
-            topRight.position.x = this.width - topRight.width;
+            topRight.position.x = this.options.width - topRight.width;
             topRight.position.y = 0;
 
             var bottomLeft = PIXI.Sprite.fromFrame(this.options.images.bottomLeft);
             bottomLeft.position.x = 0;
-            bottomLeft.position.y = this.height - bottomLeft.height;
+            bottomLeft.position.y = this.options.height - bottomLeft.height;
 
             var bottomRight = PIXI.Sprite.fromFrame(this.options.images.bottomRight);
-            bottomRight.position.x = this.width - bottomRight.width;
-            bottomRight.position.y = this.height - bottomRight.height;
+            bottomRight.position.x = this.options.width - bottomRight.width;
+            bottomRight.position.y = this.options.height - bottomRight.height;
 
             // Tile middle left
             var middleLeftTexture = PIXI.Texture.fromFrame(this.options.images.middleLeft);
             this.middleLeftTile = new PIXI.TilingSprite(middleLeftTexture,
                 middleLeftTexture.width,
-                    this.height - topLeft.height - bottomLeft.height
+                    this.options.height - topLeft.height - bottomLeft.height
             );
             this.middleLeftTile.position.x = 0;
             this.middleLeftTile.position.y = topLeft.height;
@@ -77,15 +78,15 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             var middleRightTexture = PIXI.Texture.fromFrame(this.options.images.middleRight);
             this.middleRightTile = new PIXI.TilingSprite(middleRightTexture,
                 middleRightTexture.width,
-                    this.height - topLeft.height - bottomLeft.height
+                    this.options.height - topLeft.height - bottomLeft.height
             );
-            this.middleRightTile.position.x = this.width - topRight.width;
+            this.middleRightTile.position.x = this.options.width - topRight.width;
             this.middleRightTile.position.y = topRight.height;
 
             // Tile top center
             var topCenterTexture = PIXI.Texture.fromFrame(this.options.images.topCenter);
                 this.topCenterTile = new PIXI.TilingSprite(topCenterTexture,
-                        this.width - topLeft.width - topRight.width,
+                        this.options.width - topLeft.width - topRight.width,
                     topCenterTexture.height
                 );
             this.topCenterTile.position.x = topLeft.width;
@@ -94,18 +95,18 @@ define(['pixi', 'absolute/screen', 'absolute/debug', 'lodash'],
             // Tile bottom center
             var bottomCenterTexture = PIXI.Texture.fromFrame(this.options.images.bottomCenter);
             this.bottomCenterTile = new PIXI.TilingSprite(bottomCenterTexture,
-                    this.width - bottomLeft.width - bottomRight.width,
+                    this.options.width - bottomLeft.width - bottomRight.width,
                 bottomCenterTexture.height
             );
             this.bottomCenterTile.position.x = bottomLeft.width;
-            this.bottomCenterTile.position.y = this.height - bottomLeft.height;
+            this.bottomCenterTile.position.y = this.options.height - bottomLeft.height;
 
 
             // Tile middle center
             var middleCenterTexture = PIXI.Texture.fromFrame(this.options.images.middleCenter);
             this.middleCenterTile = new PIXI.TilingSprite(middleCenterTexture,
-                    this.width - topLeft.width - topRight.width,
-                Math.ceil(this.height - bottomRight.height - topRight.height)
+                    this.options.width - topLeft.width - topRight.width,
+                Math.ceil(this.options.height - bottomRight.height - topRight.height)
             );
             this.middleCenterTile.position.x = topLeft.width;
             this.middleCenterTile.position.y = topLeft.height;

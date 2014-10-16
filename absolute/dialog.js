@@ -184,17 +184,11 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             }
 
             if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
-                this.width = getPercentageSize(this.ui.width, this.options.width);
-                this.options.width = this.width;
-            } else {
-                this.width = this.options.width;
+                this.options.width = getPercentageSize(this.ui.width, this.options.width);
             }
 
             if(typeof this.options.height === 'string' && this.options.height.indexOf('%') > -1) {
-                this.height = getPercentageSize(this.ui.height, this.options.height);
-                this.options.height = this.height;
-            } else {
-                this.height = this.options.height;
+                this.options.height = getPercentageSize(this.ui.height, this.options.height);
             }
 
         };
@@ -253,7 +247,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         Dialog.prototype._setStandardX = function() {
             if(this.options.x === null) {
-                this.position.x = Math.round((this.ui.width - this.width ) / 2);
+                this.position.x = Math.round((this.ui.width - this.options.width ) / 2);
             } else {
                 this.position.x = Math.round(this.options.x);
             }
@@ -261,7 +255,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         Dialog.prototype._setStandardY = function() {
             if(this.options.y === null) {
-                this.position.y = Math.round((this.ui.height - this.height ) / 2);
+                this.position.y = Math.round((this.ui.height - this.options.height ) / 2);
             } else {
                 this.position.y = Math.round(this.options.y);
             }
@@ -287,7 +281,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             // if we have a background for the close button, assume the button itself is positioned
             // relative to the top-right corner of the dialog
             if (this.options.images.topRight_closeBackground && !this.options.closeButtonPosition) {
-                this.closeButton.position.x = this.width - this.closeButton.width;
+                this.closeButton.position.x = this.options.width - this.closeButton.width;
                 this.closeButton.position.y = 0;
             }
             else if(this.options.closeButtonPosition) {
@@ -295,7 +289,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 this.closeButton.position.y = this.options.closeButtonPosition.y;
             }
             else {
-                this.closeButton.position.x = this.width - ( this.closeButton.width / 1.5 );
+                this.closeButton.position.x = this.options.width - ( this.closeButton.width / 1.5 );
                 this.closeButton.position.y = - ( this.closeButton.height / 3 );
             }
             this.container.addChild(this.closeButton);
@@ -323,8 +317,8 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     }
                 }
 
-                this.buttonContainer.position.x = (this.width - (xOffset - buttonSpacing)) / 2;
-                this.buttonContainer.position.y = this.height - maxHeight;
+                this.buttonContainer.position.x = (this.options.width - (xOffset - buttonSpacing)) / 2;
+                this.buttonContainer.position.y = this.options.height - maxHeight;
 
                 this.container.addChild(this.buttonContainer);
             }
