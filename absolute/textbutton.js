@@ -64,9 +64,13 @@ define(['pixi','absolute/button', 'absolute/threeslice', 'lodash', 'absolute/scr
         if (typeof this.textStyleOptions.position !== 'undefined') {
             if (typeof this.textStyleOptions.position.x === 'number') {
                 this.label.x = this.textStyleOptions.position.x;
+            } else {
+                this.label.x = this.width / 2;
             }
             if (typeof this.textStyleOptions.position.y === 'number') {
                 this.label.y = this.textStyleOptions.position.y;
+            } else {
+                this.label.y = this.height / 2;
             }
         } else {
             this.label.x = this.width / 2;
