@@ -323,13 +323,9 @@ define ([
 
                 if(config.params && config.params.width) {
                     widget.configWidth = Coords.x(config.params.width);
-                } else {
-                    widget.configWidth = parent.width;
                 }
                 if(config.params && config.params.height) {
                     widget.configHeight = Coords.x(config.params.height);
-                } else {
-                    widget.configHeight = parent.height;
                 }
 
                 if (widget) {
