@@ -513,7 +513,9 @@ define ([
 
             positionWidget: function (widget, config, parent) {
 
-                var a, p, width, height;
+                var a, p, width, height,
+                    widgetWidth = widget.width || widget.configWidth,
+                    widgetHeight = widget.height || widget.configHeight;
 
                 if (config.position) {
 
@@ -534,13 +536,13 @@ define ([
                                     }
                                     break;
                                 case "right":
-                                    widget.x = width - widget.width;
+                                    widget.x = width - widgetWidth;
                                     if(parent.padding && parent.padding.x) {
                                         widget.x -= parent.padding.x;
                                     }
                                     break;
                                 case "center":
-                                    widget.position.x = (width - widget.width) / 2;
+                                    widget.position.x = (width - widgetWidth) / 2;
                                     break;
                             }
                         }
@@ -567,13 +569,13 @@ define ([
                                     }
                                     break;
                                 case "bottom":
-                                    widget.position.y = height - widget.height;
+                                    widget.position.y = height - widgetHeight;
                                     if(parent.padding && parent.padding.y) {
                                         widget.y -= parent.padding.y;
                                     }
                                     break;
                                 case "middle":
-                                    widget.position.y = (height - widget.height) / 2;
+                                    widget.position.y = (height - widgetHeight) / 2;
                                     break;
                             }
                         }

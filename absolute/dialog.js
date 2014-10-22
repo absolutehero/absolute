@@ -165,32 +165,38 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         Dialog.prototype._setSize = function() {
 
-            // override width and height if a layout config exists
-            if (this.options.layout) {
-                var layoutConfig = UIBuilder.getConfigData(this.options.layout);
-                if (layoutConfig) {
-                    if (layoutConfig.width) {
-                        this.options.width = Coords.x(layoutConfig.width);
-                    }
-                    if (layoutConfig.height) {
-                        this.options.height = Coords.y(layoutConfig.height);
-                    }
-                }
-            }
-
             function getPercentageSize(canvasWidth, percentage) {
                 var convertedPercentage = parseInt(percentage.slice( 0, percentage.length - 1)) / 100;
                 return Math.round(canvasWidth * convertedPercentage);
             }
 
-            if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
-                this.options.width = getPercentageSize(this.ui.width, this.options.width);
+            // override width and height if a layout config exists
+            if (this.options.layout) {
+                var layoutConfig = UIBuilder.getConfigData(this.options.layout);
+                if (layoutConfig) {
+                    if (layoutConfig.width) {
+                        this.width = this.options.width = Coords.x(layoutConfig.width);
+                    } else {
+                        this.width = this.options.width;
+                    }
+                    if (layoutConfig.height) {
+                        this.height = this.options.height = Coords.y(layoutConfig.height);
+                    } else {
+                        this.height = this.options.height;
+                    }
+                }
+            } else {
+                if(typeof this.options.width === 'string' && this.options.width.indexOf('%') > -1) {
+                    this.width = this.options.width = getPercentageSize(this.ui.width, this.options.width);
+                } else {
+                    this.width = this.options.width;
+                }
+                if(typeof this.options.height === 'string' && this.options.height.indexOf('%') > -1) {
+                    this.height = this.options.height = getPercentageSize(this.ui.height, this.options.height);
+                } else {
+                    this.height = this.options.height;
+                }
             }
-
-            if(typeof this.options.height === 'string' && this.options.height.indexOf('%') > -1) {
-                this.options.height = getPercentageSize(this.ui.height, this.options.height);
-            }
-
         };
 
         Dialog.prototype.setLandscapePositions = function(options) {
