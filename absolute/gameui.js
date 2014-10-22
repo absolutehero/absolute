@@ -89,7 +89,7 @@ function (
 
     GameUI.prototype.buildRenderers = function (width, height) {
 
-        if(Platform._isOldAndroid()) {
+        if(Platform._isOldAndroid() && !this.supportsOrientationChange) {
             // fixes https://github.com/absolutehero/puppy/issues/56
             // for reasons I don't comprehend rounding the canvas width/height on old anroid browsers causes complete
             // rendering failure. All positioning data is off and the games become unplayable.

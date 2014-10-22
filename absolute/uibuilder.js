@@ -116,12 +116,15 @@ define ([
                         break;
 
                     case "BitmapText":
-                        var tint = '0xFFFFFF';
+                        var tint = '0xFFFFFF', align = 'left';
                         this.checkParams({"text": "string", "fontSize": "number", "fontFamily": "string"}, config.params);
                         if (config.params.tint) {
                             tint = config.params.tint;
                         }
-                        widget = new PIXI.BitmapText(_s(config.params.text), {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, tint: tint});
+                        if(config.params.align) {
+                            align = config.params.align;
+                        }
+                        widget = new PIXI.BitmapText(_s(config.params.text), {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, tint: tint, align: align});
                         widget.width = widget.textWidth;
                         widget.height = widget.textHeight;
                         widget.tint = parseInt(tint, 16);
@@ -459,37 +462,70 @@ define ([
                     widget.rotation = config.rotation;
                 }
             },
+            
+            getParentHeight: function(parent) {
+
+                var height = 0;
+                
+                if(parent && parent.optionalHeight) {
+                    height = parent.optionalHeight;
+                }
+                else if(parent && parent.height == 0) {
+                    var parentBounds = parent.getLocalBounds();
+                    height = parentBounds.height;
+
+                    /*if(parent.height == 0) {
+                        height = ScreenMetrics.clientHeight;
+                    }*/
+
+                } else if (!parent || !parent.height) {
+                    throw("Error: relative position used but parent height not set!");
+                } else {
+                    height = parent.height;
+                }
+
+                return height;
+            },
+
+            getParentwidth: function(parent) {
+
+                var width = 0;
+
+                if(parent && parent.optionalWidth) {
+                    width = parent.optionalWidth;
+                }
+                else if(parent && parent.width == 0) {
+                    var parentBounds = parent.getLocalBounds();
+                    width = parentBounds.width;
+
+                   /* if(parent.width == 0) {
+                        width = ScreenMetrics.clientWidth;
+                    }*/
+
+                } else if (!parent || !parent.width) {
+                    throw("Error: relative position used but parent width not set!");
+                } else {
+                    width = parent.width;
+                }
+
+                return width;
+            },
 
             positionWidget: function (widget, config, parent) {
 
                 var a, p, width, height;
 
                 if (config.position) {
+
                     if (typeof config.position.x == "string") {
 
-                        if(parent && parent.optionalWidth) {
-                            width = parent.optionalWidth;
-                        }
-                        else if(parent && parent.width == 0) {
-                            var parentBounds = parent.getLocalBounds();
-                            width = parentBounds.width;
-
-                            if(parent.width == 0 && parent.optionalWidth) {
-                                width = ScreenMetrics.getWidth();
-                            }
-
-                        } else if (!parent || !parent.width) {
-                            throw("Error: relative position used but parent width not set!");
-                        } else {
-                            width = parent.width;
-                        }
+                        width = this.getParentwidth(parent);
 
                         if (config.position.x.indexOf('%') !== -1) {
                             a = config.position.x.split('%');
                             p = parseInt(a[0]) / 100;
                             widget.position.x = width * p;
-                        }
-                        else {
+                        } else {
                             switch (config.position.x) {
                                 case "left":
                                     widget.x = 0;
@@ -515,22 +551,7 @@ define ([
 
                     if (typeof config.position.y == "string") {
 
-                        if(parent && parent.optionalHeight) {
-                            height = parent.optionalHeight;
-                        }
-                        else if(parent && parent.height == 0) {
-                            var parentBounds = parent.getLocalBounds();
-                            height = parentBounds.height;
-
-                            if(parent.height == 0) {
-                                height = ScreenMetrics.getHeight();
-                            }
-
-                        } else if (!parent || !parent.height) {
-                            throw("Error: relative position used but parent height not set!");
-                        } else {
-                            height = parent.height;
-                        }
+                        height = this.getParentHeight(parent);
 
                         if (config.position.y.indexOf('%') !== -1) {
                             a = config.position.y.split('%');
