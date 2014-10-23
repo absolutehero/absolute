@@ -71,8 +71,13 @@ define(['absolute/coords','pixi','lodash'], function(Coords, PIXI, _){
 
         }
 
-        this.height = pip.on.height;
-        this.width = (pip.on.width + this.options.pipPadding) * this.pageCount;
+        // for pixi 1.6
+        this.totalHeight = pip.on.height;
+        this.totalWidth = (pip.on.width + this.options.pipPadding) * this.pageCount;
+
+        // these don't work in pixi 1.6 but leaving them for now in case something is using it
+        this.height = this.totalHeight;
+        this.width = this.totalWidth;
 
     };
 

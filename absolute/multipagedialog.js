@@ -64,20 +64,21 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
         this.pageTray = new PIXI.DisplayObjectContainer();
 
         for (var i = 0, l = this.pages.length; i < l; i += 1) {
-            var page = this.pages[i];
-            page.position.x = i * page.width;
+            var page = this.pages[i],
+                pageWidth = page.pageWidth || page.width;
+            page.position.x = i * pageWidth;
             page.position.y = this.options.pagePadding.y;
             this.pageTray.addChild(page);
         }
 
-        this.kPanThreshold = page.width / 5;
-        this.centerOffset = (this.width - page.width)/2;
+        this.kPanThreshold = pageWidth / 5;
+        this.centerOffset = (this.options.width - pageWidth)/2;
         this.pageTray.position.x = this.centerOffset;
 
         var mask = new PIXI.Graphics();
         mask.beginFill(0xFFFFFF, 1.0);
         mask.drawRect(this.position.x + this.options.borderThickness.left, this.position.y,
-            this.width - this.options.borderThickness.right, this.height);
+            this.options.width - this.options.borderThickness.right, this.height);
         mask.endFill();
         this.pageTray.mask = mask;
 
@@ -121,7 +122,7 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
         var buttonY = this.height - (this.nextpageButton.height * this.options.buttonScale) - this.options.interfacePadding.arrows.y;
         this.nextpageButton.scale.x = -1 * this.options.buttonScale;
         this.nextpageButton.scale.y = this.options.buttonScale;
-        this.nextpageButton.position.x = this.width - this.options.interfacePadding.arrows.x;
+        this.nextpageButton.position.x = this.options.width - this.options.interfacePadding.arrows.x;
         this.nextpageButton.position.y = buttonY;
         this.nextpageButton.setActive(false);
         this.container.addChild(this.nextpageButton);
@@ -145,32 +146,26 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
     };
 
     MultiPageDialog.prototype.initPagePips = function() {
-
         if(this.pages.length > 1) {
-            this.pips = new PageIndicator(this.pages.length, 0, {clickCallback: this.scrollToPage.bind(this)});
-            this.pips.position.x = (this.width - this.pips.width) / 2;
-            this.pips.position.y = this.height - this.pips.height - this.options.interfacePadding.pips;
+            this.pips = new PageIndicator(this.pages.length, 0, _.extend(this.options, {clickCallback: this.scrollToPage.bind(this)}));
+            this.pips.position.x = (this.options.width - this.pips.totalWidth) / 2;
+            this.pips.position.y = this.options.height - this.pips.totalHeight - this.options.interfacePadding.pips;
             this.container.addChild(this.pips);
         }
-
     };
 
     MultiPageDialog.prototype.enableButtons = function (enable) {
-
         var i, l;
-
         for (i = 0, l = this.pages.length; i < l; i++) {
             this.pages[i].enableButtons(enable);
         }
     };
 
     MultiPageDialog.prototype.handleDragStart = function (data) {
-
         this.dragging = true;
         this.lastDeltaX = 0;
         this.startX = data.getLocalPosition(this.parent).x;
         this.enableButtons(false);
-
     };
 
     MultiPageDialog.prototype.handleDrag = function (data) {
@@ -217,8 +212,11 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
             this.pips.setPageIndex(pageIndex);
         }
 
-        var destination = - (pageIndex * this.pages[pageIndex].width) + this.centerOffset,
+        var pageWidth = this.pages[pageIndex].pageWidth || this.pages[pageIndex].width,
+            destination = - (pageIndex * pageWidth) + this.centerOffset,
             self = this;
+
+        console.log('scroll page width', pageWidth);
 
         new TWEEN.Tween({ x: this.pageTray.position.x })
             .to({ x: destination }, 200)
