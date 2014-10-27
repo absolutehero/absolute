@@ -216,8 +216,6 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
             destination = - (pageIndex * pageWidth) + this.centerOffset,
             self = this;
 
-        console.log('scroll page width', pageWidth);
-
         new TWEEN.Tween({ x: this.pageTray.position.x })
             .to({ x: destination }, 200)
             .easing(TWEEN.Easing.Quadratic.InOut)
