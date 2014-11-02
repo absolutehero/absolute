@@ -431,6 +431,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
         Dialog.prototype.destroy = function() {
 
             if(this.nineSlice) {
+                this.container.removeChild(this.nineSlice);
                 this.nineSlice.destroy();
                 this.nineSlice = null;
             }
