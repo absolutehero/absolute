@@ -446,7 +446,9 @@ function (
             // hide the modal
             var modal = this.modalStack.pop();
             modal.onHide();
-            this.stage[this.DIALOG_LAYER].removeChild(modal);
+            if (this.stage[this.DIALOG_LAYER].children.indexOf(modal) != -1) {
+                this.stage[this.DIALOG_LAYER].removeChild(modal);
+            }
 
             // restore the last modal or screen
             var l = this.modalStack.length;
@@ -454,7 +456,9 @@ function (
 
 
                 if (!this.usingWebGL) {
-                    this.stage[0].removeChild(this.modalBG);
+                    if (this.stage[0].children.indexOf(this.modalBG) != -1) {
+                        this.stage[0].removeChild(this.modalBG);
+                    }
                     this.modalBG.texture.destroy(true);
                     this.modalBG = null;
                     this.stage[0].addChildAt(this.currentScreen, 0);
@@ -462,7 +466,9 @@ function (
                         this.resetStage(800);
                     }
                 } else {
-                    this.stage[0].removeChild(this.modalOverlay);
+                    if (this.stage[0].children.indexOf(this.modalOverlay) != -1) {
+                        this.stage[0].removeChild(this.modalOverlay);
+                    }
                     this.renderer[2].view.style.display = "none";
                 }
             }
