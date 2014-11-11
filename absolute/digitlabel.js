@@ -61,11 +61,13 @@ define (['pixi', 'absolute/digitsprite'], function (PIXI, DigitSprite) {
         }
 
         if (this.text.length > 0) {
-            for (var i = 0, l = this.text.length; i < l; ++i) {
-                this.sprites[i].visible = true;
-                this.sprites[i].setDigit(this.text[i]);
-                this.sprites[i].position.x = xOffset;
-                xOffset += this.sprites[i].getDigitWidth();
+            for (var i = 0, l = this.text.length; i < l && i < this.sprites.length; ++i) {
+                if (this.sprites && this.sprites[i]) {
+                    this.sprites[i].visible = true;
+                    this.sprites[i].setDigit(this.text[i]);
+                    this.sprites[i].position.x = xOffset;
+                    xOffset += this.sprites[i].getDigitWidth();
+                }
             }
         }
         this.width = xOffset;
