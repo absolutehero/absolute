@@ -88,6 +88,11 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return navigator.userAgent.indexOf("Windows NT") >= 0;
         },
 
+        _isOpera: function () {
+            var ua = navigator.userAgent.toLowerCase();
+            return ua.indexOf("opera") >= 0 || ua.indexOf('opr') >= 0;
+        },
+
         supportsWebGL: function () {
             return !(this._isStockAndroid() || this._isIE() || (this._isWindows() && this._isFirefox()));
         },

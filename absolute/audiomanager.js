@@ -44,6 +44,11 @@ var AudioManager = {
             this.format = 'mp3';
         }
 
+        // force ogg for opera
+        if(Platform._isOpera()) {
+            this.format = 'ogg';
+        }
+
         // need to force ogg for Chromium/node-webkit
         //this.format = 'ogg';
 
