@@ -80,6 +80,10 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return navigator.userAgent.indexOf("Trident") >= 0 || navigator.userAgent.indexOf("MSIE") >= 0;
         },
 
+        _isIOS: function() {
+            return /(iPad|iPhone|iPod)/g.test( navigator.userAgent );
+        },
+
         _isFirefox: function () {
             return navigator.userAgent.indexOf("Firefox") >= 0;
         },
@@ -87,10 +91,12 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
         _isWindows: function () {
             return navigator.userAgent.indexOf("Windows NT") >= 0;
         },
-
         _isOpera: function () {
             var ua = navigator.userAgent.toLowerCase();
             return ua.indexOf("opera") >= 0 || ua.indexOf('opr') >= 0;
+        },
+        _isMac: function () {
+            return navigator.platform.toUpperCase().indexOf('MAC')>=0;
         },
 
         supportsWebGL: function () {

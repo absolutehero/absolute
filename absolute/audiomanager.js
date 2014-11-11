@@ -99,24 +99,19 @@ var AudioManager = {
     },
 
     loadClips: function(sounds, onProgress, onComplete) {
-        var self = this;
+
         var total = sounds.length;
         var count = 0;
 
         var onLoad = function() {
             if (++count === total) {
-                self.setSfxEnabled(GameConfig.getVal("sfxEnabled"));
+                this.setSfxEnabled(GameConfig.getVal("sfxEnabled"));
                 onProgress(count / total);
                 onComplete();
             }
             else {
                 onProgress(count / total);
-            }
-        };
-        for (var i = 0; i < sounds.length; i += 1) {
-            var sound = sounds[i];
-
-
+                var sound = sounds[count];
                 this.createSound({
                     id: sound.id,
                     url: sound.url,
@@ -126,7 +121,19 @@ var AudioManager = {
                     loop: sound.loop,
                     duration: sound.end - sound.start
                 });
-        }
+            }
+        }.bind(this);
+
+        this.createSound({
+            id: sounds[0].id,
+            url: sounds[0].url,
+            volume: sounds[0].volume,
+            onLoad: onLoad,
+            buffer: false,
+            loop: sounds[0].loop,
+            duration: sounds[0].end - sounds[0].start
+        });
+
     },
 
     createSound: function (config) {

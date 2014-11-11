@@ -221,25 +221,25 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
             if (typeof isPortrait !== 'undefined') {
                 if (isPortrait) {
-                    if(this.options.portraitX === null) {
+                    if(typeof this.options.portraitX === 'undefined' || this.options.portraitX === null) {
                         this._setStandardX();
                     } else {
                         this.position.x = Math.round(this.options.portraitX);
                     }
 
-                    if(this.options.portraitY === null) {
+                    if(typeof this.options.portraitY === 'undefined' || this.options.portraitY === null) {
                         this._setStandardY();
                     } else {
                         this.position.y = Math.round(this.options.portraitY);
                     }
                 } else {
-                    if(this.options.landscapeX === null) {
+                    if(typeof this.options.landscapeX == 'undefined' || this.options.landscapeX === null) {
                         this._setStandardX();
                     } else {
                         this.position.x = Math.round(this.options.landscapeX);
                     }
 
-                    if(this.options.landscapeY === null) {
+                    if(typeof this.options.landscapeY == 'undefined' || this.options.landscapeY === null) {
                         this._setStandardY();
                     } else {
                         this.position.y = Math.round(this.options.landscapeY);
@@ -431,6 +431,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
         Dialog.prototype.destroy = function() {
 
             if(this.nineSlice) {
+                this.container.removeChild(this.nineSlice);
                 this.nineSlice.destroy();
                 this.nineSlice = null;
             }

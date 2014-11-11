@@ -38,7 +38,7 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
             scope.onJSONLoaded();
         };
 
-        this.ajaxRequest.open('GET',this.url,false);
+        this.ajaxRequest.open('GET',this.url,true);
         this.ajaxRequest.send();
     };
 

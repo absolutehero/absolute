@@ -78,7 +78,7 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
         var mask = new PIXI.Graphics();
         mask.beginFill(0xFFFFFF, 1.0);
         mask.drawRect(this.position.x + this.options.borderThickness.left, this.position.y,
-            this.options.width - this.options.borderThickness.right, this.height);
+            this.options.width - this.options.borderThickness.right, this.options.height);
         mask.endFill();
         this.pageTray.mask = mask;
 
@@ -119,7 +119,7 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
             }.bind(this),
             false
         );
-        var buttonY = this.height - (this.nextpageButton.height * this.options.buttonScale) - this.options.interfacePadding.arrows.y;
+        var buttonY = this.options.height - (this.nextpageButton.height * this.options.buttonScale) - this.options.interfacePadding.arrows.y;
         this.nextpageButton.scale.x = -1 * this.options.buttonScale;
         this.nextpageButton.scale.y = this.options.buttonScale;
         this.nextpageButton.position.x = this.options.width - this.options.interfacePadding.arrows.x;
@@ -250,6 +250,7 @@ function (PIXI, Dialog, Button, ScreenMetrics,  _, PageIndicator, Coords, Platfo
 
         Dialog.prototype.handleOrientationChange.call(this,isPortrait);
 
+        this.scale.x = this.scale.y = 1;
         this.reset(true, this.currentPage);
 
     };

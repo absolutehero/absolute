@@ -384,10 +384,7 @@ define ([
                     this.scaleWidget(widget, config, parent);
                     this.rotateWidget(widget, config, parent);
                     this.positionWidget(widget, config, parent);
-                } else {
-                    console.log('nope ', config.key);
                 }
-
             },
 
             checkParams: function (template, params) {
