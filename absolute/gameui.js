@@ -95,7 +95,6 @@ function (
             // rendering failure. All positioning data is off and the games become unplayable.
             width = this.baseWidth;
             height = this.baseHeight;
-
         }
 
         if (this.renderer.length === 0) {
@@ -473,8 +472,12 @@ function (
                 }
             }
             else {
+                var nextModal = this.modalStack[l - 1];
                 this.stage[this.DIALOG_LAYER].addChild(this.modalStack[l - 1]);
-                this.refreshModal();
+
+                if (this.supportsOrientationChange && typeof nextModal.handleOrientationChange !== 'undefined') {
+                    nextModal.handleOrientationChange(this.portrait);
+                }
             }
         }
     };
