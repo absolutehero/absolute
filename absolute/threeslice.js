@@ -54,7 +54,9 @@ define(['pixi', 'lodash'],
 
             tempTexture = tempContainer.generateTexture();
 
-            centerTile.tilingTexture.destroy(true);
+            if (centerTile.tilingTexture) {
+                centerTile.tilingTexture.destroy(true);
+            }
 
             return tempTexture;
 

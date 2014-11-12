@@ -91,7 +91,10 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
         _isWindows: function () {
             return navigator.userAgent.indexOf("Windows NT") >= 0;
         },
-
+        _isOpera: function () {
+            var ua = navigator.userAgent.toLowerCase();
+            return ua.indexOf("opera") >= 0 || ua.indexOf('opr') >= 0;
+        },
         _isMac: function () {
             return navigator.platform.toUpperCase().indexOf('MAC')>=0;
         },
