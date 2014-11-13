@@ -55,16 +55,7 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
 
         var self = this;
 
-        if (!Platform.supportsTouch()) {
-            this.mouseover = function(evt) {
-                self.setTexture(self.hoverImage);
-            };
-            this.mouseout = function(evt) {
-                self.setTexture(self.defaultImage);
-            };
-        }
-
-        var triggerAction = function() {
+        this.triggerAction = function() {
             self.setTexture(self.defaultImage);
             self.doAction();
         };
@@ -89,48 +80,60 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
                 this.touchend = function(evt) {
                     // don't trigger if the cursor moved (we are dragging)
                     if (!this.clickCanceled) {
-                        triggerAction();
+                        this.triggerAction();
                     }
                     this.clickCancelled = false;
                     this.down = false;
                 }.bind(this);
 
             } else {
-                // remove the mousedown if causes double input on older android
-                // jwg: removed because this was breaking buttons on android
-                // this.mousedown = 
                 this.touchstart = function(evt) {
-                    triggerAction();
+                    this.triggerAction();
                 };
+            }
+
+            // Support mouse on laptops/desktops that have touch displays
+            if(Platform._isWindows() || Platform._isMac()) {
+                this.bindMouseEvents();
             }
 
         }
         else {
-
-            this.mousedown = function(evt) {
-                this.clickCanceled = false;
-                this.startPos = evt.global.clone();
-                this.down = true;
-            }.bind(this);
-
-            this.mousemove = function(evt) {
-                if (this.down) {
-                    if (Math.abs(this.startPos.x - evt.global.x) > this.moveThreshold || Math.abs(this.startPos.y - evt.global.y) > this.moveThreshold) {
-                        this.clickCanceled = true;
-                    }
-                }
-            }.bind(this);
-
-            this.mouseup = function(evt) {
-                // don't trigger if the cursor moved (we are dragging)
-                if (!this.clickCanceled) {
-                    triggerAction();
-                }
-                this.clickCancelled = false;
-                this.down = false;
-            }.bind(this);
-
+            this.bindMouseEvents();
         }
+    };
+
+    Button.prototype.bindMouseEvents = function() {
+
+        this.mouseover = function(evt) {
+            this.setTexture(this.hoverImage);
+        };
+        this.mouseout = function(evt) {
+            this.setTexture(this.defaultImage);
+        };
+
+        this.mousedown = function(evt) {
+            this.clickCanceled = false;
+            this.startPos = evt.global.clone();
+            this.down = true;
+        }.bind(this);
+
+        this.mousemove = function(evt) {
+            if (this.down) {
+                if (Math.abs(this.startPos.x - evt.global.x) > this.moveThreshold || Math.abs(this.startPos.y - evt.global.y) > this.moveThreshold) {
+                    this.clickCanceled = true;
+                }
+            }
+        }.bind(this);
+
+        this.mouseup = function(evt) {
+            // don't trigger if the cursor moved (we are dragging)
+            if (!this.clickCanceled) {
+                this.triggerAction();
+            }
+            this.clickCancelled = false;
+            this.down = false;
+        }.bind(this);
     };
 
     Button.prototype.doAction = function() {
