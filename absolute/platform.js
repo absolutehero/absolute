@@ -98,6 +98,13 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
         _isMac: function () {
             return navigator.platform.toUpperCase().indexOf('MAC')>=0;
         },
+        _isNodeWebkit: function() {
+            try {
+                return (typeof require('nw.gui') !== "undefined");
+            } catch(e) {
+                return false;
+            }
+        },
 
         supportsWebGL: function () {
             return !(this._isStockAndroid() || this._isIE() || (this._isWindows() && this._isFirefox()));
