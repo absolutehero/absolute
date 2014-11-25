@@ -209,6 +209,8 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
 
             if (this.resClass !== "") {
                 return this.resClass;
+            } else if(Platform._isNodeWebkit()) {
+                return this.resClasses[this.resClasses.length - 1].id
             }
 
             var size = Math.min(this.getHeight(true) , this.getWidth(true)),
