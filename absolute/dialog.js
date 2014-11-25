@@ -339,6 +339,14 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 this.options.images = images;
             }
 
+            if(this.nineSlice) {
+                this.nineSlice.destroy(true);
+                try {
+                    this.container.removeChild(this.nineSlice);
+                } catch(e) {}
+
+            }
+
             this.nineSlice = new NineSlice(this.options);
 
             this.container.addChildAt(this.nineSlice, 0);
