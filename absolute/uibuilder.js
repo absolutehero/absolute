@@ -180,12 +180,12 @@ define ([
 
                         // width cannot be set on displayobjects after pixi 1.5.3 so these settings will be ignored in pixi > 1.6
                         if (config.params) {
-                            widget.width = Coords.x(config.params.width) || parent.width;
-                            widget.height = Coords.y(config.params.height) || parent.height;
+                            widget.width = widget.width_ = Coords.x(config.params.width) || parent.width || parent.width_;
+                            widget.height = widget.height_ = Coords.y(config.params.height) || parent.height || parent.height_;
                         }
                         else {
-                            widget.width = parent.width;
-                            widget.height = parent.height;
+                            widget.width = widget.width_ = parent.width || parent.width_;
+                            widget.height = widget.height_ = parent.height || parent.height_;
                         }
                         break;
 
@@ -416,16 +416,16 @@ define ([
                     if (config.scale.x) {
                         if (typeof config.scale.x == "string") {
                             if (config.scale.x === "height") {
-                                if (!parent || !parent.height) {
+                                if (!parent || !(parent.height || parent.height_)) {
                                     throw("Error: relative scale used but parent height not set!");
                                 }
-                                widget.scale.x = parent.height / widget.height;
+                                widget.scale.x = (parent.height || parent.height_) / widget.height;
                             }
                             if (config.scale.x === "width") {
-                                if (!parent || !parent.width) {
+                                if (!parent || !(parent.width || parent.width_)) {
                                     throw("Error: relative scale used but parent width not set!");
                                 }
-                                widget.scale.x = parent.width / widget.width;
+                                widget.scale.x = (parent.width || parent.width_) / widget.width;
                             }
                         }
                         else {
@@ -435,16 +435,16 @@ define ([
                     if (config.scale.y) {
                         if (typeof config.scale.y == "string") {
                             if (config.scale.y === "height") {
-                                if (!parent || !parent.height) {
+                                if (!parent || !(parent.height || parent.height_)) {
                                     throw("Error: relative scale used but parent height not set!");
                                 }
-                                widget.scale.y = parent.height / widget.height;
+                                widget.scale.y = (parent.height || parent.height_) / widget.height;
                             }
                             if (config.scale.y === "width") {
-                                if (!parent || !parent.width) {
+                                if (!parent || !(parent.width || parent.width_)) {
                                     throw("Error: relative scale used but parent width not set!");
                                 }
-                                widget.scale.y = parent.width / widget.width;
+                                widget.scale.y = (parent.width || parent.width_) / widget.width;
                             }
                         }
                         else {
@@ -467,6 +467,9 @@ define ([
                 if(parent && parent.optionalHeight) {
                     height = parent.optionalHeight;
                 }
+                else if (parent && parent.height_) {
+                    height = parent.height_;
+                }
                 else if(parent && parent.height == 0) {
                     var parentBounds = parent.getLocalBounds();
                     height = parentBounds.height;
@@ -475,10 +478,10 @@ define ([
                         height = ScreenMetrics.clientHeight;
                     }*/
 
-                } else if (!parent || !parent.height) {
+                } else if (!parent || !(parent.height ||parent.height_)) {
                     throw("Error: relative position used but parent height not set!");
                 } else {
-                    height = parent.height;
+                    height = parent.height || parent.height_;
                 }
 
                 return height;
@@ -491,6 +494,9 @@ define ([
                 if(parent && parent.optionalWidth) {
                     width = parent.optionalWidth;
                 }
+                else if (parent && parent.width_) {
+                    width = parent.width_;
+                }
                 else if(parent && parent.width == 0) {
                     var parentBounds = parent.getLocalBounds();
                     width = parentBounds.width;
@@ -499,10 +505,10 @@ define ([
                         width = ScreenMetrics.clientWidth;
                     }*/
 
-                } else if (!parent || !parent.width) {
+                } else if (!parent || !(parent.width || parent.width_)) {
                     throw("Error: relative position used but parent width not set!");
                 } else {
-                    width = parent.width;
+                    width = parent.width || parent.width_;
                 }
 
                 return width;

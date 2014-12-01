@@ -15,8 +15,8 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             };
 
             this.direction = "none";
-            this.width = 0;
-            this.height = 0;
+            this.width_ = 0;
+            this.height_ = 0;
             this.gapX = 0;
             this.gapY = 0;
             this.cellWidth = 1;
@@ -103,8 +103,8 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                 }
             }
 
-            page.width = (this.cellWidth + this.gapX) * this.colsPerPage;
-            page.height = (this.cellHeight + this.gapY) * this.rowsPerPage;
+            page.width_ = (this.cellWidth + this.gapX) * this.colsPerPage;
+            page.height_ = (this.cellHeight + this.gapY) * this.rowsPerPage;
 
             return page;
 
@@ -138,23 +138,23 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                 if (this.isPortrait && (this.lockLayout !== "vertical" || this.lockLayout == "none")) {
                     for (var i = 0, l = this.pages.length; i < l; i += 1) {
                         var page = this.pages[i];
-                        page.position.x = i * page.width;
+                        page.position.x = i * page.width_;
                         page.position.y = 0;
                         this.pageTray.addChild(page);
                     }
-                    this.kPanThreshold = page.width / 5;
-                    this.centerOffset = (this.width - page.width) / 2;
+                    this.kPanThreshold = page.width_ / 5;
+                    this.centerOffset = (this.width_ - page.width_) / 2;
                     this.pageTray.position.x = this.centerOffset;
 
                 } else if (this.lockLayout == "vertical" || !this.isPortrait && (this.lockLayout !== "horizontal" || this.lockLayout == "none")) {
                     for (var i = 0, l = this.pages.length; i < l; i += 1) {
                         var page = this.pages[i];
                         page.position.x = 0;
-                        page.position.y = i * page.height;
+                        page.position.y = i * page.height_;
                         this.pageTray.addChild(page);
                     }
-                    this.kPanThreshold = page.height / 5;
-                    this.centerOffset = (this.height - page.height) / 2;
+                    this.kPanThreshold = page.height_ / 5;
+                    this.centerOffset = (this.height_ - page.height_) / 2;
                     this.pageTray.position.y = this.centerOffset;
                 }
 
@@ -308,8 +308,8 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
 
         MultiPageList.prototype.setLayout = function (options) {
             this.direction = options.direction;
-            this.width = options.pageWidth;
-            this.height = options.pageHeight;
+            this.width_ = options.pageWidth;
+            this.height_ = options.pageHeight;
             this.gapX = options.gap;
             this.gapY = options.gap;
             this.cellWidth = options.itemWidth;
@@ -318,13 +318,13 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             if (typeof options.colsPerPage === 'number') {
                 this.colsPerPage = options.colsPerPage;
             } else {
-                this.colsPerPage = Math.floor(this.width / this.cellWidth);
+                this.colsPerPage = Math.floor(options.pageWidth / this.cellWidth);
             }
 
             if (typeof options.rowsPerPage === 'number') {
                 this.rowsPerPage = options.rowsPerPage;
             } else {
-                this.rowsPerPage = Math.floor(this.height / this.cellHeight);
+                this.rowsPerPage = Math.floor(options.pageHeight / this.cellHeight);
             }
 
             this.maskRect = options.maskRect;

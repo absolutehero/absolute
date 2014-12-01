@@ -103,6 +103,10 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
         }
     };
 
+    Button.prototype.setInteractive = function (value) {
+        this.interactive = value;
+    };
+
     Button.prototype.bindMouseEvents = function() {
 
         this.mouseover = function(evt) {

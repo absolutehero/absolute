@@ -44,7 +44,10 @@ define(['pixi', 'absolute/loader'], function(PIXI, Loader) {
 
     LazyLoadedSprite.prototype._replaceAsset = function () {
         this.asset = PIXI.Sprite.fromFrame(this.assetName);
-        this.placeholder.addChild(this.asset);
+        this.removeChild(this.placeholder);
+        this.addChild(this.asset);
+        this.placeholder = null;
+
     };
 
     Object.defineProperty(LazyLoadedSprite.prototype, 'loaded', {
@@ -56,18 +59,6 @@ define(['pixi', 'absolute/loader'], function(PIXI, Loader) {
     Object.defineProperty(LazyLoadedSprite.prototype, 'loading', {
         get: function() {
             return this.isLoading;
-        }
-    });
-
-    Object.defineProperty(LazyLoadedSprite.prototype, 'width', {
-        get: function() {
-            return this.placeholder.width * this.placeholder.scale.x;
-        }
-    });
-
-    Object.defineProperty(LazyLoadedSprite.prototype, 'height', {
-        get: function() {
-            return this.placeholder.height * this.placeholder.scale.y;
         }
     });
 

@@ -43,7 +43,7 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
     };
 
     // touch move broken in 1.5.3
-    if(PIXI.VERSION = "v1.5.3") {
+    if(PIXI.VERSION == "v1.5.3") {
 
         PIXI.InteractionManager.prototype.onTouchMove = function(event)
         {
@@ -98,7 +98,9 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
             }
 
             this.source = null;
-            PIXI.texturesToDestroy.push(this);
+            if (PIXI.texturesToDestroy) {
+                PIXI.texturesToDestroy.push(this);
+            }
         };
 
         PIXI.AjaxRequest = function()

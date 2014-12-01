@@ -14,7 +14,7 @@ define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
 
         brightness: function (sprite, brightness) {
             var i,
-                texture = sprite.generateTexture(this.offScreenRenderer),
+                texture = sprite.generateTexture(),
                 imgData =  null;
 
 
@@ -37,7 +37,7 @@ define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
 
         greyscale: function (sprite, contrast) {
             var i,
-                texture = sprite.generateTexture(this.offScreenRenderer),
+                texture = sprite.generateTexture(),
                 imgData = null;
 
             if (texture.textureBuffer.context) {

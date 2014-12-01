@@ -41,7 +41,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         this.moving = false;
 
         this.contents = new PIXI.DisplayObjectContainer();
-        this.contents.setInteractive(true);
+        this.contents.interactive = true;
 
         if (Platform.supportsTouch()) {
             this.contents.touchstart = this.onMoveStart.bind(this);
@@ -60,18 +60,20 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
     };
 
     ScrollArea.prototype.resize = function (width, height) {
-        this.width = width;
-        this.height = height;
+        this.width_ = width;
+        this.height_ = height;
+/*
 
         if (this.mask) {
             this.removeChild(this.mask);
         }
         var mask = new PIXI.Graphics();
         mask.beginFill(0xFFFFFF, 1.0);
-        mask.drawRect(0, 0, this.width, this.height);
+        mask.drawRect(0, 0, this.width_, this.height_);
         mask.endFill();
         this.mask = mask;
         this.addChild(this.mask);
+*/
 
         this.updateContentBounds();
     };
@@ -83,7 +85,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     ScrollArea.prototype.scrollXAbsolute = function (xp) {
         if (!this.constrainX) {
-            if (xp <= 0 && xp >= this.width - this.contents.width) {
+            if (xp <= 0 && xp >= this.width_ - this.contents.width) {
                 this.contents.position.x = Math.round(xp);
             }
         }
@@ -91,7 +93,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     ScrollArea.prototype.scrollYAbsolute = function (yp) {
         if (!this.constrainY) {
-            if (yp <= 0 && yp >= this.height - this.contents.height) {
+            if (yp <= 0 && yp >= this.height_ - this.contents.height) {
                 this.contents.position.y =  Math.round(yp);
             }
         }
@@ -100,7 +102,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
     ScrollArea.prototype.scrollX = function (deltaX) {
         if (!this.constrainX) {
             var xp = this.contents.position.x + deltaX;
-            if (xp <= 0 && xp >= this.width - this.contents.width) {
+            if (xp <= 0 && xp >= this.width_ - this.contents.width) {
                 this.contents.position.x = Math.round(xp);
             }
         }
@@ -109,7 +111,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
     ScrollArea.prototype.scrollY = function (deltaY) {
         if (!this.constrainY) {
             var yp = this.contents.position.y + deltaY;
-            if (yp <= 0 && yp >= this.height - this.contents.height) {
+            if (yp <= 0 && yp >= this.height_ - this.contents.height) {
                 this.contents.position.y =  Math.round(yp);
             }
         }
@@ -123,7 +125,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     ScrollArea.prototype.scrollBottom = function () {
         if (!this.constrainY) {
-            this.contents.position.y = this.height - this.contents.height;
+            this.contents.position.y = this.height_ - this.contents.height;
         }
     };
 
@@ -135,19 +137,24 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     ScrollArea.prototype.scrollRight = function () {
         if (!this.constrainX) {
-            this.contents.position.x = this.width - this.contents.width;
+            this.contents.position.x = this.width_ - this.contents.width;
         }
     };
 
     ScrollArea.prototype.updateContentBounds = function () {
-        var bb;
 
-        bb = this.computeAABB(this.contents);
+        if (this.contents.width && this.contents.height) {
+            this.contents.hitArea = new PIXI.Rectangle(0, 0, this.contents.width, this.contents.height);
+        }
+        else {
+            var bb;
+            bb = this.computeAABB(this.contents);
+            this.contents.width_ = bb.width;
+            this.contents.height_ = bb.height;
 
-        this.contents.width = bb.width;
-        this.contents.height = bb.height;
+            this.contents.hitArea = new PIXI.Rectangle(0, 0, bb.width_, bb.height_);
+        }
 
-        this.contents.hitArea = new PIXI.Rectangle(0, 0, bb.width, bb.height);
 
         if (this.constrainX) {
             switch (this.constrainXType) {
@@ -155,10 +162,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
                     this.contents.position.x = 0;
                     break;
                 case "right":
-                    this.contents.position.x = this.width - this.contents.width;
+                    this.contents.position.x = this.width_ - this.contents.width;
                     break;
                 case "center":
-                    this.contents.position.x = (this.width - this.contents.width) / 2;
+                    this.contents.position.x = (this.width_ - this.contents.width) / 2;
                     break;
             }
         }
@@ -169,10 +176,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
                     this.contents.position.y = 0;
                     break;
                 case "bottom":
-                    this.contents.position.y = this.height - this.contents.height;
+                    this.contents.position.y = this.height_ - this.contents.height;
                     break;
                 case "center":
-                    this.contents.position.y = (this.height - this.contents.height) / 2;
+                    this.contents.position.y = (this.height_ - this.contents.height) / 2;
                     break;
             }
         }
@@ -185,7 +192,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         else if (dob instanceof PIXI.DisplayObjectContainer) {
 
             // if a container has a width and height set, use those rather than computing
-            if (dob.width && dob.height) {
+            if (dob.width_ && dob.height_) {
+                return new PIXI.Rectangle(dob.position.x, dob.position.y, dob.width_, dob.height_);
+            }
+            else if (dob.width && dob.height) {
                 return new PIXI.Rectangle(dob.position.x, dob.position.y, dob.width, dob.height);
             }
             if (dob.children.length > 0) {
@@ -298,8 +308,8 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
      */
     ScrollArea.prototype.isChildVisible = function (child) {
         this.contents.updateTransform();
-        var childRect = new PIXI.Rectangle(child.worldTransform.tx, child.worldTransform.ty, child.width, child.height);
-        var parentRect = new PIXI.Rectangle(this.worldTransform.tx, this.worldTransform.ty, this.width, this.height);
+        var childRect = new PIXI.Rectangle(child.worldTransform.tx, child.worldTransform.ty, child.width_, child.height_);
+        var parentRect = new PIXI.Rectangle(this.worldTransform.tx, this.worldTransform.ty, this.width_, this.height_);
 
         var a = parentRect.contains(childRect.x + childRect.width / 2, childRect.y + childRect.height / 2),
             b = parentRect.contains(childRect.x, childRect.y),

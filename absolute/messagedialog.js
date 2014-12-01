@@ -7,6 +7,7 @@
 define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords', 'absolute/screenmetrics'],
     function (PIXI, Dialog, _, Button, Coords, ScreenMetrics) {
         var MessageDialog = function (ui, message, options) {
+
             var defaultOptions = {
                 okFunc: function () {},
                 displayOkButton: true,
@@ -16,7 +17,7 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                     font: Math.floor(90 * ScreenMetrics.getResScale()) + "px Ganache",
                     align: "center",
                     wordWrap: true,
-                    wordWrapWidth: this.width - Coords.x(200)
+                    wordWrapWidth: options.width - Coords.x(200)
                 },
                 okButtonLabelPosition: {
                     x:"center", y:Coords.y(-20)
@@ -25,7 +26,7 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                     font: Math.floor(80 * ScreenMetrics.getResScale()) + "px Ganache",
                     align: "center",
                     wordWrap: true,
-                    wordWrapWidth: this.width - Coords.x(200)
+                    wordWrapWidth: options.width - Coords.x(200)
                 },
                 textImage: null
             };
@@ -55,8 +56,8 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                     }.bind(this)
                 );
 
-                this.okButton.position.x = (this.width - this.okButton.width) / 2;
-                this.okButton.position.y = (this.height - this.okButton.height);
+                this.okButton.position.x = (this.options.width - this.okButton.width) / 2;
+                this.okButton.position.y = (this.options.height - this.okButton.height);
                 this.addChild(this.okButton);
 
                 var okLabel = new PIXI.BitmapText(this.options.okButtonText, this.options.okButtonTextStyle);
@@ -73,8 +74,6 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
 
         MessageDialog.prototype.initContent = function () {
             var contentContainer = new PIXI.DisplayObjectContainer();
-            contentContainer.width = this.width;
-            contentContainer.height = this.height;
 
             if (this.options.textImage == null) {
                 this.text = new PIXI.BitmapText(this.message, this.options.textStyle);
@@ -84,7 +83,7 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
                 this.text.setText(this.message);
             }
 
-            this.text.position.x = (contentContainer.width - this.text.textWidth) / 2;
+            this.text.position.x = (this.options.width - this.text.textWidth) / 2;
             contentContainer.addChild(this.text);
 
             return contentContainer;
@@ -100,7 +99,7 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
             this.text.setText(message);
             // XXXCBR - the textWidth is not computed synchronously!?!
             setTimeout(function () {
-                this.text.position.x = (this.width - this.text.textWidth) / 2;
+                this.text.position.x = (this.options.width - this.text.textWidth) / 2;
             }.bind(this), 10);
         };
 

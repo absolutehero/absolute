@@ -87,6 +87,39 @@ function (
 
     };
 
+    GameUI.prototype._createPIXIRenderer = function (width, height, auto) {
+        var pixiVersion = PIXI.VERSION.substring(1).split("."),
+            renderer;
+
+        if (parseInt(pixiVersion[0]) < 2) {
+            if (auto) {
+                renderer = PIXI.autoDetectRenderer(width, height, null, true);
+            }
+            else {
+                renderer = new PIXI.CanvasRenderer(width, height, null, true);
+            }
+        }
+        else {
+            var renderOptions = {
+                view: null,
+                transparent: true,
+                autoResize: false,
+                antialias: false,
+                preserveDrawingBuffer: false,
+                resolution: 1
+            };
+
+            if (auto) {
+                renderer = PIXI.autoDetectRenderer(width, height, renderOptions)
+            }
+            else {
+                renderer = new PIXI.CanvasRenderer(width, height, renderOptions)
+            }
+        }
+
+        return renderer;
+    };
+
     GameUI.prototype.buildRenderers = function (width, height) {
 
         if(Platform._isOldAndroid() && !this.supportsOrientationChange) {
@@ -99,21 +132,21 @@ function (
 
         if (this.renderer.length === 0) {
             if (this.supportsWebGL) {
-                this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
-                this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
+                this.renderer.push(this._createPIXIRenderer(width, height, true));
+                this.renderer.push(this._createPIXIRenderer(width, height, true));
 
                 if (this.renderer[1] instanceof PIXI.WebGLRenderer) {
-                    this.renderer.push(PIXI.autoDetectRenderer(width, height, null, true));
+                    this.renderer.push(this._createPIXIRenderer(width, height, true));
                     this.usingWebGL = true;
                     this.DIALOG_LAYER = 2;
                 }
             }
             else {
-                this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
-                this.renderer.push(new PIXI.CanvasRenderer(width, height, null, true));
+                this.renderer.push(this._createPIXIRenderer(width, height, false));
+                this.renderer.push(this._createPIXIRenderer(width, height, false));
             }
 
-            this.offScreenRenderer = new PIXI.CanvasRenderer(width, height, null, true);
+            this.offScreenRenderer = this._createPIXIRenderer(width, height, false);
             //this.offScreenRenderer.transparent = true;
 
             this.container.appendChild(this.renderer[1].view);
@@ -512,7 +545,7 @@ function (
         var scale = 0.5,
             swidth = Math.ceil(this.width * scale),
             sheight = Math.ceil(this.height * scale),
-            osr = new PIXI.CanvasRenderer(swidth, sheight, null, true),
+            osr = this._createPIXIRenderer(swidth, sheight, false),
             graphics = new PIXI.Graphics(),
             mb;
 
