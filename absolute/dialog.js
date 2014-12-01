@@ -189,6 +189,9 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     this.options.height = getPercentageSize(this.ui.height, this.options.height);
                 }
             }
+
+            this.width_ = this.options.width;
+            this.height_ = this.options.height;
         };
 
         Dialog.prototype.setLandscapePositions = function(options) {
