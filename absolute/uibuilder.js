@@ -125,8 +125,6 @@ define ([
                             align = config.params.align;
                         }
                         widget = new PIXI.BitmapText(_s(config.params.text), {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, tint: tint, align: align});
-                        widget.width = widget.textWidth;
-                        widget.height = widget.textHeight;
                         widget.tint = parseInt(tint, 16);
                         widget._setText = widget.setText;
                         widget.setText = function (text, reposition) {
@@ -137,8 +135,6 @@ define ([
 
                             if(reposition) {
                                 this.updateText();
-                                widget.width = widget.textWidth;
-                                widget.height = widget.textHeight;
                                 self.positionWidget(this, config, this.parent);
                             }
                         };
