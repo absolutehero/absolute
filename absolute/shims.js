@@ -102,35 +102,34 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
                 PIXI.texturesToDestroy.push(this);
             }
         };
-
-        PIXI.AjaxRequest = function()
-        {
-            var activexmodes = ['Msxml2.XMLHTTP.6.0', 'Msxml2.XMLHTTP.3.0', 'Microsoft.XMLHTTP']; //activeX versions to check for in IE
-
-            if (window.XMLHttpRequest) // if Mozilla, Safari etc
-            {
-                return new window.XMLHttpRequest();
-            }
-            else if (window.ActiveXObject)
-            { //Test for support for ActiveXObject in IE first (as XMLHttpRequest in IE7 is broken)
-                for (var i=0; i<activexmodes.length; i++)
-                {
-                    try{
-                        return new window.ActiveXObject(activexmodes[i]);
-                    }
-                    catch(e) {
-                        //suppress error
-                    }
-                }
-            } else
-            {
-                return false;
-            }
-        };
-
     }
 
-    if(Platform.hasPutImageDataBug() || true) {
+    PIXI.AjaxRequest = function()
+    {
+        var activexmodes = ['Msxml2.XMLHTTP.6.0', 'Msxml2.XMLHTTP.3.0', 'Microsoft.XMLHTTP']; //activeX versions to check for in IE
+
+        if (window.XMLHttpRequest) // if Mozilla, Safari etc
+        {
+            return new window.XMLHttpRequest();
+        }
+        else if (window.ActiveXObject)
+        { //Test for support for ActiveXObject in IE first (as XMLHttpRequest in IE7 is broken)
+            for (var i=0; i<activexmodes.length; i++)
+            {
+                try{
+                    return new window.ActiveXObject(activexmodes[i]);
+                }
+                catch(e) {
+                    //suppress error
+                }
+            }
+        } else
+        {
+            return false;
+        }
+    };
+
+    if(Platform.hasPutImageDataBug()) {
 
         PIXI.CanvasTinter.tintWithPerPixel = function(texture, color, canvas)
         {

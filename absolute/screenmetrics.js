@@ -212,7 +212,11 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             } else if(Platform._isNodeWebkit()) {
                 return this.resClasses[this.resClasses.length - 1].id
             }
-
+            /*
+            else if (window.isFacebookCanvas) {
+                return 'r768';
+            }
+            */
 
             var size = Math.min(this.getHeight(true) , this.getWidth(true)),
                 resClassIndex = 0;
