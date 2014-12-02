@@ -62,7 +62,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
     ScrollArea.prototype.resize = function (width, height) {
         this.width_ = width;
         this.height_ = height;
-/*
+
 
         if (this.mask) {
             this.removeChild(this.mask);
@@ -73,7 +73,6 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         mask.endFill();
         this.mask = mask;
         this.addChild(this.mask);
-*/
 
         this.updateContentBounds();
     };
