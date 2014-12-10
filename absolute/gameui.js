@@ -226,14 +226,22 @@ function (
                     windowHeight = windowHeight - Coords.y(30);
                 }
                 var trueAspectRatio = this.baseWidth / this.baseHeight,
-                    minWidth = this.container.style.minWidth || 0;
+                    minWidth = this.container.style.minWidth || 0,
+                    maxWidth = this.container.style.maxWidth || 0;
 
                 if(minWidth !== 0) {
                     minWidth = parseInt(minWidth.slice(0, minWidth.indexOf('px')));
                 }
 
+                if(maxWidth !== 0) {
+                    maxWidth = parseInt(maxWidth.slice(0, maxWidth.indexOf('px')));
+                }
+
                 if(clientWidth <= minWidth) {
                     clientWidth = minWidth;
+                    clientHeight = clientWidth / trueAspectRatio;
+                } else if(clientWidth >= maxWidth) {
+                    clientWidth = maxWidth;
                     clientHeight = clientWidth / trueAspectRatio;
                 } else if(clientWidth > clientHeight) {
                     clientHeight = clientWidth / trueAspectRatio;
