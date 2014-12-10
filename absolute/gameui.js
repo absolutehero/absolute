@@ -240,7 +240,7 @@ function (
                 if(clientWidth <= minWidth) {
                     clientWidth = minWidth;
                     clientHeight = clientWidth / trueAspectRatio;
-                } else if(clientWidth >= maxWidth) {
+                } else if(clientWidth >= maxWidth && maxWidth > 0) {
                     clientWidth = maxWidth;
                     clientHeight = clientWidth / trueAspectRatio;
                 } else if(clientWidth > clientHeight) {
