@@ -225,9 +225,17 @@ function (
                 if (Platform._isiPad && !this.isPortrait && !Platform.isCordova()) {
                     windowHeight = windowHeight - Coords.y(30);
                 }
-                var trueAspectRatio = this.baseWidth / this.baseHeight;
+                var trueAspectRatio = this.baseWidth / this.baseHeight,
+                    minWidth = this.container.style.minWidth || 0;
 
-                if(clientWidth > clientHeight) {
+                if(minWidth !== 0) {
+                    minWidth = parseInt(minWidth.slice(0, minWidth.indexOf('px')));
+                }
+
+                if(clientWidth <= minWidth) {
+                    clientWidth = minWidth;
+                    clientHeight = clientWidth / trueAspectRatio;
+                } else if(clientWidth > clientHeight) {
                     clientHeight = clientWidth / trueAspectRatio;
                     if(clientHeight > windowHeight) {
                         clientWidth = clientWidth * (windowHeight / clientHeight);
@@ -324,24 +332,33 @@ function (
 
             this.clientWidth = clientWidth;
 
+            var positionStatic = this.container.className == 'static';
+
             for (i = 0; i < this.renderer.length; i += 1) {
                 this.renderer[i].view.style.width = clientWidth  + "px";
                 this.renderer[i].view.style.height = clientHeight + "px";
                 this.renderer[i].view.style.position = "absolute";
 
-                if (clientWidth < windowWidth) {
-                    this.renderer[i].view.style.left = Math.round((windowWidth - clientWidth) / 2) + 'px';
-                }
-                else {
-                    this.renderer[i].view.style.left = '0';
+                if(positionStatic) {
+                    this.renderer[i].view.style.left = Math.round((this.container.clientWidth - clientWidth) / 2) + 'px';
+                    this.renderer[i].view.style.top = '0px';
+                    this.container.style.height = this.renderer[i].view.style.height;
+                } else {
+                    if (clientWidth < windowWidth) {
+                        this.renderer[i].view.style.left = Math.round((windowWidth - clientWidth) / 2) + 'px';
+                    }
+                    else {
+                        this.renderer[i].view.style.left = '0';
+                    }
+
+                    if (clientHeight < windowHeight) {
+                        this.renderer[i].view.style.top = Math.round((windowHeight - clientHeight) / 2) + 'px';
+                    }
+                    else {
+                        this.renderer[i].view.style.top = '0';
+                    }
                 }
 
-                if (clientHeight < windowHeight) {
-                    this.renderer[i].view.style.top = Math.round((windowHeight - clientHeight) / 2) + 'px';
-                }
-                else {
-                    this.renderer[i].view.style.top = '0';
-                }
             }
 
             this.resetStage();
