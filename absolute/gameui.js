@@ -351,6 +351,12 @@ function (
                     this.renderer[i].view.style.left = Math.round((this.container.clientWidth - clientWidth) / 2) + 'px';
                     this.renderer[i].view.style.top = '0px';
                     this.container.style.height = this.renderer[i].view.style.height;
+
+                    var menuBar = document.getElementById('menuwrapper');
+                    if(typeof menuBar !== 'undefined' && menuBar !== null) {
+                        menuBar.style.width = this.renderer[i].view.style.width;
+                    }
+
                 } else {
                     if (clientWidth < windowWidth) {
                         this.renderer[i].view.style.left = Math.round((windowWidth - clientWidth) / 2) + 'px';
