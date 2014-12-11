@@ -70,7 +70,14 @@ function (
             onComplete();
         });
         this.assetLoader.addEventListener('onProgress', function(loader) {
-            onProgress(1 - (loader.content.loadCount / total));
+
+            // hack for little shop event object is differen for unknown reasons
+            var loadCount = loader.content.loadCount;
+            if(typeof loadCount === 'undefined' && loader.content.content ) {
+                loadCount = loader.content.content.loadCount;
+            }
+
+            onProgress(1 - (loadCount / total));
         });
 
         this.assetLoader.load();
