@@ -18,7 +18,6 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                     'topLeft': _a("dialogNineSlice.topLeft"),
                     'topCenter':_a("dialogNineSlice.topCenter"),
                     'topRight':_a("dialogNineSlice.topRight"),
-                    'topRight_closeBackground': _a("dialogNineSlice.topRight_closeBackground"),
                     'middleLeft':_a("dialogNineSlice.middleLeft"),
                     'middleCenter':_a("dialogNineSlice.middleCenter"),
                     'middleRight':_a("dialogNineSlice.middleRight"),
@@ -281,7 +280,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
             // if we have a background for the close button, assume the button itself is positioned
             // relative to the top-right corner of the dialog
-            if (this.options.images.topRight_closeBackground && !this.options.closeButtonPosition) {
+            if (!this.options.closeButtonPosition) {
                 this.closeButton.position.x = this.options.width - this.closeButton.width;
                 this.closeButton.position.y = 0;
             }
@@ -326,13 +325,6 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
         };
 
         Dialog.prototype._createBackground = function() {
-
-            var images = this.options.images;
-
-            if (this.options.displayCloseButton && images.topRight_closeBackground) {
-                images.topRight = images.topRight_closeBackground;
-                this.options.images = images;
-            }
 
             if(this.nineSlice) {
                 this.nineSlice.destroy(true);
