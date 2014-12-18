@@ -35,7 +35,11 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
 
         this.images = {};
         this.defaultImage = defaultImage;
-        this.hoverImage = SpriteUtils.brightness(this, 0.2);
+        if(typeof hoverImage !== 'undefined' && hoverImage !== null && hoverImage !== defaultImage) {
+            this.hoverImage = hoverImage;
+        } else {
+            this.hoverImage = SpriteUtils.brightness(this, 0.2);
+        }
 
         var container = new PIXI.DisplayObjectContainer(),
             tmpDisabled = new PIXI.Sprite(SpriteUtils.greyscale(this, 0.5)),
