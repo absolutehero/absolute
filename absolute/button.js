@@ -71,12 +71,14 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
                     this.clickCanceled = false;
                     this.startPos = evt.global.clone();
                     this.down = true;
+                    this.setTexture(this.hoverImage);
                 }.bind(this);
 
                 this.touchmove = function(evt) {
                     if (this.down) {
                         if (Math.abs(this.startPos.x - evt.global.x) > this.moveThreshold || Math.abs(this.startPos.y - evt.global.y) > this.moveThreshold) {
                             this.clickCanceled = true;
+                            this.setTexture(this.defaultImage);
                         }
                     }
                 }.bind(this);
@@ -88,6 +90,7 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
                     }
                     this.clickCancelled = false;
                     this.down = false;
+                    this.setTexture(this.defaultImage);
                 }.bind(this);
 
             } else {
