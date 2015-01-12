@@ -9,6 +9,8 @@ define (function() {
 
         enabled: false,
 
+        custom: {},
+
         log: function (msg) {
             if (this.enabled) {
                 console.log(msg);
