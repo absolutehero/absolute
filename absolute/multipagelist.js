@@ -1,6 +1,6 @@
-define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash', 'absolute/coords'],
+define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash', 'absolute/coords'],
 
-    function (PIXI, Hammer, Button, ScreenMetrics,  _, Coords) {
+    function (PIXI, Absolute, Hammer, Button, ScreenMetrics,  _, Coords) {
 
         var MultiPageList = function (ui, items, prevButton, nextButton, options) {
 
@@ -72,7 +72,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                         endIndex = this.items.length;
                     }
 
-                    this.pages.push(this.makePage(this.items.slice(startIndex, endIndex)));
+                    this.pages.push(this.makePage(this.items.slice(startIndex, endIndex), i));
                 }
                 if (this.pages.length > 0) {
                     pageContainer.addChild(this.pages[0]);
@@ -81,7 +81,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
             }
         };
 
-        MultiPageList.prototype.makePage = function (items) {
+        MultiPageList.prototype.makePage = function (items, pageIndex) {
 
             var page = new PIXI.DisplayObjectContainer();
 
@@ -90,6 +90,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                 for (var i = 0; i < items.length; i += 1) {
                     items[i].position.x = itemX;
                     items[i].position.y = 0;
+                    items[i].pageIndex = pageIndex;
                     itemX += (this.cellWidth + this.gapX);
                     page.addChild(items[i]);
                 }
@@ -98,6 +99,7 @@ define(['pixi', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash',
                 for (var i = 0; i < items.length; i += 1) {
                     items[i].position.x = 0;
                     items[i].position.y = itemY;
+                    items[i].pageIndex = pageIndex;
                     itemY += (this.cellHeight + this.gapY);
                     page.addChild(items[i]);
                 }
