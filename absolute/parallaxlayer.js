@@ -5,19 +5,16 @@
  * Time: 2:21 PM
  * To change this template use File | Settings | File Templates.
  */
-define(['pixi', 'absolute'], function (PIXI, Absolute) {
-    var ParallaxLayer = function (ui, game, vx) {
-        this.initParallaxLayer(ui, game, vx);
+define(['pixi', 'absolute/screenmetrics'], function (PIXI, ScreenMetrics) {
+    var ParallaxLayer = function (ui, vx) {
+        this.initParallaxLayer(ui, vx);
     };
 
     ParallaxLayer.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-    ParallaxLayer.prototype.initParallaxLayer = function (ui, game, vx) {
+    ParallaxLayer.prototype.initParallaxLayer = function (ui, vx) {
         PIXI.DisplayObjectContainer.call(this);
         this.ui = ui;
-        this.game = game;
-
-
         this.scenes = [];
 
         var xOffset = 0;
@@ -53,7 +50,7 @@ define(['pixi', 'absolute'], function (PIXI, Absolute) {
 
             this.px -= dx;
 
-            var xOffset = this.px * Absolute.ScreenMetrics.getResScale();
+            var xOffset = this.px * ScreenMetrics.getResScale();
             for (var i = 0; i < this.scenes.length; i += 1) {
                 this.scenes[i].position.x = xOffset;
                 xOffset += this.scenes[i].width;
@@ -89,7 +86,7 @@ define(['pixi', 'absolute'], function (PIXI, Absolute) {
         this.lastTime = Date.now();
     };
 
-    ParallaxLayer.prototype.initLevel = function(level) {
+    ParallaxLayer.prototype.reset = function(level) {
         this.lastTime = null;
         this.px = 0;
     };
