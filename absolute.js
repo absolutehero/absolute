@@ -59,6 +59,7 @@ define(function (require) {
         AnimatedButton: require('absolute/animatedbutton'),
         AnimatedTextButton: require('absolute/animatedtextbutton'),
         LazyLoadedSprite: require('absolute/lazyloadedsprite'),
-        Utils: require('absolute/utils')
+        Utils: require('absolute/utils'),
+        ParallaxLayer: require('absolute/parallaxlayer')
     };
 });
