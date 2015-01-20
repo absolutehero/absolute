@@ -116,7 +116,6 @@ define(['tween'], function(TWEEN) {
                 });
             }
         }
-
     };
 
     return TweenUtils;
