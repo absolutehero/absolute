@@ -50,7 +50,7 @@ function (
         this.container = document.getElementById(container);
         this.stage = [];
         this.refreshBackground = false;
-        this.backGroundColor = backgroundColor;
+        this.backgroundColor = backgroundColor;
         this.supportsOrientationChange = !!supportsOrientationChange;
         this.supportsLiquidLayout = !!supportsLiquidLayout;
         this.supportsWebGL = !!supportsWebGL && Platform.supportsWebGL();
