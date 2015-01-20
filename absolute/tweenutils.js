@@ -28,7 +28,9 @@ define(['tween'], function(TWEEN) {
                 })
                 .onComplete(function () {
                     onComplete();
-                    TWEEN.remove(tween);
+                    setTimeout(function () {
+                        TWEEN.remove(tween);
+                    }.bind(this), 0);
                 })
                 .start();
         },
@@ -52,7 +54,9 @@ define(['tween'], function(TWEEN) {
                 })
                 .onComplete(function () {
                     onComplete();
-                    TWEEN.remove(tween);
+                    setTimeout(function () {
+                        TWEEN.remove(tween);
+                    }.bind(this), 0);
                 })
                 .start();
         },
@@ -73,7 +77,9 @@ define(['tween'], function(TWEEN) {
                 })
                 .onComplete(function () {
                     onComplete();
-                    TWEEN.remove(tween);
+                    setTimeout(function () {
+                        TWEEN.remove(tween);
+                    }.bind(this), 0);
                 })
                 .start();
         },
