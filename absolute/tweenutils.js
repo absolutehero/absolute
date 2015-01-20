@@ -19,7 +19,7 @@ define(['tween'], function(TWEEN) {
                 params.delay  = 0;
             }
 
-            new TWEEN.Tween({ alpha: sprite.alpha })
+            var tween = new TWEEN.Tween({ alpha: sprite.alpha })
                 .delay(params.delay)
                 .to({ alpha: 1 }, params.duration)
                 .easing(TWEEN.Easing.Cubic.In)
@@ -28,6 +28,7 @@ define(['tween'], function(TWEEN) {
                 })
                 .onComplete(function () {
                     onComplete();
+                    TWEEN.remove(tween);
                 })
                 .start();
         },
@@ -42,7 +43,7 @@ define(['tween'], function(TWEEN) {
                 params.delay  = 0;
             }
 
-            new TWEEN.Tween({ alpha: sprite.alpha })
+            var tween = new TWEEN.Tween({ alpha: sprite.alpha })
                 .delay(params.delay)
                 .to({ alpha: 0 }, params.duration)
                 .easing(TWEEN.Easing.Cubic.In)
@@ -51,6 +52,7 @@ define(['tween'], function(TWEEN) {
                 })
                 .onComplete(function () {
                     onComplete();
+                    TWEEN.remove(tween);
                 })
                 .start();
         },
@@ -63,7 +65,7 @@ define(['tween'], function(TWEEN) {
             if (params.endScale === undefined) {
                 params.endScale = 1;
             }
-            new TWEEN.Tween({ scale: sprite.scale.x })
+            var tween = new TWEEN.Tween({ scale: sprite.scale.x })
                 .to({ scale: params.endScale }, params.duration)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onUpdate(function () {
@@ -71,6 +73,7 @@ define(['tween'], function(TWEEN) {
                 })
                 .onComplete(function () {
                     onComplete();
+                    TWEEN.remove(tween);
                 })
                 .start();
         },
@@ -91,8 +94,13 @@ define(['tween'], function(TWEEN) {
 
             if (sprites instanceof Array) {
                 l = sprites.length;
-                for (i = 0; i < l; i += 1) {
-                    tweenFunc(sprites[i], params, multiComplete);
+                if (l > 0) {
+                    for (i = 0; i < l; i += 1) {
+                        tweenFunc(sprites[i], params, multiComplete);
+                    }
+                }
+                else {
+                    onComplete();
                 }
             } else {
                 tweenFunc(sprites, params, function () {

@@ -166,7 +166,7 @@ function (
     };
 
     GameUI.prototype.isFullScreen = function () {
-        return document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+        return !!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);
     };
 
     GameUI.prototype.exitFullScreen = function () {
@@ -473,7 +473,6 @@ function (
         this.showActiveAtlases();
     };
 
-
     GameUI.prototype.showModal = function (screen, alpha) {
         alpha = typeof alpha === 'undefined' ? 0.5 : alpha;
 
@@ -553,7 +552,6 @@ function (
             var oldScreen = this.stage[0].getChildAt(0);
             this.stage[0].removeChild(oldScreen);
         }
-
         if(this.stage[1].children.length > 0) {
             var oldBackground = this.stage[1].getChildAt(0);
             this.stage[1].removeChild(oldBackground);
@@ -579,7 +577,9 @@ function (
             sheight = Math.ceil(this.height * scale),
             osr = this._createPIXIRenderer(swidth, sheight, false),
             graphics = new PIXI.Graphics(),
-            mb;
+            mb,
+            child,
+            i;
 
         osr.clearBeforeRender = false;
         osr.roundPixels = true;
@@ -588,11 +588,18 @@ function (
         graphics.drawRect(0, 0, swidth, sheight);
         graphics.endFill();
 
+        for (i = 0; i < this.stage[0].children.length; i++) {
+            child = this.stage[0].getChildAt(i);
+            child.scale.x = child.scale.y = scale;
+        }
         this.stage[0].addChild(graphics);
-        this.currentScreen.scale.x = this.currentScreen.scale.y = scale;
         osr.render(this.stage[0]);
-        this.currentScreen.scale.x = this.currentScreen.scale.y = 1;
         this.stage[0].removeChild(graphics);
+
+        for (i = 0; i < this.stage[0].children.length; i++) {
+            child = this.stage[0].getChildAt(i);
+            child.scale.x = child.scale.y = 1;
+        }
 
         mb = new PIXI.Sprite(PIXI.Texture.fromCanvas(osr.view));
         mb.scale.x = mb.scale.y = 1/scale;
@@ -613,7 +620,7 @@ function (
             catch (e) {
 
             }
-            }
+        }
     };
 
     /**
