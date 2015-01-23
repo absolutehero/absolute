@@ -47,6 +47,14 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.contents.touchstart = this.onMoveStart.bind(this);
             this.contents.touchmove = this.onMove.bind(this);
             this.contents.touchend = this.onMoveEnd.bind(this);
+
+            // Support mouse on laptops/desktops that have touch displays
+            if(Platform._isWindows() || Platform._isMac()) {
+                this.contents.mousedown = this.onMoveStart.bind(this);
+                this.contents.mousemove = this.onMove.bind(this);
+                this.contents.mouseup = this.onMoveEnd.bind(this);
+                this.contents.mouseupoutside = this.onMoveEnd.bind(this);
+            }
         }
         else {
             this.contents.mousedown = this.onMoveStart.bind(this);
