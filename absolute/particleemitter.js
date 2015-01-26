@@ -94,6 +94,7 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
     ParticleEmitter.prototype._initParticleEmitter = function(ui, texture, options) {
         PIXI.DisplayObjectContainer.call(this);
         this.ui = ui;
+        this.options = options;
 
         if (!texture) {
             var graphics = new PIXI.Graphics();
@@ -147,7 +148,14 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
             var particle = e.particle;
             if (particle) {
                 particle.sprite = new PIXI.Sprite(particle.target);
-                this.addChild(particle.sprite);
+                if(this.options.parent) {
+                    particle.p.x = this.x;
+                    particle.p.y = this.y;
+                    this.options.parent.addChild(particle.sprite);
+                } else {
+                    this.addChild(particle.sprite);
+                }
+
             }
         }.bind(this));
 
