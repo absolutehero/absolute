@@ -222,7 +222,7 @@ function (
 
             function scaleToAspectRatio () {
 
-                if (Platform._isiPad && !this.isPortrait && !Platform.isCordova()) {
+                if (Platform._isiPad && !this.portrait && !Platform.isCordova()) {
                     windowHeight = windowHeight - Coords.y(30);
                 }
                 var trueAspectRatio = this.baseWidth / this.baseHeight,
