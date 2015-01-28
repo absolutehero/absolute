@@ -324,6 +324,18 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
             }
         };
 
+        Dialog.prototype.enableCloseButton = function() {
+            if (this.closeButton) {
+                this.closeButton.setInteractive(true);
+            }
+        };
+
+        Dialog.prototype.disableCloseButton = function() {
+            if (this.closeButton) {
+                this.closeButton.setInteractive(false);
+            }
+        };
+
         Dialog.prototype._createBackground = function() {
 
             if(this.nineSlice) {
