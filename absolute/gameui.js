@@ -179,6 +179,7 @@ function (
         } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
         }
+        this.resize();
     };
 
     GameUI.prototype.resize = function() {
