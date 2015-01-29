@@ -14,7 +14,7 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
     Button.prototype = Object.create(PIXI.Sprite.prototype);
 
     Button.prototype._initButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions, muteSound) {
-        console.log('mute sound? ', muteSound);
+
         this.muteSound = !!muteSound;
         this.replaceOnHover = !!replaceOnHover;
         useTap = typeof useTap !== 'undefined' ? useTap : false;
