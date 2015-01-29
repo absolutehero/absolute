@@ -223,6 +223,7 @@ define ([
 
                         var replaceOnHover = (config.params.replaceOnHover || null);
                         var useTap = (config.params.replaceOnHover || null);
+                        var muteSound = (config.params.muteSound || false);
 
                         var threeSliceOptions = null;
                         if (threeSlice) {
@@ -237,7 +238,7 @@ define ([
                             };
                         }
 
-                        widget = new AnimatedButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
+                        widget = new AnimatedButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions, muteSound);
 
                         break;
 

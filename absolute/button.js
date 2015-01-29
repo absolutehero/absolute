@@ -6,15 +6,16 @@
  */
 define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform', 'absolute/spriteutils', 'absolute/threeslice', 'lodash'], function (PIXI, Coords, AudioManager, Platform, SpriteUtils, ThreeSlice, _) {
 
-    var Button = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions) {
-        this._initButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions);
+    var Button = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions, muteSound) {
+        this._initButton(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions, muteSound);
     };
 
     Button.constructor = Button;
     Button.prototype = Object.create(PIXI.Sprite.prototype);
 
-    Button.prototype._initButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions) {
-
+    Button.prototype._initButton = function(defaultImage, hoverImage, action, replaceOnHover, useTap, threeSliceOptions, muteSound) {
+        console.log('mute sound? ', muteSound);
+        this.muteSound = !!muteSound;
         this.replaceOnHover = !!replaceOnHover;
         useTap = typeof useTap !== 'undefined' ? useTap : false;
 
@@ -148,7 +149,7 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
     };
 
     Button.prototype.doAction = function() {
-        if (AudioManager.simulSoundSupport()) {
+        if (AudioManager.simulSoundSupport() && !this.muteSound) {
             AudioManager.playSound('button_click');
         }
         if (this.action) {
