@@ -56,7 +56,6 @@ function (
         this.supportsWebGL = !!supportsWebGL && Platform.supportsWebGL();
         this.usingWebGL = false;
         this.lockAspectRatio = !!lockAspectRatio;
-        this.DIALOG_LAYER = 0;
         this.modalStack = [];
         this.modalBgStack = [];
 
@@ -136,9 +135,7 @@ function (
                 this.renderer.push(this._createPIXIRenderer(width, height, true));
 
                 if (this.renderer[1] instanceof PIXI.WebGLRenderer) {
-                    this.renderer.push(this._createPIXIRenderer(width, height, true));
                     this.usingWebGL = true;
-                    this.DIALOG_LAYER = 2;
                 }
             }
             else {
@@ -151,10 +148,6 @@ function (
 
             this.container.appendChild(this.renderer[1].view);
             this.container.appendChild(this.renderer[0].view);
-            if (this.usingWebGL) {
-                this.renderer[2].view.style.display = "none";
-                this.container.appendChild(this.renderer[2].view);
-            }
         }
         else {
             for (var i = 0; i < this.renderer.length; i += 1) {
@@ -444,10 +437,6 @@ function (
             this.renderer[1].render(this.stage[1]);
         }
 
-        if (this.hasModal() && this.renderer.length > 2) {
-            this.renderer[2].render(this.stage[2]);
-        }
-
         this.afterRender();
         this.lastRender = Date.now();
         this.frameRequest = requestAnimFrame(this._animate.bind(this));
@@ -487,15 +476,14 @@ function (
             else {
                 this.modalOverlay = this.buildModalOverlay(alpha);
                 this.stage[0].addChildAt(this.modalOverlay, this.stage[0].children.indexOf(this.currentScreen) + 1);
-                this.renderer[2].view.style.display = "block";
             }
         }
         else {
-            this.stage[this.DIALOG_LAYER].removeChild(this.modalStack[this.modalStack.length - 1]);
+            this.stage[0].removeChild(this.modalStack[this.modalStack.length - 1]);
         }
 
         this.modalStack.push(screen);
-        this.stage[this.DIALOG_LAYER].addChild(screen);
+        this.stage[0].addChild(screen);
         screen.onShow();
 
         this.showActiveAtlases();
@@ -510,8 +498,8 @@ function (
             // hide the modal
             var modal = this.modalStack.pop();
             modal.onHide();
-            if (this.stage[this.DIALOG_LAYER].children.indexOf(modal) != -1) {
-                this.stage[this.DIALOG_LAYER].removeChild(modal);
+            if (this.stage[0].children.indexOf(modal) != -1) {
+                this.stage[0].removeChild(modal);
             }
 
             // restore the last modal or screen
@@ -533,12 +521,11 @@ function (
                     if (this.stage[0].children.indexOf(this.modalOverlay) != -1) {
                         this.stage[0].removeChild(this.modalOverlay);
                     }
-                    this.renderer[2].view.style.display = "none";
                 }
             }
             else {
                 var nextModal = this.modalStack[l - 1];
-                this.stage[this.DIALOG_LAYER].addChild(this.modalStack[l - 1]);
+                this.stage[0].addChild(this.modalStack[l - 1]);
 
                 if (this.supportsOrientationChange && typeof nextModal.handleOrientationChange !== 'undefined') {
                     nextModal.handleOrientationChange(this.portrait);
