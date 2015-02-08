@@ -534,6 +534,7 @@ function (
                     if (this.stage[0].children.indexOf(this.modalOverlay) != -1) {
                         this.stage[0].removeChild(this.modalOverlay);
                     }
+                    this.renderer[2].render(this.stage[2]); // force a render before hiding to revent old dlg from flashing on screen when we show next one
                     this.renderer[2].view.style.display = "none";
                 }
             }
