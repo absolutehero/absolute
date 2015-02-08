@@ -39,17 +39,9 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
         if(typeof hoverImage !== 'undefined' && hoverImage !== null && hoverImage !== defaultImage) {
             this.hoverImage = hoverImage;
         } else {
-            this.hoverImage = SpriteUtils.brightness(this, 0.2);
+            this.hoverImage = this.buildHover();
         }
-
-        var container = new PIXI.DisplayObjectContainer(),
-            tmpDisabled = new PIXI.Sprite(SpriteUtils.greyscale(this, 0.5)),
-            tmpBase = new PIXI.Sprite(this.defaultImage);
-
-        tmpDisabled.alpha = 0.8;
-        container.addChild(tmpBase);
-        container.addChild(tmpDisabled);
-        this.disabledTexture = container.generateTexture();
+        this.disabledTexture = null;
 
         this.buttonMode = true;
         this.setInteractive(true);
@@ -175,10 +167,24 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
         this.setActive(true);
     };
 
+    Button.prototype.buildHover = function() {
+        return SpriteUtils.brightness(this, 0.2);
+    };
+
+    Button.prototype.buildDisabled = function() {
+        var container = new PIXI.DisplayObjectContainer(),
+            tmpDisabled = new PIXI.Sprite(SpriteUtils.greyscale(this, 0.5)),
+            tmpBase = new PIXI.Sprite(this.defaultImage);
+
+        tmpDisabled.alpha = 0.8;
+        container.addChild(tmpBase);
+        container.addChild(tmpDisabled);
+        return container.generateTexture();
+    };
+
     Button.prototype.updateHover = function(texture) {
         this.defaultImage = texture;
         this.hoverImage = SpriteUtils.brightness(this, 0.2);
-
     };
 
     Button.prototype.setActive = function(active) {
@@ -190,6 +196,9 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
         this.active = active;
 
         if (!active) {
+            if (!this.disabledTexture) {
+                this.disabledTexture = this.buildDisabled();
+            }
             this.setTexture(this.disabledTexture);
         }
         else {

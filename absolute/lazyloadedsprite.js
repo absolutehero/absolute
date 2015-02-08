@@ -26,7 +26,7 @@ define(['pixi', 'absolute/loader'], function(PIXI, Loader) {
     };
 
     LazyLoadedSprite.prototype.load = function (onLoaded) {
-        if (!PIXI.TextureCache[this.assetName]) {
+        if (!PIXI.TextureCache[this.assetName] || !PIXI.TextureCache[this.assetName].isValid) {
             var loader = new Loader();
             this.isLoading = true;
             loader.loadArt([{name: this.atlasName}], function () {}, function () {
@@ -43,11 +43,12 @@ define(['pixi', 'absolute/loader'], function(PIXI, Loader) {
     };
 
     LazyLoadedSprite.prototype._replaceAsset = function () {
+        if (this.placeholder) {
+            this.removeChild(this.placeholder);
+            this.placeholder = null;
+        }
         this.asset = PIXI.Sprite.fromFrame(this.assetName);
-        this.removeChild(this.placeholder);
         this.addChild(this.asset);
-        this.placeholder = null;
-
     };
 
     Object.defineProperty(LazyLoadedSprite.prototype, 'loaded', {
@@ -61,6 +62,16 @@ define(['pixi', 'absolute/loader'], function(PIXI, Loader) {
             return this.isLoading;
         }
     });
+
+    LazyLoadedSprite.prototype.unload = function () {
+        if (this.asset) {
+            this.removeChildAt(0);
+            this.asset.texture.destroy(true);
+            this.asset = null;
+            this.isLoaded = false;
+            this.isLoading = false;
+        }
+    };
 
     return LazyLoadedSprite;
 });

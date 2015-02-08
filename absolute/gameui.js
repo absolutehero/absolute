@@ -223,7 +223,7 @@ function (
 
             function scaleToAspectRatio () {
 
-                if (Platform._isiPad && !this.portrait && !Platform.isCordova()) {
+                if (Platform._isiPad && !this.portrait && !Platform.isNativeMobile()) {
                     windowHeight = windowHeight - Coords.y(30);
                 }
                 var trueAspectRatio = this.baseWidth / this.baseHeight,
@@ -286,7 +286,7 @@ function (
                 }
                 else {
                     // fix for a bug on iPad where bottom of screen is chopped off
-                    if (Platform._isiPad && !Platform.isCordova()) {
+                    if (Platform._isiPad && !Platform.isNativeMobile()) {
                         //windowHeight -=  Coords.y(18);
                         clientHeight -= Coords.y(18);
                     }
@@ -326,7 +326,7 @@ function (
                     }
                     else {
                         // fix for a bug on iPad where bottom of screen is chopped off
-                        if (Platform._isiPad && !Platform.isCordova()) {
+                        if (Platform._isiPad && !Platform.isNativeMobile()) {
                             windowHeight -=  Coords.y(18);
                             clientHeight -= Coords.y(18);
                         }
@@ -689,7 +689,7 @@ function (
                 if (dob instanceof PIXI.Sprite) {
                     if (dob.texture && dob.texture.baseTexture) {
                         //console.log(dob.texture.baseTexture.source.src);
-                        var atlasName = dob.texture.baseTexture.source.src || "/offscreen"
+                        var atlasName = dob.texture.baseTexture.source.src || "/offscreen";
                         activeAtlases[atlasName] = (activeAtlases[atlasName] || 0) + 1;
                     }
                 }

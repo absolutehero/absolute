@@ -27,8 +27,8 @@ define(['tween'], function(TWEEN) {
                     sprite.alpha = this.alpha;
                 })
                 .onComplete(function () {
-                    onComplete();
                     setTimeout(function () {
+                        onComplete();
                         TWEEN.remove(tween);
                     }.bind(this), 0);
                 })
@@ -53,8 +53,8 @@ define(['tween'], function(TWEEN) {
                     sprite.alpha = this.alpha;
                 })
                 .onComplete(function () {
-                    onComplete();
                     setTimeout(function () {
+                        onComplete();
                         TWEEN.remove(tween);
                     }.bind(this), 0);
                 })
@@ -76,8 +76,8 @@ define(['tween'], function(TWEEN) {
                     sprite.scale.x = sprite.scale.y = this.scale;
                 })
                 .onComplete(function () {
-                    onComplete();
                     setTimeout(function () {
+                        onComplete();
                         TWEEN.remove(tween);
                     }.bind(this), 0);
                 })

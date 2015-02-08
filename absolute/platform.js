@@ -124,6 +124,14 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return typeof cordova !== "undefined";
         },
 
+        isCocoonJS: function () {
+            return (typeof CocoonJS !== "undefined") && CocoonJS.nativeExtensionObjectAvailable;
+        },
+
+        isNativeMobile: function () {
+            return Platform.isCordova() || Platform.isCocoonJS();
+        },
+
 
         isPhone: function() {
             var uaString = navigator.userAgent;

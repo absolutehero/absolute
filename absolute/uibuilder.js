@@ -221,7 +221,7 @@ define ([
 
                         var action = (handler && handler[config.params.action] && handler[config.params.action].bind(handler) || null);
 
-                        var replaceOnHover = (config.params.replaceOnHover || null);
+                        var replaceOnHover = (config.params.replaceOnHover || false);
                         var useTap = (config.params.replaceOnHover || null);
                         var muteSound = (config.params.muteSound || false);
 

@@ -61,7 +61,7 @@ var AudioManager = {
     },
 
     loadSounds: function(audioAssets, onProgress, onComplete) {
-        if (!audioAssets) {
+        if (!audioAssets || audioAssets.length == 0) {
             onComplete();
             return;
         }
