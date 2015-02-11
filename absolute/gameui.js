@@ -602,8 +602,9 @@ function (
 
     };
 
-    GameUI.prototype.showActiveAtlases = function () {
-        if (Debug.enabled) {
+    GameUI.prototype.showActiveAtlases = function (force) {
+        force = !!force;
+        if (Debug.enabled || force) {
 
             var activeAtlases = {};
             this.walkSprites(this.stage[0], function (dob) {
@@ -617,15 +618,30 @@ function (
             });
 
 
-            Debug.log("Active Atlases");
+            if(force) {
+                console.log("Active Atlases");
+            } else {
+                Debug.log("Active Atlases");
+            }
             for (var atlas in activeAtlases) {
                 if (activeAtlases.hasOwnProperty(atlas)) {
                     var shortName = atlas.substr(atlas.lastIndexOf("/") + 1);
-                    Debug.log(shortName + " has " + activeAtlases[atlas] + " sprites active");
+                    if(force) {
+                        console.log(shortName + " has " + activeAtlases[atlas] + " sprites active");
+                    } else {
+                        Debug.log(shortName + " has " + activeAtlases[atlas] + " sprites active");
+                    }
+
                 }
             }
 
-            Debug.log("There are " + _.size(PIXI.BaseTextureCache) +  " textures in the PIXI.BaseTextureCache.")
+            if(force) {
+                console.log("There are " + _.size(PIXI.BaseTextureCache) +  " textures in the PIXI.BaseTextureCache.")
+            } else {
+                Debug.log("There are " + _.size(PIXI.BaseTextureCache) +  " textures in the PIXI.BaseTextureCache.")
+            }
+
+
 
         }
     };
