@@ -36,13 +36,8 @@ function (
     };
 
     Game.prototype.initVisibilityChangeHandlers = function () {
-        if ('hidden' in document) {
-            document.addEventListener("visibilitychange", function () {
-                Debug.log('visibilitychange');
-                this.handleVisibilityChange(document.hidden);
-            }.bind(this), false);
-        }
-        else if ('mozHidden' in document) {
+
+        if ('mozHidden' in document) {
             document.addEventListener("mozvisibilitychange", function () {
                 Debug.log('mozvisibilitychange');
                 this.handleVisibilityChange(document.mozHidden);
@@ -69,6 +64,11 @@ function (
             window.addEventListener('pageshow', function() {
                 Debug.log('pageshow');
                 this.handleVisibilityChange(false);
+            }.bind(this), false);
+        } else if ('hidden' in document) {
+            document.addEventListener("visibilitychange", function () {
+                Debug.log('visibilitychange');
+                this.handleVisibilityChange(document.hidden);
             }.bind(this), false);
         }
 
