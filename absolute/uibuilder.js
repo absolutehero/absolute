@@ -36,14 +36,14 @@ define ([
         return {
 
             load: function (layoutJSON) {
-                try {
+                //try {
                     var l = JSON.parse(layoutJSON);
                     _.extend(_layouts, l);
-                }
+                /*}
                 catch (e) {
                     alert("UIBuilder: error in layout.json");
                     throw(e);
-                }
+                }*/
             },
 
             findWidget: function (key, l) {
@@ -154,15 +154,15 @@ define ([
                                 scaleY = config.params.scale.y;
                         }
 
-                        try {
+                       // try {
                             widget = PIXI.Sprite.fromFrame(_a(config.params.texture));
                             widget.scale.x = scaleX;
                             widget.scale.y = scaleY;
-                        }
+                       /* }
                         catch (e) {
                             alert (e);
                         }
-
+*/
                         widget.configWidth = widget.width;
                         widget.configHeight = widget.height;
 
