@@ -145,9 +145,7 @@ define(['pixi', 'absolute/coords', 'absolute/audiomanager', 'absolute/platform',
             AudioManager.playSound('button_click');
         }
         if (this.action) {
-            setTimeout(function () {
-                this.action();
-            }.bind(this), 0);
+            this.action();
         }
     };
 
