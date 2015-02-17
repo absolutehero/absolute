@@ -73,7 +73,7 @@ define ([
                 var widget = null,
                     self = this;
 
-                if(optionalWidth && optionalHeight) {
+                if(optionalWidth && optionalHeight && parent) {
                     parent.optionalWidth = optionalWidth;
                     parent.optionalHeight = optionalHeight;
                 }
