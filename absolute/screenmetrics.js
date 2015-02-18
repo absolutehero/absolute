@@ -314,16 +314,7 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
 
             }
 
-            if(Platform.supportsDeviceOrientation) {
-
-                this.realWindow.addEventListener('deviceorientation', handleOrientationChange.bind(this));
-
-            } else {
-
-                this.realWindow.addEventListener('resize', handleOrientationChange.bind(this));
-
-            }
-
+            this.realWindow.addEventListener('resize', handleOrientationChange.bind(this));
         },
 
         getOrientation:  function() {

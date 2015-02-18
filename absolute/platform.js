@@ -277,7 +277,7 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
         },
 
         _isStockAndroid: function() {
-            return this._isAndroid() && navigator.userAgent.indexOf('Chrome') == -1;
+            return this._isAndroid() && navigator.userAgent.indexOf('Chrome') == -1 && navigator.userAgent.indexOf('Firefox') == -1;
         },
 
         getResStepsDown: function(resClassIndex, stepDownResClassAggressively, stepDownStockAndroidOnly) {
