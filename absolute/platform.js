@@ -124,6 +124,14 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return typeof cordova !== "undefined";
         },
 
+        isCocoonJS: function () {
+            return (typeof CocoonJS !== "undefined") && CocoonJS.nativeExtensionObjectAvailable;
+        },
+
+        isNativeMobile: function () {
+            return Platform.isCordova() || Platform.isCocoonJS();
+        },
+
 
         isPhone: function() {
             var uaString = navigator.userAgent;
@@ -194,11 +202,11 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
                 browserVersion: ''
             };
             var agents = [{
-                    os: 'iPhone',
-                    osVersionRegex: /(?:iPhone OS )([0-9,_]*)(?: like)/,
-                    browser: 'WebKit',
-                    browserVersionRegex: /(?:AppleWebKit\/)([0-9,.]*)/
-                },
+                os: 'iPhone',
+                osVersionRegex: /(?:iPhone OS )([0-9,_]*)(?: like)/,
+                browser: 'WebKit',
+                browserVersionRegex: /(?:AppleWebKit\/)([0-9,.]*)/
+            },
                 {
                     os: 'Android',
                     osVersionRegex: /(?:Android )([0-9,.]*)/,
@@ -269,7 +277,7 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
         },
 
         _isStockAndroid: function() {
-            return this._isAndroid() && navigator.userAgent.indexOf('Chrome') == -1;
+            return this._isAndroid() && navigator.userAgent.indexOf('Chrome') == -1 && navigator.userAgent.indexOf('Firefox') == -1;
         },
 
         getResStepsDown: function(resClassIndex, stepDownResClassAggressively, stepDownStockAndroidOnly) {
