@@ -263,14 +263,13 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         Dialog.prototype._onClose = function() {
 
-            this.close();
-
             if(typeof this.options.callbacks.onClose === 'function') {
-                window.setTimeout(function(){
-                    this.options.callbacks.onClose(this);
-                }.bind(this),0);
-
+                this.options.callbacks.onClose(this);
             }
+
+            window.setTimeout(function(){
+                this.close();
+            }.bind(this),0);
 
         };
 
