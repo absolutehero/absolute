@@ -475,18 +475,48 @@ function (
         this.showActiveAtlases();
     };
 
-    GameUI.prototype.showModal = function (screen, alpha) {
+    GameUI.prototype.showModal = function (screen, alpha, fadeIn) {
         alpha = typeof alpha === 'undefined' ? 0.5 : alpha;
+        fadeIn = !!fadeIn;
 
         if (this.modalStack.length === 0) {
 
             if (!this.usingWebGL) {
+                console.log('not using gl');
                 this.modalBG = this.buildModalBackground(alpha);
-                this.stage[0].removeChild(this.currentScreen);
-                this.stage[0].addChildAt(this.modalBG, 0);
+                if(fadeIn) {
+                    this.modalBG.alpha = 0;
+                    this.stage[0].addChild(this.modalBG);
+                    var self = this;
+                    new TWEEN.Tween({ a: 0 })
+                        .to({a: 1 }, 1500)
+                        .easing(TWEEN.Easing.Cubic.InOut)
+                        .onUpdate(function () {
+                            self.modalBG.alpha = this.a;
+                        })
+                        .onComplete(function (){
+                            self.stage[0].removeChild(self.currentScreen);
+                        })
+                        .start();
+                } else {
+                    this.stage[0].removeChild(this.currentScreen);
+                    this.stage[0].addChildAt(this.modalBG, 0);
+                }
+
             }
             else {
                 this.modalOverlay = this.buildModalOverlay(alpha);
+                if(fadeIn) {
+                    this.modalOverlay.alpha = 0;
+                    var self = this;
+                    new TWEEN.Tween({ a: 0 })
+                        .to({a: 1 }, 1500)
+                        .easing(TWEEN.Easing.Cubic.InOut)
+                        .onUpdate(function () {
+                            self.modalOverlay.alpha = this.a;
+                        })
+                        .start();
+                }
                 this.stage[0].addChildAt(this.modalOverlay, this.stage[0].children.indexOf(this.currentScreen) + 1);
                 this.renderer[2].view.style.display = "block";
             }

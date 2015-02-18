@@ -79,7 +79,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
 
         };
 
-        Dialog.prototype.open = function(closeCallback, openCompleteCallback) {
+        Dialog.prototype.open = function(closeCallback, openCompleteCallback, fadeIn) {
 
             if(!this.nineSlice || this.nineSlice === null) {
                 this._createBackground();
@@ -100,7 +100,7 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
                 this.onOpenComplete();
             }
 
-            this.ui.showModal(this, this.options.backgroundAlpha);
+            this.ui.showModal(this, this.options.backgroundAlpha, fadeIn);
 
             this.isOpen = true;
 
