@@ -262,11 +262,12 @@ define(['pixi', 'absolute/uibuilder', 'absolute/assetmap', 'absolute/coords', 'a
         };
 
         Dialog.prototype._onClose = function() {
+
+            this.close();
+
             if(typeof this.options.callbacks.onClose === 'function') {
                 this.options.callbacks.onClose(this);
             }
-
-            this.close();
         };
 
         Dialog.prototype._createCloseButton = function () {
