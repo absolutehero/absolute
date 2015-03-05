@@ -482,7 +482,6 @@ function (
         if (this.modalStack.length === 0) {
 
             if (!this.usingWebGL) {
-                console.log('not using gl');
                 this.modalBG = this.buildModalBackground(alpha);
                 if(fadeIn) {
                     this.modalBG.alpha = 0;
