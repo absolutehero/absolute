@@ -199,6 +199,7 @@ function (
             }
 
             if (this.supportsOrientationChange && this.currentScreen) {
+                this.portait = this.height > this.width;
                 this.currentScreen.handleOrientationChange(this.portrait);
             }
         }
