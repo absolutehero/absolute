@@ -165,6 +165,10 @@ function (
         }
     };
 
+    GameUI.prototype.isPortrait = function() {
+        return this.portrait;
+    };
+
     GameUI.prototype.isFullScreen = function () {
         return !!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);
     };
