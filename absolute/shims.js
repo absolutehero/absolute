@@ -27,6 +27,8 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
         };
     }
 
+    var pixiMajorVersion = parseInt(PIXI.VERSION.slice(1,PIXI.VERSION.indexOf('.')));
+
     // patch PIXI json loader to support IE10 (this kills support for IE8 which didn't work anyway
     PIXI.JsonLoader.prototype.load = function () {
 
@@ -41,6 +43,84 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
         this.ajaxRequest.open('GET',this.url,true);
         this.ajaxRequest.send();
     };
+
+    if(pixiMajorVersion < 3) {
+
+        /**
+         * Description:
+         * Overriding pixi's mouse up function because it tries to access interaction items after they have been removed
+         * from memory. Render loop timing issue. So now we skip items if they are undefined.
+         *
+         * Fixed in pixi v3
+         *
+         * @param event
+         */
+        PIXI.InteractionManager.prototype.onMouseUp = function(event)
+        {
+            if (this.dirty)
+            {
+                this.rebuildInteractiveGraph();
+            }
+
+            this.mouse.originalEvent = event;
+
+            var length = this.interactiveItems.length;
+            var up = false;
+
+            var e = this.mouse.originalEvent;
+            var isRightButton = e.button === 2 || e.which === 3;
+
+            var upFunction = isRightButton ? 'rightup' : 'mouseup';
+            var clickFunction = isRightButton ? 'rightclick' : 'click';
+            var upOutsideFunction = isRightButton ? 'rightupoutside' : 'mouseupoutside';
+            var isDown = isRightButton ? '__isRightDown' : '__isDown';
+
+            for (var i = 0; i < length; i++)
+            {
+                var item = this.interactiveItems[i];
+
+                if(typeof item === 'undefined' || item === null) {
+                    continue;
+                }
+
+                if (item[clickFunction] || item[upFunction] || item[upOutsideFunction])
+                {
+                    item.__hit = this.hitTest(item, this.mouse);
+
+                    if (item.__hit && !up)
+                    {
+                        //call the function!
+                        if (item[upFunction])
+                        {
+                            item[upFunction](this.mouse);
+                        }
+                        if (item[isDown])
+                        {
+                            if (item[clickFunction])
+                            {
+                                item[clickFunction](this.mouse);
+                            }
+                        }
+
+                        if (!item.interactiveChildren)
+                        {
+                            up = true;
+                        }
+                    }
+                    else
+                    {
+                        if (item[isDown])
+                        {
+                            if (item[upOutsideFunction]) item[upOutsideFunction](this.mouse);
+                        }
+                    }
+
+                    item[isDown] = false;
+                }
+            }
+        };
+    }
+
 
     // touch move broken in 1.5.3
     if(PIXI.VERSION == "v1.5.3") {
