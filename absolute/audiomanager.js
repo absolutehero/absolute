@@ -45,7 +45,7 @@ var AudioManager = {
         }
 
         // force ogg for opera node-webkit
-        if(Platform._isOpera() || Platform._isNodeWebkit()) {
+        if(Platform._isOpera() || Platform._isNodeWebkit() || Platform._isFirefox()) {
             this.format = 'ogg';
         }
 
