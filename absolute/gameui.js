@@ -170,7 +170,7 @@ function (
         }
         else {
 
-            ScreenMetrics.refresh();
+            ScreenMetrics.refresh(window || window.parent );
 
             var windowWidth = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientWidth : ScreenMetrics.screenWidth,
                 windowHeight = ScreenMetrics.clientWidth > 0 ? ScreenMetrics.clientHeight : ScreenMetrics.screenHeight;

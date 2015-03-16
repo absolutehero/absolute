@@ -25,9 +25,9 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
 
                     isInIframe = window.self !== window.top;
 
-                    if(isInIframe && parent.window.devicePixelRatio && typeof parent.window.devicePixelRatio !== 'undefined') {
+                    if(isInIframe && window.parent.devicePixelRatio && typeof window.parent.devicePixelRatio !== 'undefined') {
 
-                        windowRef = parent.window;
+                        windowRef = window.parent;
 
                     } else {
                         windowRef = window;
@@ -62,15 +62,17 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
             return screenRef;
 
         })(),
-        refresh: function() {
+        refresh: function(currentWindow) {
 
-            this.devicePixelRatio = this.realWindow.devicePixelRatio || 1;
+            currentWindow = currentWindow || this.realWindow;
+
+            this.devicePixelRatio = currentWindow.devicePixelRatio || 1;
             this.screenWidth = this.realScreen.width;
             this.screenHeight = this.realScreen.height;
-            this.innerWidth = this.realWindow.innerWidth;
-            this.innerHeight = this.realWindow.innerHeight;
-            this.outerWidth = this.realWindow.outerWidth;
-            this.outerHeight = this.realWindow.outerHeight;
+            this.innerWidth = currentWindow.innerWidth;
+            this.innerHeight = currentWindow.innerHeight;
+            this.outerWidth = currentWindow.outerWidth;
+            this.outerHeight = currentWindow.outerHeight;
             this.clientWidth = document.documentElement.clientWidth;
             this.clientHeight = document.documentElement.clientHeight;
 
@@ -84,9 +86,9 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
 
         },
 
-        isPortrait: function() {
+        isPortrait: function(currentWindow) {
 
-            this.refresh();
+            this.refresh(currentWindow);
 
             var width = this.getMinNonZero([this.innerWidth, this.screenWidth, this.clientWidth]),
                 height = this.getMinNonZero([this.innerHeight, this.screenHeight, this.clientHeight]);
@@ -322,8 +324,8 @@ define(['absolute/debug', 'absolute/platform', 'lodash'], function (Debug, Platf
         },
 
         getOrientation:  function() {
-            this.refresh();
-            return this.isPortrait() ? 'portrait' : 'landscape';
+            this.refresh(window || window.parent);
+            return this.isPortrait(window || window.parent) ? 'portrait' : 'landscape';
         }
 
 
