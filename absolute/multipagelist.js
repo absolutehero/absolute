@@ -85,23 +85,38 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
 
             var page = new PIXI.DisplayObjectContainer();
 
-            if (this.isPortrait && this.lockLayout !== "vertical") {
-                var itemX = 0;
-                for (var i = 0; i < items.length; i += 1) {
-                    items[i].position.x = itemX;
-                    items[i].position.y = 0;
-                    items[i].pageIndex = pageIndex;
-                    itemX += (this.cellWidth + this.gapX);
-                    page.addChild(items[i]);
+            if (this.lockLayout == "default") {
+                var itemIndex = 0;
+
+                for (var row = 0; row < this.rowsPerPage; row += 1) {
+                    for (var col = 0; col < this.colsPerPage && itemIndex < items.length; col ++) {
+                        var item = items[itemIndex];
+                        item.x = col * (item.width + + this.gapX);
+                        item.y = row * (item.height + + this.gapY);
+                        page.addChild(item);
+                        itemIndex ++;
+                    }
                 }
-            } else if (!this.isPortrait || this.lockLayout !== "horizontal") {
-                var itemY = 0;
-                for (var i = 0; i < items.length; i += 1) {
-                    items[i].position.x = 0;
-                    items[i].position.y = itemY;
-                    items[i].pageIndex = pageIndex;
-                    itemY += (this.cellHeight + this.gapY);
-                    page.addChild(items[i]);
+
+            } else {
+                if (this.isPortrait && this.lockLayout !== "vertical") {
+                    var itemX = 0;
+                    for (var i = 0; i < items.length; i += 1) {
+                        items[i].position.x = itemX;
+                        items[i].position.y = 0;
+                        items[i].pageIndex = pageIndex;
+                        itemX += (this.cellWidth + this.gapX);
+                        page.addChild(items[i]);
+                    }
+                } else if (!this.isPortrait || this.lockLayout !== "horizontal") {
+                    var itemY = 0;
+                    for (var i = 0; i < items.length; i += 1) {
+                        items[i].position.x = 0;
+                        items[i].position.y = itemY;
+                        items[i].pageIndex = pageIndex;
+                        itemY += (this.cellHeight + this.gapY);
+                        page.addChild(items[i]);
+                    }
                 }
             }
 
@@ -165,7 +180,6 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                 if (this.mask) {
                     this.removeChild(this.mask);
                 }
-
                 if (typeof this.maskRect !== 'undefined') {
                     var mask = new PIXI.Graphics();
                     mask.beginFill(0xFFFFFF, 1.0);
@@ -266,7 +280,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                     })
                     .start();
             } else {
-                var destination = - (pageIndex * this.pages[pageIndex].height) + this.centerOffset,
+                var destination = -(pageIndex * this.pages[pageIndex].height) + this.centerOffset;
                     self = this;
 
                 new TWEEN.Tween({ y: this.pageTray.position.y })
@@ -312,8 +326,15 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             this.direction = options.direction;
             this.width_ = options.pageWidth;
             this.height_ = options.pageHeight;
-            this.gapX = options.gap;
-            this.gapY = options.gap;
+
+            if (typeof options.gap === 'number') {
+                this.gapX = options.gap;
+                this.gapY = options.gap;
+            } else {
+                this.gapX = options.gapX;
+                this.gapY = options.gapY;
+            }
+
             this.cellWidth = options.itemWidth;
             this.cellHeight = options.itemHeight;
 
