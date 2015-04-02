@@ -142,6 +142,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             this.initContent();
 
             this.setCurrentPage(0);
+            this.enablePage(true, 0);
             // this.initTouchInterface();
 
             //this.scrollToPage(startPage);
