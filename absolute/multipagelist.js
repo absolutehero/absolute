@@ -216,16 +216,9 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             return this.pages.length;
         };
 
-        MultiPageList.prototype.enableButtons = function (enable) {
-             var i, l;
-             for (i = 0, l = this.pages.length; i < l; i++) {
-                 this.pages[i].enableButtons(enable);
-             }
-        };
-
         MultiPageList.prototype.handleDragStart = function (event) {
             this.lastDeltaX = 0;
-            this.startX = - (this.currentPage * this.pages[this.currentPage].width) + this.centerOffset;
+            this.startX = - (this.currentPage * this.pages[this.currentPage].width_) + this.centerOffset;
             this.enableButtons(false);
         };
 
@@ -257,9 +250,10 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
 
         MultiPageList.prototype.scrollToPage = function(pageIndex) {
             this.setCurrentPage(pageIndex);
+            this.enableButtons(false);
 
             if (this.direction == "horizontal") {
-                var destination = -(pageIndex * this.pages[pageIndex].width) + this.centerOffset,
+                var destination = -(pageIndex * this.pages[pageIndex].width_) + this.centerOffset,
                     self = this;
 
                 new TWEEN.Tween({ x: this.pageTray.position.x })
@@ -269,12 +263,12 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         self.pageTray.position.x = this.x;
                     })
                     .onComplete(function () {
-                        self.enableButtons(true);
+                        self.enablePage(true, pageIndex);
                         self.setCurrentPage(pageIndex);
                     })
                     .start();
             } else {
-                var destination = -(pageIndex * this.pages[pageIndex].height) + this.centerOffset;
+                var destination = -(pageIndex * this.pages[pageIndex].height_) + this.centerOffset;
                     self = this;
 
                 new TWEEN.Tween({ y: this.pageTray.position.y })
@@ -284,7 +278,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         self.pageTray.position.y = this.y;
                     })
                     .onComplete(function () {
-                        self.enableButtons(true);
+                        self.enablePage(true, pageIndex);
                         self.setCurrentPage(pageIndex);
                     })
                     .start();
@@ -309,10 +303,17 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             }
         };
 
+        MultiPageList.prototype.enablePage = function (enable, index) {
+            if (index >= 0 && index < this.pages.length) {
+                this.pages[index].interactive = enable;
+                this.pages[index].interactiveChildren = enable;
+            }
+        };
+
         MultiPageList.prototype.enableButtons = function (enable) {
-            var i, l;
-            for (i = 0, l = this.pages.length; i < l; i++) {
+            for (var i = 0; i < this.pages.length; i++) {
                 this.pages[i].interactive = enable;
+                this.pages[i].interactiveChildren = enable;
             }
         };
 
