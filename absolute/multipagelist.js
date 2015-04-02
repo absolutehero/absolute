@@ -91,8 +91,8 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                 for (var row = 0; row < this.rowsPerPage; row += 1) {
                     for (var col = 0; col < this.colsPerPage && itemIndex < items.length; col ++) {
                         var item = items[itemIndex];
-                        item.x = col * (item.width + + this.gapX);
-                        item.y = row * (item.height + + this.gapY);
+                        item.x = col * (this.cellWidth + this.gapX);
+                        item.y = row * (this.cellHeight + this.gapY);
                         page.addChild(item);
                         itemIndex ++;
                     }
@@ -195,15 +195,9 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
         };
 
         MultiPageList.prototype.initTouchInterface = function() {
-
             // Dragging and panning
             this.lastDeltaX = 0;
             this.startX = 0;
-
-           // Hammer(this.ui.container).on("dragstart", this.handleDragStart.bind(this));
-           // Hammer(this.ui.container).on("drag", this.handleDrag.bind(this));
-           // Hammer(this.ui.container).on("dragend", this.handleDragEnd.bind(this));
-
         };
 
         MultiPageList.prototype.scrollUp = function() {
@@ -223,10 +217,10 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
         };
 
         MultiPageList.prototype.enableButtons = function (enable) {
-            // var i, l;
-            // for (i = 0, l = this.pages.length; i < l; i++) {
-            //     this.pages[i].enableButtons(enable);
-            // }
+             var i, l;
+             for (i = 0, l = this.pages.length; i < l; i++) {
+                 this.pages[i].enableButtons(enable);
+             }
         };
 
         MultiPageList.prototype.handleDragStart = function (event) {
