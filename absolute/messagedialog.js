@@ -43,6 +43,7 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
             this.message = message;
 
             this.content = this.initContent();
+            this.options.content = this.content;
             this._setContent(this.content);
 
             if (this.options.displayOkButton) {
@@ -77,7 +78,7 @@ define(['pixi', 'absolute/dialog', 'lodash', 'absolute/button', 'absolute/coords
 
             if (this.options.textImage == null) {
                 this.text = new PIXI.BitmapText(this.message, this.options.textStyle);
-                this.text.position.y = Coords.y(120);
+                this.text.position.y = this.options.textY || Coords.y(120);
             } else {
                 this.text = this.options.textImage;
                 this.text.setText(this.message);
