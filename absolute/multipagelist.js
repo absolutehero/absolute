@@ -85,23 +85,41 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
 
             var page = new PIXI.DisplayObjectContainer();
 
-            if (this.isPortrait && this.lockLayout !== "vertical") {
-                var itemX = 0;
-                for (var i = 0; i < items.length; i += 1) {
-                    items[i].position.x = itemX;
-                    items[i].position.y = 0;
-                    items[i].pageIndex = pageIndex;
-                    itemX += (this.cellWidth + this.gapX);
-                    page.addChild(items[i]);
+            if (this.lockLayout == "default") {
+                var itemIndex = 0;
+
+                for (var row = 0; row < this.rowsPerPage; row += 1) {
+                    for (var col = 0; col < this.colsPerPage && itemIndex < items.length; col ++) {
+                        var item = items[itemIndex];
+                        item.x = col * (this.cellWidth + this.gapX);
+                        item.y = row * (this.cellHeight + this.gapY);
+                        item.pageIndex = pageIndex;
+                        page.addChild(item);
+                        itemIndex ++;
+                    }
                 }
-            } else if (!this.isPortrait || this.lockLayout !== "horizontal") {
-                var itemY = 0;
-                for (var i = 0; i < items.length; i += 1) {
-                    items[i].position.x = 0;
-                    items[i].position.y = itemY;
-                    items[i].pageIndex = pageIndex;
-                    itemY += (this.cellHeight + this.gapY);
-                    page.addChild(items[i]);
+
+            } else {
+                if (this.isPortrait && this.lockLayout !== "vertical") {
+                    var itemX = 0;
+                    for (var i = 0; i < items.length; i += 1) {
+                        items[i].position.x = itemX;
+                        items[i].position.y = 0;
+                        items[i].pageIndex = pageIndex;
+                        itemX += (this.cellWidth + this.gapX);
+                        items[i].pageIndex = pageIndex;
+                        page.addChild(items[i]);
+                    }
+                } else if (!this.isPortrait || this.lockLayout !== "horizontal") {
+                    var itemY = 0;
+                    for (var i = 0; i < items.length; i += 1) {
+                        items[i].position.x = 0;
+                        items[i].position.y = itemY;
+                        items[i].pageIndex = pageIndex;
+                        itemY += (this.cellHeight + this.gapY);
+                        items[i].pageIndex = pageIndex;
+                        page.addChild(items[i]);
+                    }
                 }
             }
 
@@ -126,7 +144,11 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
 
             this.initContent();
 
+
+            this.enableButtons(false);
             this.setCurrentPage(0);
+            this.enablePage(true, 0);
+
             // this.initTouchInterface();
 
             //this.scrollToPage(startPage);
@@ -165,7 +187,6 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                 if (this.mask) {
                     this.removeChild(this.mask);
                 }
-
                 if (typeof this.maskRect !== 'undefined') {
                     var mask = new PIXI.Graphics();
                     mask.beginFill(0xFFFFFF, 1.0);
@@ -181,26 +202,20 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
         };
 
         MultiPageList.prototype.initTouchInterface = function() {
-
             // Dragging and panning
             this.lastDeltaX = 0;
             this.startX = 0;
-
-           // Hammer(this.ui.container).on("dragstart", this.handleDragStart.bind(this));
-           // Hammer(this.ui.container).on("drag", this.handleDrag.bind(this));
-           // Hammer(this.ui.container).on("dragend", this.handleDragEnd.bind(this));
-
         };
 
-        MultiPageList.prototype.scrollUp = function() {
+        MultiPageList.prototype.scrollUp = function(onComplete) {
             if (this.currentPage < this.pages.length - 1) {
-                this.scrollToPage(this.currentPage + 1);
+                this.scrollToPage(this.currentPage + 1, onComplete);
             }
         };
 
-        MultiPageList.prototype.scrollDown = function() {
+        MultiPageList.prototype.scrollDown = function(onComplete) {
             if (this.currentPage > 0) {
-                this.scrollToPage(this.currentPage - 1);
+                this.scrollToPage(this.currentPage - 1, onComplete);
             }
         };
 
@@ -208,16 +223,9 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             return this.pages.length;
         };
 
-        MultiPageList.prototype.enableButtons = function (enable) {
-            // var i, l;
-            // for (i = 0, l = this.pages.length; i < l; i++) {
-            //     this.pages[i].enableButtons(enable);
-            // }
-        };
-
         MultiPageList.prototype.handleDragStart = function (event) {
             this.lastDeltaX = 0;
-            this.startX = - (this.currentPage * this.pages[this.currentPage].width) + this.centerOffset;
+            this.startX = - (this.currentPage * this.pages[this.currentPage].width_) + this.centerOffset;
             this.enableButtons(false);
         };
 
@@ -247,11 +255,12 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             this.scrollToPage(pageIndex);
         };
 
-        MultiPageList.prototype.scrollToPage = function(pageIndex) {
+        MultiPageList.prototype.scrollToPage = function(pageIndex, onCompleteCallback) {
             this.setCurrentPage(pageIndex);
+            this.enableButtons(false);
 
             if (this.direction == "horizontal") {
-                var destination = -(pageIndex * this.pages[pageIndex].width) + this.centerOffset,
+                var destination = -(pageIndex * this.pages[pageIndex].width_) + this.centerOffset,
                     self = this;
 
                 new TWEEN.Tween({ x: this.pageTray.position.x })
@@ -261,12 +270,15 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         self.pageTray.position.x = this.x;
                     })
                     .onComplete(function () {
-                        self.enableButtons(true);
+                        if (typeof onCompleteCallback === 'function') {
+                            onCompleteCallback();
+                        }
+                        self.enablePage(true, pageIndex);
                         self.setCurrentPage(pageIndex);
                     })
                     .start();
             } else {
-                var destination = - (pageIndex * this.pages[pageIndex].height) + this.centerOffset,
+                var destination = -(pageIndex * this.pages[pageIndex].height_) + this.centerOffset;
                     self = this;
 
                 new TWEEN.Tween({ y: this.pageTray.position.y })
@@ -276,7 +288,10 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         self.pageTray.position.y = this.y;
                     })
                     .onComplete(function () {
-                        self.enableButtons(true);
+                        if (typeof onCompleteCallback === 'function') {
+                            onCompleteCallback();
+                        }
+                        self.enablePage(true, pageIndex);
                         self.setCurrentPage(pageIndex);
                     })
                     .start();
@@ -301,10 +316,27 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             }
         };
 
+        MultiPageList.prototype.enablePage = function (enable, index) {
+            if (index >= 0 && index < this.pages.length) {
+                this.pages[index].interactive = enable;
+                this.pages[index].interactiveChildren = enable;
+            }
+            for (var j = 0; j < this.items.length; j++) {
+                this.items[j].interactive = false;
+                if (enable && this.items[j].pageIndex == index) {
+                    this.items[j].interactive = enable;
+                }
+            }
+        };
+
         MultiPageList.prototype.enableButtons = function (enable) {
-            var i, l;
-            for (i = 0, l = this.pages.length; i < l; i++) {
+            for (var i = 0; i < this.pages.length; i++) {
                 this.pages[i].interactive = enable;
+                this.pages[i].interactiveChildren = enable;
+            }
+
+            for (var j = 0; j < this.items.length; j++) {
+                this.items[j].interactive = enable;
             }
         };
 
@@ -312,8 +344,15 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             this.direction = options.direction;
             this.width_ = options.pageWidth;
             this.height_ = options.pageHeight;
-            this.gapX = options.gap;
-            this.gapY = options.gap;
+
+            if (typeof options.gap === 'number') {
+                this.gapX = options.gap;
+                this.gapY = options.gap;
+            } else {
+                this.gapX = options.gapX;
+                this.gapY = options.gapY;
+            }
+
             this.cellWidth = options.itemWidth;
             this.cellHeight = options.itemHeight;
 
