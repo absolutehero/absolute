@@ -57,7 +57,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
 
             this.pages = [];
 
-            if (this.items.length > 0) {
+            if (this.items && this.items.length > 0) {
                 var pageContainer = new PIXI.DisplayObjectContainer();
 
                 var totalRows = this.items.length / this.colsPerPage,
@@ -321,10 +321,12 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                 this.pages[index].interactive = enable;
                 this.pages[index].interactiveChildren = enable;
             }
-            for (var j = 0; j < this.items.length; j++) {
-                this.items[j].interactive = false;
-                if (enable && this.items[j].pageIndex == index) {
-                    this.items[j].interactive = enable;
+            if (this.items) {
+                for (var j = 0; j < this.items.length; j++) {
+                    this.items[j].interactive = false;
+                    if (enable && this.items[j].pageIndex == index) {
+                        this.items[j].interactive = enable;
+                    }
                 }
             }
         };
@@ -335,8 +337,10 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                 this.pages[i].interactiveChildren = enable;
             }
 
-            for (var j = 0; j < this.items.length; j++) {
-                this.items[j].interactive = enable;
+            if (this.items) {
+                for (var j = 0; j < this.items.length; j++) {
+                    this.items[j].interactive = enable;
+                }
             }
         };
 
