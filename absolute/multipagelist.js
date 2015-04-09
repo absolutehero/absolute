@@ -93,6 +93,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         var item = items[itemIndex];
                         item.x = col * (this.cellWidth + this.gapX);
                         item.y = row * (this.cellHeight + this.gapY);
+                        item.pageIndex = pageIndex;
                         page.addChild(item);
                         itemIndex ++;
                     }
@@ -106,6 +107,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         items[i].position.y = 0;
                         items[i].pageIndex = pageIndex;
                         itemX += (this.cellWidth + this.gapX);
+                        items[i].pageIndex = pageIndex;
                         page.addChild(items[i]);
                     }
                 } else if (!this.isPortrait || this.lockLayout !== "horizontal") {
@@ -115,6 +117,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         items[i].position.y = itemY;
                         items[i].pageIndex = pageIndex;
                         itemY += (this.cellHeight + this.gapY);
+                        items[i].pageIndex = pageIndex;
                         page.addChild(items[i]);
                     }
                 }
@@ -141,8 +144,11 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
 
             this.initContent();
 
+
+            this.enableButtons(false);
             this.setCurrentPage(0);
             this.enablePage(true, 0);
+
             // this.initTouchInterface();
 
             //this.scrollToPage(startPage);
@@ -201,15 +207,15 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             this.startX = 0;
         };
 
-        MultiPageList.prototype.scrollUp = function() {
+        MultiPageList.prototype.scrollUp = function(onComplete) {
             if (this.currentPage < this.pages.length - 1) {
-                this.scrollToPage(this.currentPage + 1);
+                this.scrollToPage(this.currentPage + 1, onComplete);
             }
         };
 
-        MultiPageList.prototype.scrollDown = function() {
+        MultiPageList.prototype.scrollDown = function(onComplete) {
             if (this.currentPage > 0) {
-                this.scrollToPage(this.currentPage - 1);
+                this.scrollToPage(this.currentPage - 1, onComplete);
             }
         };
 
@@ -249,7 +255,7 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
             this.scrollToPage(pageIndex);
         };
 
-        MultiPageList.prototype.scrollToPage = function(pageIndex) {
+        MultiPageList.prototype.scrollToPage = function(pageIndex, onCompleteCallback) {
             this.setCurrentPage(pageIndex);
             this.enableButtons(false);
 
@@ -264,6 +270,9 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         self.pageTray.position.x = this.x;
                     })
                     .onComplete(function () {
+                        if (typeof onCompleteCallback === 'function') {
+                            onCompleteCallback();
+                        }
                         self.enablePage(true, pageIndex);
                         self.setCurrentPage(pageIndex);
                     })
@@ -279,6 +288,9 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                         self.pageTray.position.y = this.y;
                     })
                     .onComplete(function () {
+                        if (typeof onCompleteCallback === 'function') {
+                            onCompleteCallback();
+                        }
                         self.enablePage(true, pageIndex);
                         self.setCurrentPage(pageIndex);
                     })
@@ -309,12 +321,22 @@ define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics
                 this.pages[index].interactive = enable;
                 this.pages[index].interactiveChildren = enable;
             }
+            for (var j = 0; j < this.items.length; j++) {
+                this.items[j].interactive = false;
+                if (enable && this.items[j].pageIndex == index) {
+                    this.items[j].interactive = enable;
+                }
+            }
         };
 
         MultiPageList.prototype.enableButtons = function (enable) {
             for (var i = 0; i < this.pages.length; i++) {
                 this.pages[i].interactive = enable;
                 this.pages[i].interactiveChildren = enable;
+            }
+
+            for (var j = 0; j < this.items.length; j++) {
+                this.items[j].interactive = enable;
             }
         };
 
