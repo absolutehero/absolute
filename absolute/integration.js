@@ -12,7 +12,9 @@ define(['absolute/debug','absolute/gameconfig'],function(Debug, GameConfig) {
 
             'gameBreak': function(resumeCallback, pauseCallback) {
 
-                if(window.SpilGameAPIInstance && !window.SpilGameAPIInstance.IS_STANDALONE && window.SpilGameAPIInstance.GameBreak) {
+                var spilInstance = window.SpilGameAPIInstance || window.GameAPI;
+
+                if(spilInstance && spilInstance.GameBreak) {
 
                     var safetyTimeout, callbackComplete = false;
 
@@ -24,16 +26,14 @@ define(['absolute/debug','absolute/gameconfig'],function(Debug, GameConfig) {
                         window.clearTimeout(safetyTimeout);
                     }
 
-                    window.SpilGameAPIInstance.GameBreak.request(
+                    spilInstance.GameBreak.request(
                         pauseCallback.bind(this),
                         safetyCallback.bind(this)
                     );
 
-                    window.setTimeout(function(){
-
+                    safetyTimeout = window.setTimeout(function(){
                         Debug.log('ahg: Spil api failure: gamebreak');
                         safetyCallback.call(this);
-
                     }.bind(this), 10000);
 
                 } else {
@@ -41,9 +41,6 @@ define(['absolute/debug','absolute/gameconfig'],function(Debug, GameConfig) {
                     resumeCallback.call(this);
 
                 }
-
-
-
             }
         },
         'iwin': {
