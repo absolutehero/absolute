@@ -150,6 +150,10 @@ define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
                 displayObject.removeChild(displayObject.children[0]);
             }
 
+        },
+
+        rectsIntersect: function(rect1, rect2) {
+            return SpriteUtils.hitTest(rect1.x, rect1.y, rect1.width, rect1.height,rect2.x, rect2.y, rect2.width, rect2.height);
         }
 
 
