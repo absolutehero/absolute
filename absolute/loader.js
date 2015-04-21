@@ -65,7 +65,7 @@ function (
             }
         }
 
-        this.assetLoader = new PIXI.AssetLoader(paths);
+        this.assetLoader = new PIXI.AssetLoader(paths, false);
         this.assetLoader.addEventListener('onComplete', function() {
             onComplete();
         });
