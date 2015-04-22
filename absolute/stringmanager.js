@@ -15,21 +15,26 @@ define ([
 
         var _locale = "en";
 
-        function lookup(key, locale) {
+        function lookup(key, locale, getArray) {
             var i = 0,
                 kf = key.split("."),
                 s = _strings[locale];
 
             while (s && typeof s === "object") {
+                if(getArray && Object.prototype.toString.call( s[kf[i]] ) === '[object Array]') {
+                    return s[kf[i]];
+                }
                 s = s[kf[i++]];
             }
 
             return s;
         }
 
-        var StringManager = function (key, args) {
+        var StringManager = function (key, args, getArray) {
 
-            var s = lookup(key, _locale) || lookup(key, "en");
+            getArray = !!getArray;
+
+            var s = lookup(key, _locale, getArray) || lookup(key, "en", getArray);
 
             if (s && typeof s == "string" && s !== "" && args && args.length > 0) {
                 for (var i = 0; i < args.length; i += 1) {
