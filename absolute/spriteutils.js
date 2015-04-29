@@ -13,8 +13,9 @@ define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
         offScreenRenderer: new PIXI.CanvasRenderer(512, 512, null, true),
 
         brightness: function (sprite, brightness) {
+
             var i,
-                texture = sprite.generateTexture(),
+                texture = typeof sprite.generateTexture === 'function' ? sprite.generateTexture() : sprite,
                 imgData =  null;
 
 
