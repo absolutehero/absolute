@@ -263,5 +263,24 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
 
     }
 
+    Object.defineProperty(PIXI.Point.prototype, "X", {
+        get: function () {
+            throw "PIXI.Point has no member X";
+        },
+        set: function (value) {
+            throw "PIXI.Point has no member X";
+        }
+    });
+
+    Object.defineProperty(PIXI.Point.prototype, "Y", {
+        get: function () {
+            throw "PIXI.Point has no member Y";
+        },
+        set: function (value) {
+            throw "PIXI.Point has no member Y";
+        }
+    });
+
+
 
 });
