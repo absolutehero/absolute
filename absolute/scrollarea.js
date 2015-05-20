@@ -41,26 +41,27 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         this.moving = false;
 
         this.contents = new PIXI.DisplayObjectContainer();
-        this.contents.interactive = true;
+        this.interactive = true;
+        this.buttonMode = true;
 
         if (Platform.supportsTouch()) {
-            this.contents.touchstart = this.onMoveStart.bind(this);
-            this.contents.touchmove = this.onMove.bind(this);
-            this.contents.touchend = this.onMoveEnd.bind(this);
+            this.touchstart = this.onMoveStart.bind(this);
+            this.touchmove = this.onMove.bind(this);
+            this.touchend = this.onMoveEnd.bind(this);
 
             // Support mouse on laptops/desktops that have touch displays
             if(Platform._isWindows() || Platform._isMac()) {
-                this.contents.mousedown = this.onMoveStart.bind(this);
-                this.contents.mousemove = this.onMove.bind(this);
-                this.contents.mouseup = this.onMoveEnd.bind(this);
-                this.contents.mouseupoutside = this.onMoveEnd.bind(this);
+                this.mousedown = this.onMoveStart.bind(this);
+                this.mousemove = this.onMove.bind(this);
+                this.mouseup = this.onMoveEnd.bind(this);
+                this.mouseupoutside = this.onMoveEnd.bind(this);
             }
         }
         else {
-            this.contents.mousedown = this.onMoveStart.bind(this);
-            this.contents.mousemove = this.onMove.bind(this);
-            this.contents.mouseup = this.onMoveEnd.bind(this);
-            this.contents.mouseupoutside = this.onMoveEnd.bind(this);
+            this.mousedown = this.onMoveStart.bind(this);
+            this.mousemove = this.onMove.bind(this);
+            this.mouseup = this.onMoveEnd.bind(this);
+            this.mouseupoutside = this.onMoveEnd.bind(this);
         }
         this.addChild(this.contents);
 
@@ -83,6 +84,8 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
         this.addChild(this.mask);
 
         this.updateContentBounds();
+
+        this.hitArea = new PIXI.Rectangle(0, 0, this.width_, this.height_);
     };
 
     ScrollArea.prototype.addItem = function (dob) {
@@ -150,8 +153,10 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
 
     ScrollArea.prototype.updateContentBounds = function () {
 
+        //this.contents.interactive = false;
+
         if (this.contents.width && this.contents.height) {
-            this.contents.hitArea = new PIXI.Rectangle(0, 0, this.contents.width, this.contents.height);
+            //this.contents.hitArea = new PIXI.Rectangle(0, 0, this.contents.width, this.contents.height);
         }
         else {
             var bb;
@@ -159,7 +164,7 @@ define(['pixi', 'absolute/platform'], function (PIXI, Platform) {
             this.contents.width_ = bb.width;
             this.contents.height_ = bb.height;
 
-            this.contents.hitArea = new PIXI.Rectangle(0, 0, bb.width_, bb.height_);
+            //this.contents.hitArea = new PIXI.Rectangle(0, 0, bb.width_, bb.height_);
         }
 
 
