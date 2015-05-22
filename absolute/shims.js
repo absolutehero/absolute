@@ -30,20 +30,26 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
     var pixiMajorVersion = parseInt(PIXI.VERSION.slice(1,PIXI.VERSION.indexOf('.')));
 
     // patch PIXI json loader to support IE10 (this kills support for IE8 which didn't work anyway
-    PIXI.JsonLoader.prototype.load = function () {
+    if (PIXI.JsonLoader) {
+        PIXI.JsonLoader.prototype.load = function () {
 
-        this.ajaxRequest = new window.XMLHttpRequest();
+            this.ajaxRequest = new window.XMLHttpRequest();
 
-        var scope = this;
+            var scope = this;
 
-        this.ajaxRequest.onload = function () {
-            scope.onJSONLoaded();
+            this.ajaxRequest.onload = function () {
+                try {
+                    scope.onJSONLoaded();
+                }
+                catch (e) {
+                    scope.onError();
+                }
+            };
+
+            this.ajaxRequest.open('GET', this.url, true);
+            this.ajaxRequest.send();
         };
-
-        this.ajaxRequest.open('GET',this.url,true);
-        this.ajaxRequest.send();
-    };
-
+    }
     if(pixiMajorVersion < 3) {
 
         /**
