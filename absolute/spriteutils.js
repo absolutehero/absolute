@@ -155,6 +155,18 @@ define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
 
         rectsIntersect: function(rect1, rect2) {
             return SpriteUtils.hitTest(rect1.x, rect1.y, rect1.width, rect1.height,rect2.x, rect2.y, rect2.width, rect2.height);
+        },
+
+        loadMovieClip: function (clipBase, frameCount, startFrame) {
+            startFrame = startFrame || 0;
+            var textures = [];
+
+            for (var i = startFrame; i < (startFrame + frameCount - 1); i++) {
+                var texture = PIXI.Texture.fromFrame(clipBase + (i < 10 ? "0" : "") + i + ".png");
+                textures.push(texture);
+            }
+
+            return new PIXI.MovieClip(textures);
         }
 
 
