@@ -65,6 +65,25 @@ define ([
                 return null;
             },
 
+            findAllWidgetsOfType: function(type, l, widgetsFound) {
+
+                var widgets = widgetsFound || [];
+
+                for (var w in l.widgets) {
+                    if (l.widgets.hasOwnProperty(w)) {
+                        if (l.widgets[w].widgetType.indexOf(type) > -1) {
+                            widgets.push(l.widgets[w]);
+                        }
+                        else {
+                            widgets = this.findWidget(key, l.widgets[w], widgets);
+                        }
+                    }
+                }
+
+                return widgets;
+
+            },
+
             getConfigData: function (config) {
                 return _layouts[config];
             },
@@ -330,6 +349,7 @@ define ([
 
                 if (widget) {
                     // add children if appropriate
+                    widget.widgetType = config.type;
                     if (widget instanceof PIXI.DisplayObjectContainer && config.children) {
                         widget.widgets = {};
                         for (var c in config.children) {

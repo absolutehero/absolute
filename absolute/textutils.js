@@ -25,6 +25,26 @@ define(function() {
                 s += '0';
             s += n;
             return s;
+        },
+
+        wrapText: function  (bitmapText, width) {
+            var inText = bitmapText.text,
+                l = 0,
+                out = [],
+                lastSpaceIndex = 0;
+
+            for (var i = 0; i < bitmapText.children.length; i++) {
+                if (inText[i] == " ") {
+                    lastSpaceIndex = i;
+                }
+                out.push(inText[i]);
+                if (bitmapText.children[i].x - l >= width) {
+                    l = bitmapText.children[lastSpaceIndex].x;
+                    out[lastSpaceIndex] = "\n";
+                }
+            }
+
+            return out.join("");
         }
     };
     return TextUtils;
