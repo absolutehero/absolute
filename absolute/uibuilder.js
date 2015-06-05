@@ -16,7 +16,8 @@ define ([
         'absolute/animatedbutton',
         'absolute/animatedtextbutton',
         'absolute/togglebutton',
-        'text!absolute/ui/layout.json'],
+        'text!absolute/ui/layout.json',
+        'absolute/textutils'],
     function (
         PIXI,
         _,
@@ -29,7 +30,8 @@ define ([
         AnimatedButton,
         AnimatedTextButton,
         ToggleButton,
-        layoutJSON) {
+        layoutJSON,
+        TextUtils) {
 
         var _layouts = JSON.parse(layoutJSON);
 
@@ -143,7 +145,14 @@ define ([
                         if(config.params.align) {
                             align = config.params.align;
                         }
-                        widget = new PIXI.BitmapText(_s(config.params.text), {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, tint: tint, align: align});
+
+                        var textStyle = {font: (Math.floor(config.params.fontSize * ScreenMetrics.getResScale())) + "px " + config.params.fontFamily, tint: tint, align: align}
+                        widget = new PIXI.BitmapText(_s(config.params.text), textStyle);
+
+                        if(config.params.wordWrap) {
+                            widget =  new PIXI.BitmapText(TextUtils.wrapText(widget, Coords.x(config.params.wordWrapWidth) || Coords.x(400)), textStyle);
+                        }
+
                         widget.tint = parseInt(tint, 16);
                         widget._setText = widget.setText;
                         widget.setText = function (text, reposition) {
