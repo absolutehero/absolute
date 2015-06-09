@@ -6,7 +6,7 @@
  */
 define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
 
-    var ParticleEmitter = function(ui, texture, options) {
+    var ParticleEmitter = function(ui, texture, options, parent) {
         var defaultOptions = {
             mass: 8,
 
@@ -85,16 +85,22 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
             }
         };
 
-        this._initParticleEmitter(ui, texture, _.extend(defaultOptions, options));
+        if (typeof options == 'function') {
+            this._initParticleEmitter(ui, texture, options, parent);
+        }
+        else {
+            this._initParticleEmitter(ui, texture, _.extend(defaultOptions, options), parent);              
+        }
+
     };
 
     ParticleEmitter.constructor = ParticleEmitter;
     ParticleEmitter.prototype = Object.create(PIXI.DisplayObjectContainer.prototype);
 
-    ParticleEmitter.prototype._initParticleEmitter = function(ui, texture, options) {
+    ParticleEmitter.prototype._initParticleEmitter = function(ui, texture, options, parent) {
         PIXI.DisplayObjectContainer.call(this);
         this.ui = ui;
-        this.options = options;
+        this.particleParent = parent || options.parent;        
 
         if (!texture) {
             var graphics = new PIXI.Graphics();
@@ -106,46 +112,53 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
         }
 
         this.emitter = new Proton.BehaviourEmitter();
-        this.emitter.rate = new Proton.Rate(
-            new Proton.Span(options.rate.numpan.a, options.rate.numpan.b, options.rate.numpan.center),
-            new Proton.Span(options.rate.timepan.a, options.rate.timepan.b, options.rate.timepan.center));
-        this.emitter.addInitialize(new Proton.Mass(options.mass));
-        this.emitter.addInitialize(new Proton.ImageTarget(texture));
-        this.emitter.addInitialize(new Proton.Life(options.life.a, options.life.b, options.life.center));
-        if (typeof options.radius !== 'undefined') {
-            this.emitter.addInitialize(new Proton.Radius(options.radius));
-        }
-        if(_.isArray(options.velocity) || _.isNumber(options.velocity)) {
-            var angleRange = options.velocityAngleRange ? new Proton.Span(options.velocityAngleRange[0], options.velocityAngleRange[1], null) : new Proton.Span(0, 360, null);
-            this.emitter.addInitialize(new Proton.Velocity(options.velocity, angleRange, 'polar'));
-        } else if(typeof options.velocity !== 'undefined') {
-            this.emitter.addInitialize(
-                new Proton.Velocity(
-                    new Proton.Span(options.velocity.rpan.a, options.velocity.rpan.b, options.velocity.rpan.center),
-                    new Proton.Span(options.velocity.thapan.a, options.velocity.thapan.b, options.velocity.thapan.center),
-                    options.velocity.type));
-        }
 
-
-        this.emitter.addBehaviour(new Proton.Gravity(options.gravity));
-        this.emitter.addBehaviour(new Proton.Scale(new Proton.Span(options.scale.a, options.scale.b, options.scale.center)));
-        //this.emitter.addBehaviour(new Proton.Scale(options.scale.a, options.scale.b));
-        this.emitter.addBehaviour(new Proton.Alpha(options.alpha.a, options.alpha.b));
-        this.emitter.addBehaviour(new Proton.Rotate(options.rotation.a, options.rotation.b, options.rotation.style, options.rotation.life, options.rotation.easing));
-        if (typeof options.color !== 'undefined') {
-            this.emitter.addBehaviour(new Proton.Color(options.color.color1, options.color.color2));
+        if (typeof options == 'function') {
+            options(this.emitter);
         }
+        else {
+            this.options = options;
+    
+            this.emitter.rate = new Proton.Rate(
+                new Proton.Span(options.rate.numpan.a, options.rate.numpan.b, options.rate.numpan.center),
+                new Proton.Span(options.rate.timepan.a, options.rate.timepan.b, options.rate.timepan.center));
+            this.emitter.addInitialize(new Proton.Mass(options.mass));
+            this.emitter.addInitialize(new Proton.ImageTarget(texture));
+            this.emitter.addInitialize(new Proton.Life(options.life.a, options.life.b, options.life.center));
+            if (typeof options.radius !== 'undefined') {
+                this.emitter.addInitialize(new Proton.Radius(options.radius));
+            }
+            if(_.isArray(options.velocity) || _.isNumber(options.velocity)) {
+                var angleRange = options.velocityAngleRange ? new Proton.Span(options.velocityAngleRange[0], options.velocityAngleRange[1], null) : new Proton.Span(0, 360, null);
+                this.emitter.addInitialize(new Proton.Velocity(options.velocity, angleRange, 'polar'));
+            } else if(typeof options.velocity !== 'undefined') {
+                this.emitter.addInitialize(
+                    new Proton.Velocity(
+                        new Proton.Span(options.velocity.rpan.a, options.velocity.rpan.b, options.velocity.rpan.center),
+                        new Proton.Span(options.velocity.thapan.a, options.velocity.thapan.b, options.velocity.thapan.center),
+                        options.velocity.type));
+            }
 
-        if(typeof options.randomDrift !== 'undefined' && options.randomDrift !== null) {
-            this.emitter.addSelfBehaviour(new Proton.RandomDrift(options.randomDrift.driftX, options.randomDrift.driftY, options.randomDrift.delay, options.randomDrift.life, options.randomDrift.easing));
+            this.emitter.addBehaviour(new Proton.Gravity(options.gravity));
+            this.emitter.addBehaviour(new Proton.Scale(new Proton.Span(options.scale.a, options.scale.b, options.scale.center)));
+            //this.emitter.addBehaviour(new Proton.Scale(options.scale.a, options.scale.b));
+            this.emitter.addBehaviour(new Proton.Alpha(options.alpha.a, options.alpha.b));
+            this.emitter.addBehaviour(new Proton.Rotate(options.rotation.a, options.rotation.b, options.rotation.style, options.rotation.life, options.rotation.easing));
+            if (typeof options.color !== 'undefined') {
+                this.emitter.addBehaviour(new Proton.Color(options.color.color1, options.color.color2));
+            }
+
+            if(typeof options.randomDrift !== 'undefined' && options.randomDrift !== null) {
+                this.emitter.addSelfBehaviour(new Proton.RandomDrift(options.randomDrift.driftX, options.randomDrift.driftY, options.randomDrift.delay, options.randomDrift.life, options.randomDrift.easing));
+            }
+
+            if(typeof options.crossZone !== 'undefined' && options.crossZone !== null ) {
+                this.emitter.addSelfBehaviour(new Proton.CrossZone(new Proton.RectZone(options.crossZone.zone.x, options.crossZone.zone.y, options.crossZone.zone.width, options.crossZone.zone.height), options.crossZone.type, options.crossZone.life, options.crossZone.easing));
+            }
+
+            this.emitter.p.x = 0;
+            this.emitter.p.y = 0;
         }
-
-        if(typeof options.crossZone !== 'undefined' && options.crossZone !== null ) {
-            this.emitter.addSelfBehaviour(new Proton.CrossZone(new Proton.RectZone(options.crossZone.zone.x, options.crossZone.zone.y, options.crossZone.zone.width, options.crossZone.zone.height), options.crossZone.type, options.crossZone.life, options.crossZone.easing));
-        }
-
-        this.emitter.p.x = 0;
-        this.emitter.p.y = 0;
 
         this.ui.addEmitter(this.emitter);
 
@@ -159,10 +172,10 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
             var particle = e.particle;
             if (particle) {
                 particle.sprite = new PIXI.Sprite(particle.target);
-                if(this.options.parent) {
+                if(this.particleParent) {
                     particle.p.x = this.x;
                     particle.p.y = this.y;
-                    this.options.parent.addChild(particle.sprite);
+                    this.particleParent.addChild(particle.sprite);
                 } else {
                     this.addChild(particle.sprite);
                 }
