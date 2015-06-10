@@ -6,7 +6,7 @@
  * To change this template use File | Settings | File Templates.
  */
 
-define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
+define(['absolute/snapshot','pixi','lodash', 'absolute/platform'], function (Snapshot, PIXI, _, Platform) {
 
     var SpriteUtils = {
 
@@ -167,6 +167,21 @@ define(['absolute/snapshot','pixi','lodash'], function (Snapshot, PIXI, _) {
             }
 
             return new PIXI.MovieClip(textures);
+        },
+        bindInteraction: function (sprite, handler) {
+
+            sprite.interactive = true;
+            sprite.buttonMode = true;
+
+            if (Platform.supportsTouch()) {
+                sprite.touchstart = handler.bind(this);
+                if (Platform._isWindows() || Platform._isMac()) {
+                    sprite.mousedown = handler.bind(this);
+                }
+            } else {
+                sprite.mousedown = handler.bind(this);
+            }
+
         }
 
 

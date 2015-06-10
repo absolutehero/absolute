@@ -1,4 +1,4 @@
-define(['absolute/coords','pixi','lodash'], function(Coords, PIXI, _){
+define(['absolute/coords','pixi','lodash', 'absolute/spriteutils'], function(Coords, PIXI, _, SpriteUtils){
 
     var PageIndicator = function(pageCount, currentPageIndex, options) {
 
@@ -62,9 +62,9 @@ define(['absolute/coords','pixi','lodash'], function(Coords, PIXI, _){
 
             pip.off.interactive = true;
             pip.off.pageIndex = i;
-            pip.off.click = function(event) {
-               this.options.clickCallback(event.target.pageIndex);
-            }.bind(this);
+            SpriteUtils.bindInteraction(pip.off, function(event) {
+                this.options.clickCallback(event.target.pageIndex);
+            }.bind(this));
 
             this.addChild(pip);
             this.pips.push(pip);
