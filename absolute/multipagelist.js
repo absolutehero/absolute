@@ -308,10 +308,10 @@ define(['pixi', 'absolute', 'absolute/button', 'absolute/screenmetrics', 'lodash
         MultiPageList.prototype.setNavigationButtonActiveStates = function () {
             if (this.pages.length > 0) {
                 if (this.nextpageButton) {
-                    this.nextpageButton.setActive((this.currentPage !== this.pages.length - 1));
+                    this.nextpageButton.setActive((this.currentPage !== this.pages.length - 1), this.nextpageButton);
                 }
                 if (this.prevpageButton) {
-                    this.prevpageButton.setActive((this.currentPage !== 0));
+                    this.prevpageButton.setActive((this.currentPage !== 0), this.prevpageButton);
                 }
             }
         };
