@@ -1,6 +1,6 @@
-define(['pixi', 'absolute', 'hammer', 'absolute/button', 'absolute/screenmetrics', 'lodash', 'absolute/coords'],
+define(['pixi', 'absolute', 'absolute/button', 'absolute/screenmetrics', 'lodash', 'absolute/coords'],
 
-    function (PIXI, Absolute, Hammer, Button, ScreenMetrics,  _, Coords) {
+    function (PIXI, Absolute, Button, ScreenMetrics,  _, Coords) {
 
         var MultiPageList = function (ui, items, prevButton, nextButton, options) {
 
