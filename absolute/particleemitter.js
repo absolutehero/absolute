@@ -112,29 +112,40 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
         this.emitter.addInitialize(new Proton.Mass(options.mass));
         this.emitter.addInitialize(new Proton.ImageTarget(texture));
         this.emitter.addInitialize(new Proton.Life(options.life.a, options.life.b, options.life.center));
-        if (typeof options.radius !== undefined) {
+        if (typeof options.radius !== 'undefined') {
             this.emitter.addInitialize(new Proton.Radius(options.radius));
         }
-        this.emitter.addInitialize(
-            new Proton.Velocity(
-                new Proton.Span(options.velocity.rpan.a, options.velocity.rpan.b, options.velocity.rpan.center),
-                new Proton.Span(options.velocity.thapan.a, options.velocity.thapan.b, options.velocity.thapan.center),
-                options.velocity.type));
+        if(_.isArray(options.velocity) || _.isNumber(options.velocity)) {
+            this.emitter.addInitialize(
+                new Proton.Velocity(options.velocity, new Proton.Span(0, 360, true), 'polar'));
+        } else if(typeof options.velocity !== 'undefined') {
+            this.emitter.addInitialize(
+                new Proton.Velocity(
+                    new Proton.Span(options.velocity.rpan.a, options.velocity.rpan.b, options.velocity.rpan.center),
+                    new Proton.Span(options.velocity.thapan.a, options.velocity.thapan.b, options.velocity.thapan.center),
+                    options.velocity.type));
+        }
+
 
         this.emitter.addBehaviour(new Proton.Gravity(options.gravity));
         this.emitter.addBehaviour(new Proton.Scale(new Proton.Span(options.scale.a, options.scale.b, options.scale.center)));
+        //this.emitter.addBehaviour(new Proton.Scale(options.scale.a, options.scale.b));
         this.emitter.addBehaviour(new Proton.Alpha(options.alpha.a, options.alpha.b));
         this.emitter.addBehaviour(new Proton.Rotate(options.rotation.a, options.rotation.b, options.rotation.style, options.rotation.life, options.rotation.easing));
         if (typeof options.color !== 'undefined') {
             this.emitter.addBehaviour(new Proton.Color(options.color.color1, options.color.color2));
         }
 
-        this.emitter.addSelfBehaviour(new Proton.RandomDrift(options.randomDrift.driftX, options.randomDrift.driftY, options.randomDrift.delay, options.randomDrift.life, options.randomDrift.easing));
-        this.emitter.addSelfBehaviour(new Proton.CrossZone(new Proton.RectZone(options.crossZone.zone.x, options.crossZone.zone.y, options.crossZone.zone.width, options.crossZone.zone.height), options.crossZone.type, options.crossZone.life, options.crossZone.easing));
+        if(typeof options.randomDrift !== 'undefined' && options.randomDrift !== null) {
+            this.emitter.addSelfBehaviour(new Proton.RandomDrift(options.randomDrift.driftX, options.randomDrift.driftY, options.randomDrift.delay, options.randomDrift.life, options.randomDrift.easing));
+        }
+
+        if(typeof options.crossZone !== 'undefined' && options.crossZone !== null ) {
+            this.emitter.addSelfBehaviour(new Proton.CrossZone(new Proton.RectZone(options.crossZone.zone.x, options.crossZone.zone.y, options.crossZone.zone.width, options.crossZone.zone.height), options.crossZone.type, options.crossZone.life, options.crossZone.easing));
+        }
 
         this.emitter.p.x = 0;
         this.emitter.p.y = 0;
-
 
         this.ui.addEmitter(this.emitter);
 
