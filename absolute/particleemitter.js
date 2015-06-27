@@ -116,8 +116,8 @@ define(['pixi', 'lodash', 'proton'], function (PIXI, _, Proton) {
             this.emitter.addInitialize(new Proton.Radius(options.radius));
         }
         if(_.isArray(options.velocity) || _.isNumber(options.velocity)) {
-            this.emitter.addInitialize(
-                new Proton.Velocity(options.velocity, new Proton.Span(0, 360, true), 'polar'));
+            var angleRange = options.velocityAngleRange ? new Proton.Span(options.velocityAngleRange[0], options.velocityAngleRange[1], null) : new Proton.Span(0, 360, null);
+            this.emitter.addInitialize(new Proton.Velocity(options.velocity, angleRange, 'polar'));
         } else if(typeof options.velocity !== 'undefined') {
             this.emitter.addInitialize(
                 new Proton.Velocity(
