@@ -97,8 +97,9 @@ var AudioManager = {
 
     loadClips: function(sounds, onProgress, onComplete) {
 
-        var total = sounds.length;
-        var count = 0;
+        var total = sounds.length,
+            count = 0,
+            skip = sounds[0].lazyload;
 
         var onLoad = function() {
             if (++count === total) {
@@ -109,27 +110,40 @@ var AudioManager = {
             else {
                 onProgress(count / total);
                 var sound = sounds[count];
-                this.createSound({
-                    id: sound.id,
-                    url: sound.url,
-                    volume: sound.volume,
-                    onLoad: onLoad,
-                    buffer: false,
-                    loop: sound.loop,
-                    duration: sound.end - sound.start
-                });
+                skip = sound.lazyload;
+                if(!skip) {
+                    this.createSound({
+                        id: sound.id,
+                        url: sound.url,
+                        volume: sound.volume,
+                        onLoad: onLoad,
+                        buffer: false,
+                        loop: sound.loop,
+                        duration: sound.end - sound.start
+                    });
+                } else {
+                    Debug.log('skipped loading sound ' + sound.id);
+                    onLoad();
+                }
             }
         }.bind(this);
 
-        this.createSound({
-            id: sounds[0].id,
-            url: sounds[0].url,
-            volume: sounds[0].volume,
-            onLoad: onLoad,
-            buffer: false,
-            loop: sounds[0].loop,
-            duration: sounds[0].end - sounds[0].start
-        });
+        if(!skip) {
+            this.createSound({
+                id: sounds[0].id,
+                url: sounds[0].url,
+                volume: sounds[0].volume,
+                onLoad: onLoad,
+                buffer: false,
+                loop: sounds[0].loop,
+                duration: sounds[0].end - sounds[0].start
+            });
+        } else {
+            Debug.log('skipped loading sound ' + sounds[0].id);
+            onLoad();
+        }
+
+
 
     },
 
