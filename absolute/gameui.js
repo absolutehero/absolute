@@ -170,7 +170,7 @@ function (
     };
 
     GameUI.prototype.isFullScreen = function () {
-        return !!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement);
+        return !!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
     };
 
     GameUI.prototype.exitFullScreen = function () {
@@ -182,7 +182,9 @@ function (
             document.mozCancelFullScreen();
         } else if (document.webkitExitFullscreen) {
             document.webkitExitFullscreen();
-        }
+        } else if (document.msExitFullscreen){
+            document.msExitFullscreen();
+        };
         this.resize();
     };
 
