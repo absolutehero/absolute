@@ -235,7 +235,8 @@ function (
                 }
                 var trueAspectRatio = this.baseWidth / this.baseHeight,
                     minWidth = this.container.style.minWidth || 0,
-                    maxWidth = this.container.style.maxWidth || 0;
+                    maxWidth = this.container.style.maxWidth || 0,
+                    minHeight = this.container.style.minHeight || 0;
 
                 if(minWidth !== 0) {
                     minWidth = parseInt(minWidth.slice(0, minWidth.indexOf('px')));
@@ -245,12 +246,19 @@ function (
                     maxWidth = parseInt(maxWidth.slice(0, maxWidth.indexOf('px')));
                 }
 
+                if(minHeight !== 0) {
+                    minHeight = parseInt(minHeight.slice(0, minHeight.indexOf('px')));
+                }
+
                 if(clientWidth <= minWidth) {
                     clientWidth = minWidth;
                     clientHeight = clientWidth / trueAspectRatio;
                 } else if(clientWidth >= maxWidth && maxWidth > 0) {
                     clientWidth = maxWidth;
                     clientHeight = clientWidth / trueAspectRatio;
+                } else if(clientHeight < minHeight) {
+                    clientHeight = minHeight;
+                    clientWidth = clientHeight * trueAspectRatio;
                 } else if(clientWidth > clientHeight) {
                     clientHeight = clientWidth / trueAspectRatio;
                     if(clientHeight > windowHeight) {
