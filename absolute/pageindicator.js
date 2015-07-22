@@ -44,8 +44,8 @@ define(['absolute/coords','pixi','lodash', 'absolute/spriteutils'], function(Coo
 
             var pip = new PIXI.DisplayObjectContainer();
 
-            pip.on = new PIXI.Sprite.fromFrame(this.options.pageIndicators.full);
-            pip.off = new PIXI.Sprite.fromFrame(this.options.pageIndicators.empty);
+            pip.on = PIXI.Sprite.fromFrame(this.options.pageIndicators.full);
+            pip.off = PIXI.Sprite.fromFrame(this.options.pageIndicators.empty);
 
             pip.position.x = (pip.on.width + this.options.pipPadding) * i;
 
