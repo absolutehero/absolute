@@ -72,6 +72,10 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return  this.getMobileUserAgentData().os.toLowerCase() === 'android';
         },
 
+        _isSafari: function () {
+            return navigator.userAgent.toLowerCase().indexOf("safari") > -1;
+        },
+
         _isChrome: function () {
             return navigator.userAgent.indexOf("Android") >= 0 && navigator.userAgent.indexOf("CrMo") >= 0;
         },
