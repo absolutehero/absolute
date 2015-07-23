@@ -46,6 +46,10 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
                 }
             };
 
+            this.ajaxRequest.onerror = function () {
+                scope.onError();
+            }
+
             this.ajaxRequest.open('GET', this.url, true);
             this.ajaxRequest.send();
         };

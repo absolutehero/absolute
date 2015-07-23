@@ -53,7 +53,7 @@ define(['absolute/mathutils','absolute/coords','pixi', 'lodash', 'absolute/sprit
                             }
 
                         }
-                        randomItem.sprite = new PIXI.Sprite.fromFrame(randomItem.url);
+                        randomItem.sprite = PIXI.Sprite.fromFrame(randomItem.url);
                         randomItem.sprite.anchor.x = options.anchor.x;
                         randomItem.sprite.anchor.y = options.anchor.y;
 

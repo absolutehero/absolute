@@ -9,7 +9,7 @@ define(['pixi', 'absolute/debug', 'lodash'], function(PIXI, Debug, _) {
      * example:
      *
      * function createParticle() {
-     *    var particle = new PIXI.Sprite.fromFrame('particle.png');
+     *    var particle = PIXI.Sprite.fromFrame('particle.png');
      *    return particle;
      * }
      *
