@@ -27,10 +27,52 @@ function (
 
     };
 
-    Loader.prototype.loadSound = function(assets, onProgress, onComplete) {
-        AudioManager.init(function() {
-            AudioManager.loadSounds(assets, onProgress, onComplete);
-        });
+    Loader.prototype.loadSound = function(assets, onProgress, onComplete, onError) {
+        try {
+            AudioManager.init(function () {
+                AudioManager.loadSounds(assets, onProgress, onComplete);
+            });
+        }
+        catch (e) {
+            if (typeof onError == "function") {
+                onError();
+            }
+        }
+
+    };
+
+    Loader.prototype.loadAtlases = function(atlases, onProgress, onComplete, onError) {
+        var total = atlases.length, loaded = 0;
+
+        this.error = false;
+        for (var i = 0; i < total; ++i) {
+            if (!this.error) {
+                var asset = atlases[i].name;
+
+                if (asset.indexOf('.json') === -1) {
+                    asset += ".json";
+                }
+
+                var loader = new PIXI.JsonLoader(Platform.artPathPrefix + '/' + ScreenMetrics.getResClass() + '/' + asset);
+
+                loader.addEventListener('error', function () {
+                    if (!this.error) {
+                        this.error = true;
+                        onError();
+                    }
+                }.bind(this));
+                loader.addEventListener('loaded', function () {
+                    if (++loaded == total) {
+                        onComplete();
+                    }
+                    else {
+                        onProgress((loaded / total));
+                    }
+                }.bind(this));
+
+                loader.load();
+            }
+        }
 
     };
 
