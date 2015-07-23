@@ -76,6 +76,11 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             return navigator.userAgent.indexOf("Android") >= 0 && navigator.userAgent.indexOf("CrMo") >= 0;
         },
 
+        _isChromeGeneric: function() {
+            return navigator.userAgent.toLowerCase().indexOf('chrome') > -1 &&
+                navigator.userAgent.toLowerCase().indexOf("opera") == -1 &&
+                navigator.userAgent.toLowerCase().indexOf("opr") == -1;
+        },
         _isIE: function () {
             return navigator.userAgent.indexOf("Trident") >= 0 || navigator.userAgent.indexOf("MSIE") >= 0;
         },
