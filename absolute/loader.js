@@ -53,7 +53,7 @@ function (
                     asset += ".json";
                 }
 
-                var loader = new PIXI.JsonLoader(Platform.artPathPrefix + '/' + ScreenMetrics.getResClass() + '/' + asset);
+                var loader = new PIXI.JsonLoader(Platform.artPathPrefix + '/' + ScreenMetrics.getResClass() + '/' + asset, false);
 
                 loader.addEventListener('error', function () {
                     if (!this.error) {
