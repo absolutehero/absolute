@@ -348,6 +348,11 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             }
 
             return steps;
+        },
+
+        supportsFullscreenApi: function() {
+            return (document.documentElement.requestFullscreen || document.documentElement.mozRequestFullScreen ||
+                document.documentElement.webkitRequestFullscreen || document.documentElement.msRequestFullscreen) ? true : false;
         }
 
     };
