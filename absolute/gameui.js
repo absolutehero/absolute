@@ -173,7 +173,32 @@ function (
         return !!(document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement);
     };
 
-    GameUI.prototype.exitFullScreen = function () {
+    GameUI.prototype.requestFullscreen = function (element) {
+
+        this.fullScreenElementStyles = element.cssText;
+        this.fullScreenElementClass = element.className;
+
+        element.removeAttribute('style');
+        element.style.position = 'static';
+        element.className = '';
+        if (element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if (element.msRequestFullscreen) {
+            element.msRequestFullscreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
+        } else if (typeof window.ActiveXObject !== "undefined") { // Older IE.
+            var wscript = new ActiveXObject("WScript.Shell");
+            if (wscript !== null) {
+                wscript.SendKeys("{F11}");
+            }
+        }
+
+    };
+
+    GameUI.prototype.exitFullScreen = function (element) {
         if (document.exitFullscreen) {
             document.exitFullscreen();
         } else if (document.msExitFullscreen) {
@@ -185,6 +210,13 @@ function (
         } else if (document.msExitFullscreen){
             document.msExitFullscreen();
         };
+
+        if(element) {
+            element.className = this.fullScreenElementClass;
+            element.removeAttribute('style');
+            element.cssText = this.fullScreenElementStyles;
+        }
+
         this.resize();
     };
 

@@ -73,7 +73,9 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
         },
 
         _isSafari: function () {
-            return navigator.userAgent.toLowerCase().indexOf("safari") > -1;
+            return navigator.userAgent.toLowerCase().indexOf("safari") > -1 &&
+                navigator.userAgent.toLowerCase().indexOf("opera") == -1 &&
+                navigator.userAgent.toLowerCase().indexOf("opr") == -1;
         },
 
         _isChrome: function () {
@@ -346,6 +348,11 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             }
 
             return steps;
+        },
+
+        supportsFullscreenApi: function() {
+            return (document.documentElement.requestFullscreen || document.documentElement.mozRequestFullScreen ||
+                document.documentElement.webkitRequestFullscreen || document.documentElement.msRequestFullscreen) ? true : false;
         }
 
     };
