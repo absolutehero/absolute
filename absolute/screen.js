@@ -103,6 +103,10 @@ define(['pixi', 'absolute/button', 'absolute/togglebutton', 'absolute/debug'], f
 
     };
 
+    Screen.prototype.handleCommand = function (command) {
+
+    };
+
 
     return Screen;
 });

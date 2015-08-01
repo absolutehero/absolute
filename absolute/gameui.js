@@ -767,6 +767,9 @@ function (
         }
     };
 
+    GameUI.prototype.handleCommand = function (command) {
+
+    };
 
     return GameUI;
 });
