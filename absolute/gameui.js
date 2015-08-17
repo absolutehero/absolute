@@ -221,7 +221,7 @@ function (
     };
 
     GameUI.prototype.resize = function() {
-        var i, fullscreenElement = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+        var i, fullscreenElement = this.isFullScreen();
 
         if (this.container.style.width !== "" && this.container.style.height !== "" && !fullscreenElement) {
             this.width = this.origWidth;
