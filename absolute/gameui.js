@@ -217,10 +217,14 @@ function (
             element.cssText = this.fullScreenElementStyles;
         }
 
-        this.resize();
+        window.setTimeout(function(){
+            this.resize();
+        }.bind(this), 1000);
+
     };
 
     GameUI.prototype.resize = function() {
+
         var i, fullscreenElement = this.isFullScreen();
 
         if (this.container.style.width !== "" && this.container.style.height !== "" && !fullscreenElement) {
