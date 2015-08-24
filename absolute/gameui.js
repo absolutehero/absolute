@@ -428,6 +428,8 @@ function (
 
             if (this.supportsOrientationChange && this.currentScreen) {
                 this.currentScreen.handleOrientationChange(this.portrait);
+            } else if(this.currentScreen && typeof this.currentScreen.handleResize === 'function' ) {
+                this.currentScreen.handleResize(this.portait);
             }
 
             this.refreshModal();
