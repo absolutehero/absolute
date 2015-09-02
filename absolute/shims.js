@@ -33,6 +33,12 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
     if (PIXI.JsonLoader) {
         PIXI.JsonLoader.prototype.load = function () {
 
+
+            if (this.url.indexOf('.atlas') != -1) {
+                // hack to get around Microsoft's refusal to add support .atlas files on their server
+                this.url = this.url.substr(0, this.url.lastIndexOf('.')) + '.txt';
+            }
+
             this.ajaxRequest = new window.XMLHttpRequest();
 
             var scope = this;
