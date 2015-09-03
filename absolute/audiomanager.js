@@ -165,7 +165,7 @@ var AudioManager = {
             this.sounds[soundId].play(delay/1000, this.isMusic(soundId), onComplete);
         }
         else {
-            console.log("Warning: Attempt to play sound that isn't loaded: " + soundId);
+            Debug.log("Warning: Attempt to play sound that isn't loaded: " + soundId);
         }
     },
 
