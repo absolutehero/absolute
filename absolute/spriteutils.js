@@ -168,7 +168,9 @@ define(['absolute/snapshot','pixi','lodash', 'absolute/platform'], function (Sna
 
             return new PIXI.MovieClip(textures);
         },
-        bindInteraction: function (sprite, handler) {
+        bindInteraction: function (sprite, handler, bindMouseUp) {
+
+            bindMouseUp = !!bindMouseUp;
 
             sprite.interactive = true;
             sprite.buttonMode = true;
@@ -177,9 +179,15 @@ define(['absolute/snapshot','pixi','lodash', 'absolute/platform'], function (Sna
                 sprite.touchstart = handler.bind(this);
                 if (Platform._isWindows() || Platform._isMac()) {
                     sprite.mousedown = handler.bind(this);
+                    if(bindMouseUp) {
+                        sprite.mouseup = handler.bind(this);
+                    }
                 }
             } else {
                 sprite.mousedown = handler.bind(this);
+                if(bindMouseUp) {
+                    sprite.mouseup = handler.bind(this);
+                }
             }
 
         }
