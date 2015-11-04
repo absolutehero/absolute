@@ -137,53 +137,6 @@ define(['pixi','absolute/platform'], function(PIXI, Platform) {
         };
     }
 
-    PIXI.CanvasTinter.tintWithMultiply = function(texture, color, canvas)
-    {
-        var context = canvas.getContext( "2d" );
-
-        var crop = texture.crop;
-
-        // HACK FIX here!
-        // Windows Chrome 46 introduced an issue with tinting.
-        // see: https://github.com/pixijs/pixi.js/issues/2171
-        //canvas.width = crop.width;
-        //canvas.height = crop.height;
-        canvas.width = Math.max(crop.width, 258);
-        canvas.height = Math.max(crop.height, 258);
-        // End HACK FIX
-
-        context.fillStyle = "#" + ("00000" + ( color | 0).toString(16)).substr(-6);
-
-        context.fillRect(0, 0, crop.width, crop.height);
-
-        context.globalCompositeOperation = "multiply";
-
-        context.drawImage(texture.baseTexture.source,
-            crop.x,
-            crop.y,
-            crop.width,
-            crop.height,
-            0,
-            0,
-            crop.width,
-            crop.height);
-
-        context.globalCompositeOperation = "destination-atop";
-
-        context.drawImage(texture.baseTexture.source,
-            crop.x,
-            crop.y,
-            crop.width,
-            crop.height,
-            0,
-            0,
-            crop.width,
-            crop.height);
-    };
-    // required for the tintWIthMultiply shim to work
-    PIXI.CanvasTinter.tintMethod = PIXI.CanvasTinter.canUseMultiply ? PIXI.CanvasTinter.tintWithMultiply :  PIXI.CanvasTinter.tintWithPerPixel;
-
-
     // touch move broken in 1.5.3
     if(PIXI.VERSION == "v1.5.3") {
 

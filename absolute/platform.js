@@ -155,6 +155,41 @@ define (['pixi','absolute/debug'], function (PIXI, Debug) {
             }
         },
 
+        hasChromeTintingBug: function(callback, testImageSrc) {
+
+            var canvas = document.createElement('canvas'),
+                context = canvas.getContext('2d'),
+                x = 0, y = 0, w = 1, h = 1,
+                testImage = new Image(),
+                color = 0x000000,
+                imgDataBefore,
+                imgDataAfter;
+
+            canvas.width = w;
+            canvas.height = h;
+
+            testImage.src = testImageSrc;
+            testImage.onload = function() {
+
+                context.drawImage(testImage, 0, 0);
+
+                imgDataBefore = context.getImageData(x,y,w,h).data;
+
+                context.fillStyle = "#" + ("00000" + ( color | 0).toString(16)).substr(-6);
+                context.fillRect(x, y, w, h);
+                context.globalCompositeOperation = "multiply";
+                context.drawImage(testImage, 0, 0);
+
+                context.globalCompositeOperation = "destination-atop";
+                context.drawImage(testImage, 0, 0);
+
+                imgDataAfter = context.getImageData(x,y,w,h).data;
+
+                callback(imgDataBefore[0] == imgDataAfter[0])
+            };
+
+        },
+
         hasPutImageDataBug: function() {
             var canvas = document.createElement('canvas');
             var ctx = canvas.getContext('2d');
